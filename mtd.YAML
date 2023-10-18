@@ -5,7 +5,7 @@ group:
     netid: cpf44
   - name: Gerardo Montemayor
     netid: gm547
-  - name: Rolando Rodriguez
+  - name: Rolando Rodríguez
     netid: rar339
   - name: Alex Spero
     netid: as3782
@@ -23,4 +23,10 @@ git-repo: "https://github.coecis.cornell.edu/cpf44/MTD"
 demo-video-url: ""
 # Write a short, attention-grabbing description of your project.
 desc: >
-  "INSERT DESCRIPTION"
+  "Our project is a Cornell-themed tower defense game where dart-throwing
+  bears will defend our beloved McGraw Tower from oncoming balloons. 
+  Bears can be dragged and dropped anywhere on the map to pop balloons, wave
+  by wave. 
+  
+  We will be using the RayLib module in OCaml as our graphical user interface
+  and design our bears, balloons, maps from scratch."
