@@ -1,26 +1,26 @@
 # Directions to Run the Game
 
-1. Copy this line in the shell. If on Windows, do this from WSL2 shell (Ubuntu):
+1. Paste this line in the shell. If on Windows, do this from WSL2 shell (Ubuntu):
 
-    ```
-    opam install raylib
-    ```
+    
+    > opam install raylib
+    
 
 2. Download the zip file for McGraw Tower Defense.
 
 3. Unzip the file and navigate into the 'MTD' directory.
 
-4. Copy this line to build MTD:
+4. Paste this line to build MTD:
 
-    ```
-    dune build
-    ```
+    
+    > dune build
+    
 
-5. Copy this line to run MTD:
+5. Paste this line to run MTD:
 
-    ```
-    dune exec mtd
-    ```
+    
+    > dune exec mtd
+    
 
   
 
