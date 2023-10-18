@@ -1,0 +1,26 @@
+---
+# Members of your group.
+group:
+  - name: Chris Fernandes
+    netid: cpf44
+  - name: Gerardo Montemayor
+    netid: gm547
+  - name: Rolando Rodriguez
+    netid: rar339
+  - name: Alex Spero
+    netid: as3782
+# Your PM.
+pm:
+  name: Jonathan Chen
+  netid: jqc3
+# Set to false if you don't want your gallery entry to be public.
+publish: true
+# Pithy title
+title: "McGraw Tower Defense"
+# OK if this is a Cornell Github link, but public gallery viewers won't be able to see it.
+git-repo: "https://github.coecis.cornell.edu/cpf44/MTD"
+# If you have no demo screencast, replace the url string with an empty string ""
+demo-video-url: ""
+# Write a short, attention-grabbing description of your project.
+desc: >
+  "INSERT DESCRIPTION"
