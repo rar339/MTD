@@ -31,9 +31,16 @@ let rec loop (texture) =
     0.0                          (* Rotation (in radians) *)
     (0.70)                (* Scale *)
     Color.white);
+
     draw_text "McGraw Tower" 430 175 60
       Color.red;
-    draw_text "Defense!" 490 250 60 Color.red;
+    draw_text "Defense" 490 250 60 Color.red;
+
+    Raygui.(set_style (TextBox `Text_alignment) TextAlignment.(to_int Center));
+    (* SETTING STYLE TO RED - USE HEX*)
+    Raygui.(set_style (Button `Base_color_normal) 0xFF000010);
+    (* create -> x y width height*)
+    Raygui.(ignore (button (Rectangle.create 400. 500. 300. 100.) "PLAY"));
     end_drawing ();
     loop (texture)
 
