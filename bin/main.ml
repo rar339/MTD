@@ -15,7 +15,7 @@ let setup () =
   let texture = Raylib.load_texture_from_image intro_screen_art in
   unload_image intro_screen_art;
 
-
+  
 
   (texture)
 
