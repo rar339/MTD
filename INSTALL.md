@@ -1,9 +1,12 @@
 # Directions to Run the Game
 
-1. Paste this line in the shell. If on Windows, do this from WSL2 shell (Ubuntu):
+1. Paste these lines into the shell. This will intsall Raylib and Raygui, the libraries we used. If on Windows, do this from WSL2 shell (Ubuntu):
 
     ```
     opam install raylib
+    ```
+    ```
+    opam install raygui
     ```
 
 2. Download the zip file for McGraw Tower Defense.
