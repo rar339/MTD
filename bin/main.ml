@@ -39,8 +39,10 @@ let rec loop (texture) =
     Raygui.(set_style (TextBox `Text_alignment) TextAlignment.(to_int Center));
     (* SETTING STYLE TO RED - USE HEX*)
     Raygui.(set_style (Button `Base_color_normal) 0xFF000010);
+    Raygui.(set_style (Button `Text_color_normal) 0);
+    Raygui.(set_style (Button `Text_padding) 0);
     (* create -> x y width height*)
-    Raygui.(ignore (button (Rectangle.create 400. 500. 300. 100.) "PLAY"));
+    Raygui.(ignore (button (Rectangle.create 550. 360. 120. 50.) "PLAY"));
     end_drawing ();
     loop (texture)
 
