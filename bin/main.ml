@@ -1,11 +1,22 @@
-let () = print_endline "Starting MTD!"
+let () = print_endline ""
+let () = print_endline "*************************************"
+let () = print_endline "********** Starting MTD! ************"
+let () = print_endline "*************************************"
+let () = print_endline ""
+
 open Raylib
 let setup () =
-  Raylib.init_window 900 650 "raylib [core] example - basic window";
+  Raylib.init_window 900 650 "MTD";
   Raylib.set_target_fps 60;
-  let loading_screen = Raylib.load_image "MTDCoverArt.png" in 
-  let texture = Raylib.load_texture_from_image loading_screen in
-  unload_image loading_screen;
+
+
+  (*Create the intro screen art*)
+  let intro_screen_art = Raylib.load_image "MTDCoverArt.png" in 
+  let texture = Raylib.load_texture_from_image intro_screen_art in
+  unload_image intro_screen_art;
+
+
+
   (texture)
 
 let rec loop (texture) =
