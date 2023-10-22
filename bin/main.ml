@@ -90,6 +90,7 @@ let rec loop (tuple) =
     if Raygui.( (button (Rectangle.create 550. 360. 120. 50.) "PLAY")) then
       let open MTD in
       Raylib.close_window ();
+      
       Tracker.setup () |> Tracker.loop else ();
 
     
