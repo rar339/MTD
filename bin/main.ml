@@ -7,15 +7,17 @@ let () = print_endline ""
 
 
 
-
-
 open Raylib
+
 
 let setup () =
   Raylib.init_window 1100 720 "MTD";
   Raylib.set_target_fps 60;
-  let custom_font = Raylib.load_font "machine-gunk.ttf" in
 
+  let title_font = Raylib.load_font_ex "machine-gunk.ttf" 100 None in
+
+  
+  let custom_font = Raylib.load_font_ex "machine-gunk.ttf" 24 None in
   Raygui.set_font custom_font;
   
 
@@ -28,7 +30,7 @@ let setup () =
   let red_bal_texture = Raylib.load_texture_from_image red_balloon in 
   unload_image red_balloon;
 
-  (texture, red_bal_texture, custom_font)
+  (texture, red_bal_texture, title_font)
 
 let pos1 = ref 550.
 
@@ -59,7 +61,7 @@ let rec loop (tuple) =
     
     match tuple with 
     | (a, b, c) -> let texture = a in
-    let red_bal_texture = b in let font = c in
+    let red_bal_texture = b in let title_font = c in
 
     (***** BACKGROUND *****)
     (draw_texture_ex texture       
@@ -67,15 +69,16 @@ let rec loop (tuple) =
     0.0                          (* Rotation (in radians) *)
     (0.60)                (* Scale *)
     Color.white);
-    
-    draw_text_ex (font) ("McGraw Tower") (Vector2.create (430.) 175.) 80. 0. Color.red;
-    draw_text_ex (font) ("Defense") (Vector2.create (490.) 250.) 80. 0. Color.red;  
+    (* Raylib.set_texture_filter (Font.texture (Raylib.get_font_default ())) TextureFilter.Point; *)
+
+    draw_text_ex (title_font) ("McGraw Tower") (Vector2.create 430. 140.) 100. 3. (Color.create 255 6 0 255);
+    draw_text_ex (title_font) ("Defense") (Vector2.create 570. 250.) 100. 3. (Color.create 255 6 0 255);  
 
     Raygui.(set_style (TextBox `Text_alignment) TextAlignment.(to_int Center));
     (* SETTING STYLE TO RED - USE HEX*)
     Raygui.(set_style (Button `Base_color_normal) 0xFF000010);
     Raygui.(set_style (Button `Text_color_normal) 0xFFFFFF);
-    Raygui.set_style (Default `Text_size) 20;
+    Raygui.set_style (Default `Text_size) 24;
 
 
 
