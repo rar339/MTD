@@ -14,9 +14,10 @@ open Raylib
 let setup () =
   Raylib.init_window 900 650 "MTD";
   Raylib.set_target_fps 60;
+  let custom_font = Raylib.load_font "machine-gunk.ttf" in
 
- 
-
+  Raygui.set_font custom_font;
+  
 
   (*Create the intro screen art*)
   let intro_screen_art = Raylib.load_image "MTDCoverArt.png" in 
@@ -27,7 +28,7 @@ let setup () =
   let red_bal_texture = Raylib.load_texture_from_image red_balloon in 
   unload_image red_balloon;
 
-  (texture, red_bal_texture)
+  (texture, red_bal_texture, custom_font)
 
 let pos1 = ref 550.
 
@@ -57,8 +58,8 @@ let rec loop (tuple) =
  
     
     match tuple with 
-    | (a, b) -> let texture = a in
-    let red_bal_texture = b in
+    | (a, b, c) -> let texture = a in
+    let red_bal_texture = b in let font = c in
 
     (***** BACKGROUND *****)
     (draw_texture_ex texture       
@@ -66,10 +67,9 @@ let rec loop (tuple) =
     0.0                          (* Rotation (in radians) *)
     (0.70)                (* Scale *)
     Color.white);
-
-    draw_text "McGraw Tower" 430 175 60
-      Color.red;
-    draw_text "Defense" 490 250 60 Color.red;
+    
+    draw_text_ex (font) ("McGraw Tower") (Vector2.create (430.) 175.) 80. 0. Color.red;
+    draw_text_ex (font) ("Defense") (Vector2.create (490.) 250.) 80. 0. Color.red;  
 
     Raygui.(set_style (TextBox `Text_alignment) TextAlignment.(to_int Center));
     (* SETTING STYLE TO RED - USE HEX*)
