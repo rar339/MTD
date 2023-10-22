@@ -12,7 +12,7 @@ let () = print_endline ""
 open Raylib
 
 let setup () =
-  Raylib.init_window 900 650 "MTD";
+  Raylib.init_window 1100 720 "MTD";
   Raylib.set_target_fps 60;
   let custom_font = Raylib.load_font "machine-gunk.ttf" in
 
@@ -65,7 +65,7 @@ let rec loop (tuple) =
     (draw_texture_ex texture       
     (Vector2.create 0. 0.0)  (* Position *)
     0.0                          (* Rotation (in radians) *)
-    (0.70)                (* Scale *)
+    (0.60)                (* Scale *)
     Color.white);
     
     draw_text_ex (font) ("McGraw Tower") (Vector2.create (430.) 175.) 80. 0. Color.red;
