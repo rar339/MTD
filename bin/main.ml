@@ -30,6 +30,8 @@ let setup () =
   let red_bal_texture = Raylib.load_texture_from_image red_balloon in 
   unload_image red_balloon;
 
+
+
   (texture, red_bal_texture, title_font)
 
 let pos1 = ref 550.
@@ -69,6 +71,7 @@ let rec loop (tuple) =
     0.0                          (* Rotation (in radians) *)
     (0.60)                (* Scale *)
     Color.white);
+
     (* Raylib.set_texture_filter (Font.texture (Raylib.get_font_default ())) TextureFilter.Point; *)
 
     draw_text_ex (title_font) ("McGraw Tower") (Vector2.create 430. 140.) 100. 3. (Color.create 255 6 0 255);
@@ -84,8 +87,12 @@ let rec loop (tuple) =
 
     Raygui.(set_style (Button `Border_width) 0);
     (* create -> x y width height*)
-    Raygui.(ignore (button (Rectangle.create 550. 360. 120. 50.) "PLAY"));
+    if Raygui.( (button (Rectangle.create 550. 360. 120. 50.) "PLAY")) then
+      let open MTD in
+      Raylib.close_window ();
+      Tracker.setup () |> Tracker.loop else ();
 
+    
 
     (***** BALLOONS *****)
     (draw_texture_ex red_bal_texture       
