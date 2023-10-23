@@ -26,37 +26,37 @@ module Constants = struct
 end
 
 (*Home screen balloons**********************************************************)
-module Baloon = struct
-  type baloon = {
+module Balloon = struct
+  type balloon = {
     x : float;
     y : float;
     speed : float;
     bal_texture : Texture2D.t;
   }
 
-  let gen_baloon x y speed bal_texture = { x; y; speed; bal_texture }
+  let gen_balloon x y speed bal_texture = { x; y; speed; bal_texture }
 
-  let rec generate_all_baloons x_pos_start count  : baloon list =
+  let rec generate_all_balloons x_pos_start count  : balloon list =
     if x_pos_start < Constants.screen_width-100 then
       let rand_x = Random.float 300. in 
       let rand_y = Random.int 200 in
       let rand_speed = Random.float 1. in
-      gen_baloon
+      gen_balloon
         (float_of_int x_pos_start +. rand_x)
         (float_of_int (Constants.screen_height + rand_y))  (rand_speed +. 1.)
         (Option.get !Constants.red_bal_texture)
-      :: generate_all_baloons (x_pos_start + (int_of_float rand_x)) (count - 1)
+      :: generate_all_balloons (x_pos_start + (int_of_float rand_x)) (count - 1)
     else []
 
-  let update_baloon_position baloon =
-    let new_y = if baloon.y < -70. then 650. +. 70. else baloon.y -. baloon.speed in
-    { baloon with y = new_y }
+  let update_balloon_position balloon =
+    let new_y = if balloon.y < -70. then 650. +. 70. else balloon.y -. balloon.speed in
+    { balloon with y = new_y }
 
 
-  let rec update_baloon_positions (baloons : baloon list) =
-    match baloons with
+  let rec update_balloon_positions (balloons : balloon list) =
+    match balloons with
     | [] -> []
-    | h :: t -> update_baloon_position h :: update_baloon_positions t
+    | h :: t -> update_balloon_position h :: update_balloon_positions t
 
   (* let rec update_baloon_positions (baloons : baloon list) =
      match balloons with
@@ -65,15 +65,15 @@ module Baloon = struct
          update_balloon_position h;
          update_balloon_positions t *)
 
-  let draw_baloon { x; y; speed = _; bal_texture } =
+  let draw_balloon { x; y; speed = _; bal_texture } =
     draw_texture_ex bal_texture (Vector2.create x y) 0.0 0.15 Color.white
 
-  let rec draw_baloons (baloons : baloon list) =
-    match baloons with
+  let rec draw_balloons (balloons : balloon list) =
+    match balloons with
     | [] -> ()
     | h :: t ->
-        draw_baloon h;
-        draw_baloons t
+        draw_balloon h;
+        draw_balloons t
 end
 
 
@@ -90,16 +90,16 @@ let gui_setup () =
   let back = Raylib.load_texture_from_image intro_screen_art in
   unload_image intro_screen_art;
 
-  let red_baloon = Raylib.load_image "red.png" in
-  let red_bal = Raylib.load_texture_from_image red_baloon in
-  unload_image red_baloon;
+  let red_balloon = Raylib.load_image "red.png" in
+  let red_bal = Raylib.load_texture_from_image red_balloon in
+  unload_image red_balloon;
 
   Constants.background := Some back;
   Constants.red_bal_texture := Some red_bal;
   Constants.title_font := Some the_title_font
 
 (*Current set of balloons*)
-let baloons = ref []
+let balloons = ref []
 
 let setup () =
   Raylib.init_window Constants.screen_width Constants.screen_height "MTD";
@@ -109,7 +109,7 @@ let setup () =
   gui_setup ();
 
 
-  baloons := Baloon.generate_all_baloons 0 12
+  balloons := Balloon.generate_all_balloons 0 12
 
 (*Updates and draws the initial home screen for MTD.*)
 let draw_home () =
@@ -142,8 +142,8 @@ let draw_home () =
     Constants.current_gamestate := Active;
 
   (***** BALLOONS *****)
-  baloons := Baloon.update_baloon_positions !baloons;
-  Baloon.draw_baloons !baloons;
+  balloons := Balloon.update_balloon_positions !balloons;
+  Balloon.draw_balloons !balloons;
 
   end_drawing ()
 
