@@ -27,6 +27,9 @@ end
 
 (*Home screen balloons**********************************************************)
 module Balloon = struct
+  let balloon_h_radius = 10.
+  let balloon_v_radius = 20.
+
   type balloon = {
     x : float;
     y : float;
@@ -60,8 +63,10 @@ module Balloon = struct
     | [] -> []
     | h :: t -> update_balloon_position h :: update_balloon_positions t
 
-  let draw_balloon { x; y; speed = _; bal_texture } =
-    draw_texture_ex bal_texture (Vector2.create x y) 0.0 0.15 Color.white
+  let draw_balloon balloon =
+    draw_texture_ex balloon.bal_texture
+      (Vector2.create balloon.x balloon.y)
+      0.0 0.15 Color.white
 
   let rec draw_balloons (balloons : balloon list) =
     match balloons with
@@ -69,6 +74,23 @@ module Balloon = struct
     | h :: t ->
         draw_balloon h;
         draw_balloons t
+
+  let check_clicked balloon (click_pos : Vector2.t) : bool =
+    if
+      Vector2.x click_pos < balloon.x +. balloon_h_radius
+      && Vector2.x click_pos > balloon.x -. balloon_h_radius
+      && Vector2.y click_pos < balloon.y +. balloon_v_radius
+      && Vector2.y click_pos > balloon.y -. balloon_v_radius
+    then true
+    else false
+
+  let rec check_clicked_all_balloons balloons (click_pos : Vector2.t) : balloon list =
+    match balloons with
+    | [] -> []
+    | balloon :: rest ->
+        if check_clicked balloon click_pos then
+          check_clicked_all_balloons rest click_pos
+        else balloon :: check_clicked_all_balloons balloons click_pos
 end
 
 open Constants
@@ -76,6 +98,7 @@ open Constants
 (*Loads images and fonts for use on the home screen. This function sets the global
    constants background, red_bal_texture, and title_font.*)
 let gui_setup () =
+
   let title_font = Raylib.load_font_ex "machine-gunk.ttf" 100 None in
   let custom_font = Raylib.load_font_ex "machine-gunk.ttf" 24 None in
   Raygui.set_font custom_font;
@@ -98,7 +121,7 @@ let balloons = ref []
 let setup () =
   Raylib.init_window screen_width screen_height "MTD";
   Raylib.set_target_fps 60;
-
+  
   (*Create the intro screen art*)
   gui_setup ();
 
@@ -135,7 +158,13 @@ let draw_home () =
     Constants.state := Active;
 
   (***** BALLOONS *****)
+
   balloons := Balloon.update_balloon_positions !balloons;
+
+  if is_mouse_button_pressed Left then let click_pos = get_mouse_position () in
+  balloons := Balloon.check_clicked_all_balloons !balloons click_pos;
+
+
   Balloon.draw_balloons !balloons;
 
   end_drawing ()
