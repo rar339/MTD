@@ -58,12 +58,6 @@ module Balloon = struct
     | [] -> []
     | h :: t -> update_balloon_position h :: update_balloon_positions t
 
-  (* let rec update_baloon_positions (baloons : baloon list) =
-     match balloons with
-     | [] -> ()
-     | h :: t ->
-         update_balloon_position h;
-         update_balloon_positions t *)
 
   let draw_balloon { x; y; speed = _; bal_texture } =
     draw_texture_ex bal_texture (Vector2.create x y) 0.0 0.15 Color.white
