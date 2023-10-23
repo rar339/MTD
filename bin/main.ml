@@ -35,34 +35,57 @@ module Baloon = struct
 
   let gen_baloon x y speed bal_texture = { x; y; speed; bal_texture }
 
-  let update_baloon_position baloonRef =
-    let baloon = !baloonRef in
-    let new_y = if baloon.y < ~-.5. then 650. else baloon.y -. baloon.speed in
-    baloonRef :=
-      {
-        x = baloon.x;
-        y = new_y;
-        speed = baloon.speed;
-        bal_texture = baloon.bal_texture;
-      }
+  let rec generate_all_baloons x_pos_start count  : baloon list =
+    if x_pos_start < Constants.screen_width-100 then
+      let rand_x = Random.float 300. in 
+      let rand_y = Random.int 200 in
+      let rand_speed = Random.float 2. in
+      gen_baloon
+        (float_of_int x_pos_start +. rand_x)
+        (float_of_int (Constants.screen_height + rand_y))  rand_speed
+        (Option.get !Constants.red_bal_texture)
+      :: generate_all_baloons (x_pos_start + (int_of_float rand_x)) (count - 1)
+    else []
 
-  let rec update_baloon_positions (baloons : baloon ref list) =
+  let update_baloon_position baloon =
+    let new_y = if baloon.y < -70. then 650. +. 70. else baloon.y -. baloon.speed in
+    { baloon with y = new_y }
+
+  (* let update_baloon_position baloonRef =
+     let baloon = !baloonRef in
+     let new_y = if baloon.y < ~-.5. then 650. else baloon.y -. baloon.speed in
+     baloonRef :=
+       {
+         x = baloon.x;
+         y = new_y;
+         speed = baloon.speed;
+         bal_texture = baloon.bal_texture;
+       } *)
+
+  let rec update_baloon_positions (baloons : baloon list) =
     match baloons with
-    | [] -> ()
-    | h :: t ->
-        update_baloon_position h;
-        update_baloon_positions t
+    | [] -> []
+    | h :: t -> update_baloon_position h :: update_baloon_positions t
+
+  (* let rec update_baloon_positions (baloons : baloon list) =
+     match baloons with
+     | [] -> ()
+     | h :: t ->
+         update_baloon_position h;
+         update_baloon_positions t *)
 
   let draw_baloon { x; y; speed = _; bal_texture } =
     draw_texture_ex bal_texture (Vector2.create x y) 0.0 0.15 Color.white
 
-  let rec draw_baloons (baloons : baloon ref list) =
+  let rec draw_baloons (baloons : baloon list) =
     match baloons with
     | [] -> ()
     | h :: t ->
-        draw_baloon !h;
+        draw_baloon h;
         draw_baloons t
 end
+
+open Constants
 
 let gui_setup () =
   let title_fon = Raylib.load_font_ex "machine-gunk.ttf" 100 None in
@@ -92,11 +115,12 @@ let setup () =
   gui_setup ();
 
   (*Generate Baloons*)
-  baloons :=
-    ref
-      (Baloon.gen_baloon 500.0 550.0 5.0
-         (Option.get !Constants.red_bal_texture))
-    :: !baloons
+  (* baloons :=
+     ref
+       (Baloon.gen_baloon 500.0 550.0 5.0
+          (Option.get !Constants.red_bal_texture))
+     :: !baloons *)
+  baloons := Baloon.generate_all_baloons 0 12
 
 let draw_home () =
   begin_drawing ();
@@ -128,7 +152,7 @@ let draw_home () =
     Constants.current_gamestate := Active;
 
   (***** BALLOONS *****)
-  Baloon.update_baloon_positions !baloons;
+  baloons := Baloon.update_baloon_positions !baloons;
   Baloon.draw_baloons !baloons;
 
   end_drawing ()
