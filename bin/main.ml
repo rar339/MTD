@@ -26,15 +26,15 @@ module Constants = struct
 end
 
 (*Home screen balloons**********************************************************)
-module Balloon = struct
-  type balloon = {
+module Baloon = struct
+  type baloon = {
     x : float;
     y : float;
     speed : float;
     bal_texture : Texture2D.t;
   }
 
-  let gen_balloon x y speed bal_texture = { x; y; speed; bal_texture }
+  let gen_baloon x y speed bal_texture = { x; y; speed; bal_texture }
 
   let rec generate_all_baloons x_pos_start count  : baloon list =
     if x_pos_start < Constants.screen_width-100 then
@@ -63,7 +63,7 @@ module Balloon = struct
          bal_texture = baloon.bal_texture;
        } *)
 
-  let rec update_balloon_positions (balloons : balloon list) =
+  let rec update_baloon_positions (baloons : baloon list) =
     match baloons with
     | [] -> []
     | h :: t -> update_baloon_position h :: update_baloon_positions t
@@ -75,18 +75,17 @@ module Balloon = struct
          update_balloon_position h;
          update_balloon_positions t *)
 
-  let draw_balloon { x; y; speed = _; bal_texture } =
+  let draw_baloon { x; y; speed = _; bal_texture } =
     draw_texture_ex bal_texture (Vector2.create x y) 0.0 0.15 Color.white
 
   let rec draw_baloons (baloons : baloon list) =
     match baloons with
     | [] -> ()
     | h :: t ->
-        draw_balloon h;
-        draw_balloons t
+        draw_baloon h;
+        draw_baloons t
 end
 
-open Constants
 
 open Constants
 
@@ -101,16 +100,16 @@ let gui_setup () =
   let back = Raylib.load_texture_from_image intro_screen_art in
   unload_image intro_screen_art;
 
-  let red_balloon = Raylib.load_image "red.png" in
-  let red_bal = Raylib.load_texture_from_image red_balloon in
-  unload_image red_balloon;
+  let red_baloon = Raylib.load_image "red.png" in
+  let red_bal = Raylib.load_texture_from_image red_baloon in
+  unload_image red_baloon;
 
   Constants.background := Some back;
   Constants.red_bal_texture := Some red_bal;
   Constants.title_font := Some the_title_font
 
 (*Current set of balloons*)
-let balloons = ref []
+let baloons = ref []
 
 let setup () =
   Raylib.init_window Constants.screen_width Constants.screen_height "MTD";
