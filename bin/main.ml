@@ -84,13 +84,15 @@ module Balloon = struct
     then true
     else false
 
-  let rec check_clicked_all_balloons balloons (click_pos : Vector2.t) : balloon list =
+  let rec check_clicked_all_balloons balloons (click_pos : Vector2.t) :
+      balloon list =
+    print_string "hello";
     match balloons with
     | [] -> []
     | balloon :: rest ->
         if check_clicked balloon click_pos then
           check_clicked_all_balloons rest click_pos
-        else balloon :: check_clicked_all_balloons balloons click_pos
+        else balloon :: check_clicked_all_balloons rest click_pos
 end
 
 open Constants
@@ -98,7 +100,6 @@ open Constants
 (*Loads images and fonts for use on the home screen. This function sets the global
    constants background, red_bal_texture, and title_font.*)
 let gui_setup () =
-
   let title_font = Raylib.load_font_ex "machine-gunk.ttf" 100 None in
   let custom_font = Raylib.load_font_ex "machine-gunk.ttf" 24 None in
   Raygui.set_font custom_font;
@@ -121,13 +122,28 @@ let balloons = ref []
 let setup () =
   Raylib.init_window screen_width screen_height "MTD";
   Raylib.set_target_fps 60;
-  
+
   (*Create the intro screen art*)
   gui_setup ();
 
+  Raygui.(set_style (TextBox `Text_alignment) TextAlignment.(to_int Center));
+  (* SETTING STYLE TO RED - USE HEX*)
+  Raygui.(set_style (Button `Base_color_normal) 0xFF000010);
+  Raygui.(set_style (Button `Text_color_normal) 0xFFFFFF);
+  Raygui.set_style (Default `Text_size) 24;
+
+  Raygui.(set_style (Button `Border_width) 0);
+
   balloons := Balloon.generate_all_balloons 0 12
 
-(*Updates and draws the initial home screen for MTD.*)
+(*Updates game)*)
+let update_home () =
+  (if is_mouse_button_pressed Left then
+     let click_pos = get_mouse_position () in
+     balloons := Balloon.check_clicked_all_balloons !balloons click_pos);
+  balloons := Balloon.update_balloon_positions !balloons
+
+(*Draws home screen for MTD.*)
 let draw_home () =
   begin_drawing ();
   (***** BACKGROUND *****)
@@ -138,6 +154,9 @@ let draw_home () =
     0.60 (* Scale *)
     Color.white;
 
+  (* create -> x y width height*)
+  if Raygui.(button (Rectangle.create 660. 370. 120. 50.) "PLAY") then
+    Constants.state := Active;
   (* Raylib.set_texture_filter (Font.texture (Raylib.get_font_default ())) TextureFilter.Point; *)
   draw_text_ex
     (Option.get !Constants.title_font)
@@ -146,31 +165,14 @@ let draw_home () =
     (Option.get !Constants.title_font)
     "Defense" (Vector2.create 570. 250.) 100. 3. (Color.create 255 6 0 255);
 
-  Raygui.(set_style (TextBox `Text_alignment) TextAlignment.(to_int Center));
-  (* SETTING STYLE TO RED - USE HEX*)
-  Raygui.(set_style (Button `Base_color_normal) 0xFF000010);
-  Raygui.(set_style (Button `Text_color_normal) 0xFFFFFF);
-  Raygui.set_style (Default `Text_size) 24;
-
-  Raygui.(set_style (Button `Border_width) 0);
-  (* create -> x y width height*)
-  if Raygui.(button (Rectangle.create 660. 370. 120. 50.) "PLAY") then
-    Constants.state := Active;
-
   (***** BALLOONS *****)
-
-  balloons := Balloon.update_balloon_positions !balloons;
-
-  if is_mouse_button_pressed Left then let click_pos = get_mouse_position () in
-  balloons := Balloon.check_clicked_all_balloons !balloons click_pos;
-
-
   Balloon.draw_balloons !balloons;
 
   end_drawing ()
 
 (*Updates and draws the window based on the current gamestate.*)
 let update_and_draw () =
+  update_home ();
   if !Constants.state = Active then
     let open MTD in
     Dragdrop.loop ()
