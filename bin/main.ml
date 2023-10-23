@@ -76,27 +76,27 @@ open Constants
 (*Loads images and fonts for use on the home screen. This function sets the global
    constants background, red_bal_texture, and title_font.*)
 let gui_setup () =
-  let the_title_font = Raylib.load_font_ex "machine-gunk.ttf" 100 None in
+  let title_font = Raylib.load_font_ex "machine-gunk.ttf" 100 None in
   let custom_font = Raylib.load_font_ex "machine-gunk.ttf" 24 None in
   Raygui.set_font custom_font;
   (*Create the intro screen art*)
   let intro_screen_art = Raylib.load_image "MTDCoverArt.png" in
-  let back = Raylib.load_texture_from_image intro_screen_art in
+  let background = Raylib.load_texture_from_image intro_screen_art in
   unload_image intro_screen_art;
 
   let red_balloon = Raylib.load_image "red.png" in
-  let red_bal = Raylib.load_texture_from_image red_balloon in
+  let red_bal_texture = Raylib.load_texture_from_image red_balloon in
   unload_image red_balloon;
 
-  Constants.background := Some back;
-  Constants.red_bal_texture := Some red_bal;
-  Constants.title_font := Some the_title_font
+  Constants.background := Some background;
+  Constants.red_bal_texture := Some red_bal_texture;
+  Constants.title_font := Some title_font
 
 (*Current set of balloons*)
 let balloons = ref []
 
 let setup () =
-  Raylib.init_window Constants.screen_width Constants.screen_height "MTD";
+  Raylib.init_window screen_width screen_height "MTD";
   Raylib.set_target_fps 60;
 
   (*Create the intro screen art*)

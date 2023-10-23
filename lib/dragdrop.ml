@@ -1,5 +1,5 @@
-let width = 1200
-let height = 800
+let width = 1100
+let height = 720
 let enemy_vel_x = 2.0
 let enemy_vel_y = -2.0
 let bullet_speed = 5.0
