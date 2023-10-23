@@ -140,18 +140,20 @@ let draw_home () =
 
   end_drawing ()
 
+let update_and_draw () =
+  if !Constants.state = Active then
+    let open MTD in
+    Dragdrop.loop ()
+  else draw_home ()
+
 (*This is the main game loop. This is the loop that is recursively called every
    tick to generate the next frame. Depending on the gamestate, a different
    function is chosen to update then draw the game.*)
-let rec loop update_draw_func =
+let rec loop () =
   if Raylib.window_should_close () then Raylib.close_window ()
-  else if !Constants.state = Active then (
-    let open MTD in
-    update_draw_func ();
-    loop Dragdrop.loop)
-  else update_draw_func ();
-  loop update_draw_func
+  else update_and_draw ();
+  loop ()
 
 let () =
   setup ();
-  loop draw_home
+  loop ()
