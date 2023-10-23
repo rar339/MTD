@@ -16,7 +16,7 @@ module Constants = struct
   let screen_height = 720
 
   (*Current Gamestate*)
-  let current_gamestate = ref Home
+  let state = ref Home
 
   (*Art. These have to be options because they are not initially set when main
      runs*)
@@ -36,28 +36,29 @@ module Balloon = struct
 
   let gen_balloon x y speed bal_texture = { x; y; speed; bal_texture }
 
-  let rec generate_all_balloons x_pos_start count  : balloon list =
-    if x_pos_start < Constants.screen_width-100 then
-      let rand_x = Random.float 300. in 
+  let rec generate_all_balloons x_pos_start count : balloon list =
+    if x_pos_start < Constants.screen_width - 100 then
+      let rand_x = Random.float 300. in
       let rand_y = Random.int 200 in
       let rand_speed = Random.float 1. in
       gen_balloon
         (float_of_int x_pos_start +. rand_x)
-        (float_of_int (Constants.screen_height + rand_y))  (rand_speed +. 1.)
+        (float_of_int (Constants.screen_height + rand_y))
+        (rand_speed +. 1.)
         (Option.get !Constants.red_bal_texture)
-      :: generate_all_balloons (x_pos_start + (int_of_float rand_x)) (count - 1)
+      :: generate_all_balloons (x_pos_start + int_of_float rand_x) (count - 1)
     else []
 
   let update_balloon_position balloon =
-    let new_y = if balloon.y < -70. then 650. +. 70. else balloon.y -. balloon.speed in
+    let new_y =
+      if balloon.y < -70. then 650. +. 70. else balloon.y -. balloon.speed
+    in
     { balloon with y = new_y }
-
 
   let rec update_balloon_positions (balloons : balloon list) =
     match balloons with
     | [] -> []
     | h :: t -> update_balloon_position h :: update_balloon_positions t
-
 
   let draw_balloon { x; y; speed = _; bal_texture } =
     draw_texture_ex bal_texture (Vector2.create x y) 0.0 0.15 Color.white
@@ -69,7 +70,6 @@ module Balloon = struct
         draw_balloon h;
         draw_balloons t
 end
-
 
 open Constants
 
@@ -102,7 +102,6 @@ let setup () =
   (*Create the intro screen art*)
   gui_setup ();
 
-
   balloons := Balloon.generate_all_balloons 0 12
 
 (*Updates and draws the initial home screen for MTD.*)
@@ -133,7 +132,7 @@ let draw_home () =
   Raygui.(set_style (Button `Border_width) 0);
   (* create -> x y width height*)
   if Raygui.(button (Rectangle.create 660. 370. 120. 50.) "PLAY") then
-    Constants.current_gamestate := Active;
+    Constants.state := Active;
 
   (***** BALLOONS *****)
   balloons := Balloon.update_balloon_positions !balloons;
@@ -146,7 +145,7 @@ let draw_home () =
    function is chosen to update then draw the game.*)
 let rec loop update_draw_func =
   if Raylib.window_should_close () then Raylib.close_window ()
-  else if !Constants.current_gamestate = Active then (
+  else if !Constants.state = Active then (
     let open MTD in
     update_draw_func ();
     loop Dragdrop.loop)
