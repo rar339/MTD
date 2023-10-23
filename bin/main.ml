@@ -18,22 +18,23 @@ module Constants = struct
   (*Current Gamestate*)
   let current_gamestate = ref Home
 
-  (*Art*)
+  (*Art. These have to be options because they are not initially set when main
+     runs*)
   let title_font = ref None
   let background = ref None
   let red_bal_texture = ref None
 end
 
-(*Home screen baloons**********************************************************)
-module Baloon = struct
-  type baloon = {
+(*Home screen balloons**********************************************************)
+module Balloon = struct
+  type balloon = {
     x : float;
     y : float;
     speed : float;
     bal_texture : Texture2D.t;
   }
 
-  let gen_baloon x y speed bal_texture = { x; y; speed; bal_texture }
+  let gen_balloon x y speed bal_texture = { x; y; speed; bal_texture }
 
   let rec generate_all_baloons x_pos_start count  : baloon list =
     if x_pos_start < Constants.screen_width-100 then
@@ -62,33 +63,37 @@ module Baloon = struct
          bal_texture = baloon.bal_texture;
        } *)
 
-  let rec update_baloon_positions (baloons : baloon list) =
+  let rec update_balloon_positions (balloons : balloon list) =
     match baloons with
     | [] -> []
     | h :: t -> update_baloon_position h :: update_baloon_positions t
 
   (* let rec update_baloon_positions (baloons : baloon list) =
-     match baloons with
+     match balloons with
      | [] -> ()
      | h :: t ->
-         update_baloon_position h;
-         update_baloon_positions t *)
+         update_balloon_position h;
+         update_balloon_positions t *)
 
-  let draw_baloon { x; y; speed = _; bal_texture } =
+  let draw_balloon { x; y; speed = _; bal_texture } =
     draw_texture_ex bal_texture (Vector2.create x y) 0.0 0.15 Color.white
 
   let rec draw_baloons (baloons : baloon list) =
     match baloons with
     | [] -> ()
     | h :: t ->
-        draw_baloon h;
-        draw_baloons t
+        draw_balloon h;
+        draw_balloons t
 end
 
 open Constants
 
+open Constants
+
+(*Loads images and fonts for use on the home screen. This function sets the global
+   constants background, red_bal_texture, and title_font.*)
 let gui_setup () =
-  let title_fon = Raylib.load_font_ex "machine-gunk.ttf" 100 None in
+  let the_title_font = Raylib.load_font_ex "machine-gunk.ttf" 100 None in
   let custom_font = Raylib.load_font_ex "machine-gunk.ttf" 24 None in
   Raygui.set_font custom_font;
   (*Create the intro screen art*)
@@ -102,10 +107,10 @@ let gui_setup () =
 
   Constants.background := Some back;
   Constants.red_bal_texture := Some red_bal;
-  Constants.title_font := Some title_fon
+  Constants.title_font := Some the_title_font
 
-(*Current set of baloons*)
-let baloons = ref []
+(*Current set of balloons*)
+let balloons = ref []
 
 let setup () =
   Raylib.init_window Constants.screen_width Constants.screen_height "MTD";
@@ -122,6 +127,7 @@ let setup () =
      :: !baloons *)
   baloons := Baloon.generate_all_baloons 0 12
 
+(*Updates and draws the initial home screen for MTD.*)
 let draw_home () =
   begin_drawing ();
   (***** BACKGROUND *****)
@@ -157,6 +163,9 @@ let draw_home () =
 
   end_drawing ()
 
+(*This is the main game loop. This is the loop that is recursively called every
+   tick to generate the next frame. Depending on the gamestate, a different
+   function is chosen to update then draw the game.*)
 let rec loop update_draw_func =
   if Raylib.window_should_close () then Raylib.close_window ()
   else if !Constants.current_gamestate = Active then (
