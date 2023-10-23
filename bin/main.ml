@@ -130,7 +130,7 @@ let draw_home () =
 
   Raygui.(set_style (Button `Border_width) 0);
   (* create -> x y width height*)
-  if Raygui.(button (Rectangle.create 550. 360. 120. 50.) "PLAY") then
+  if Raygui.(button (Rectangle.create 660. 370. 120. 50.) "PLAY") then
     Constants.current_gamestate := Active;
 
   (***** BALLOONS *****)
