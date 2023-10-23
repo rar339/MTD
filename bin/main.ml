@@ -140,6 +140,7 @@ let draw_home () =
 
   end_drawing ()
 
+(*Updates and draws the window based on the current gamestate.*)
 let update_and_draw () =
   if !Constants.state = Active then
     let open MTD in
