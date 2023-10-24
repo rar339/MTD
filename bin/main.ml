@@ -25,10 +25,13 @@ module Constants = struct
   let red_bal_texture = ref None
 end
 
+(*Utility Functions*)
+let round_float x = int_of_float (Float.round x)
+
 (*Home screen balloons**********************************************************)
 module Balloon = struct
-  let balloon_h_radius = 10.
-  let balloon_v_radius = 20.
+  let balloon_h_radius = 20.
+  let balloon_v_radius = 25.
 
   type balloon = {
     x : float;
@@ -76,11 +79,15 @@ module Balloon = struct
         draw_balloons t
 
   let check_clicked balloon (click_pos : Vector2.t) : bool =
+    (*Magic numbers represent the offset from the top left corner of png to
+       actual center of balloon ellipse.*)
+    let bal_x = balloon.x +. 29.0 in
+    let bal_y = balloon.y +. 35.0 in
     if
-      Vector2.x click_pos < balloon.x +. balloon_h_radius
-      && Vector2.x click_pos > balloon.x -. balloon_h_radius
-      && Vector2.y click_pos < balloon.y +. balloon_v_radius
-      && Vector2.y click_pos > balloon.y -. balloon_v_radius
+      Vector2.x click_pos < bal_x +. balloon_h_radius
+      && Vector2.x click_pos > bal_x -. balloon_h_radius
+      && Vector2.y click_pos < bal_y +. balloon_v_radius
+      && Vector2.y click_pos > bal_y -. balloon_v_radius
     then true
     else false
 
