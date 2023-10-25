@@ -134,6 +134,7 @@ let update_home () =
 (*Draws home screen for MTD.*)
 let draw_home (title_font, background, red_bal_texture) =
   begin_drawing ();
+  clear_background Color.lightgray;
   (***** BACKGROUND *****)
   draw_texture_ex background
     (Vector2.create 0. 0.0) (* Position *)
