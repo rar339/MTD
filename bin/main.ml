@@ -26,7 +26,7 @@ module Balloon = struct
   let balloon_h_radius = 20.
   let balloon_v_radius = 25.
 
-  type balloon = { x : float; y : float; speed : float }
+  type balloon = { x : float; mutable y : float; speed : float }
 
   let gen_balloon x y speed = { x; y; speed }
 
@@ -46,12 +46,14 @@ module Balloon = struct
     let new_y =
       if balloon.y < -70. then 650. +. 70. else balloon.y -. balloon.speed
     in
-    { balloon with y = new_y }
+    balloon.y <- new_y
 
   let rec update_balloon_positions (balloons : balloon list) =
     match balloons with
-    | [] -> []
-    | h :: t -> update_balloon_position h :: update_balloon_positions t
+    | [] -> ()
+    | h :: t ->
+        update_balloon_position h;
+        update_balloon_positions t
 
   let draw_balloon (texture : Texture2D.t) balloon =
     draw_texture_ex texture
@@ -106,11 +108,9 @@ let setup () =
   let intro_screen_art = Raylib.load_image "MTDCoverArt.png" in
   let background = Raylib.load_texture_from_image intro_screen_art in
   unload_image intro_screen_art;
-
   let red_balloon = Raylib.load_image "red.png" in
   let red_bal_texture = Raylib.load_texture_from_image red_balloon in
   unload_image red_balloon;
-
   Raygui.(set_style (TextBox `Text_alignment) TextAlignment.(to_int Center));
   (* SETTING STYLE TO RED - USE HEX*)
   Raygui.(set_style (Button `Base_color_normal) 0xFF000010);
@@ -128,7 +128,8 @@ let update_home () =
   (if is_mouse_button_pressed Left then
      let click_pos = get_mouse_position () in
      balloons := Balloon.check_clicked_all_balloons !balloons click_pos);
-  balloons := Balloon.update_balloon_positions !balloons
+
+  Balloon.update_balloon_positions !balloons
 
 (*Draws home screen for MTD.*)
 let draw_home (title_font, background, red_bal_texture) =
