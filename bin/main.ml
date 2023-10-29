@@ -82,7 +82,6 @@ module Balloon = struct
 
   let rec check_clicked_all_balloons balloons (click_pos : Vector2.t) :
       balloon list =
-    print_string "hello";
     match balloons with
     | [] -> []
     | balloon :: rest ->
@@ -169,7 +168,8 @@ let update_and_draw tuple =
    function is chosen to update then draw the game.*)
 let rec loop tuple =
   if Raylib.window_should_close () then Raylib.close_window ()
-  else update_and_draw tuple;
-  loop tuple
+  else (
+    update_and_draw tuple;
+    loop tuple)
 
 let () = setup () |> loop
