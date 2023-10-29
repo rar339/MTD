@@ -1,5 +1,6 @@
 open Raylib
-open MTD.Constants
+open MTD
+open Constants
 
 let () = print_endline ""
 let () = print_endline "*************************************"
@@ -75,8 +76,6 @@ module Balloon = struct
           check_clicked_all_balloons rest click_pos
         else balloon :: check_clicked_all_balloons rest click_pos
 end
-
-open Constants
 
 (*Current set of balloons*)
 let balloons = ref []

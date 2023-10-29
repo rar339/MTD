@@ -1,5 +1,5 @@
-let width = 1100
-let height = 720
+let width = ref 0
+let height = ref 0
 let enemy_vel_x = 2.0
 let enemy_vel_y = -2.0
 let bullet_speed = 5.0
@@ -160,44 +160,53 @@ module EnemyCollection = struct
 end
 
 let base_circle =
-  Circle.init_circle 50.
-    (float_of_int (width / 2))
-    (float_of_int (height / 2))
-    Raylib.Color.red
+  ref
+    (Circle.init_circle 50.
+       (float_of_int (!width / 2))
+       (float_of_int (!height / 2))
+       Raylib.Color.red)
 
 let select = ref false
 
 let selected_circle =
   ref
     (Circle.init_circle 50.
-       (float_of_int (width / 2))
-       (float_of_int (height / 2))
+       (float_of_int (!width / 2))
+       (float_of_int (!height / 2))
        Raylib.Color.red)
 
 let circle_collection = ref CircleCollection.empty
 let enemy_collection = ref EnemyCollection.empty
 
 let setup () =
+  width := !Constants.screen_width;
+  height := !Constants.screen_height;
   enemy_collection :=
     EnemyCollection.add_circle
       (Circle.init_circle 1.
-         (float_of_int (width - 200))
-         (float_of_int (height - 700))
+         (float_of_int (!width - 200))
+         (float_of_int (!height - 700))
          Raylib.Color.gold)
       !enemy_collection;
+
+  base_circle :=
+    Circle.init_circle 50.
+      (float_of_int (!width / 2))
+      (float_of_int (!height / 2))
+      Raylib.Color.red;
   ()
 
 let enemy_movement enemy =
   let deref = !enemy in
   (*Handle wrapping*)
   let new_x =
-    if Circle.get_x deref +. enemy_vel_x > float_of_int width then 0.0
-    else if Circle.get_x deref +. enemy_vel_x < 0.0 then float_of_int width
+    if Circle.get_x deref +. enemy_vel_x > float_of_int !width then 0.0
+    else if Circle.get_x deref +. enemy_vel_x < 0.0 then float_of_int !width
     else Circle.get_x deref +. enemy_vel_x
   in
   let new_y =
-    if Circle.get_y deref +. enemy_vel_y > float_of_int height then 0.0
-    else if Circle.get_y deref +. enemy_vel_y < 0.0 then float_of_int height
+    if Circle.get_y deref +. enemy_vel_y > float_of_int !height then 0.0
+    else if Circle.get_y deref +. enemy_vel_y < 0.0 then float_of_int !height
     else Circle.get_y deref +. enemy_vel_y
   in
   let updated_enemy = Circle.init_circle 20. new_x new_y Raylib.Color.gold in
@@ -226,7 +235,7 @@ let bullet_movement bullet =
 let bullet_check bullet =
   let x = int_of_float (Bullet.get_x bullet) in
   let y = int_of_float (Bullet.get_y bullet) in
-  if x > width || x < 0 || y > height || y < 0 then true else false
+  if x > !width || x < 0 || y > !height || y < 0 then true else false
 
 let rec bullet_bounds collection =
   match collection with
@@ -252,29 +261,31 @@ let update_game () =
       CircleCollection.add_circle !selected_circle !circle_collection)
   else if !select then
     selected_circle :=
-      Circle.init_circle base_circle.radius
+      Circle.init_circle !base_circle.radius
         (float_of_int (get_mouse_x ()))
         (float_of_int (get_mouse_y ()))
         Color.green
   else if
     is_mouse_button_down Left
-    && distance (Circle.get_x base_circle) (Circle.get_y base_circle)
+    && distance
+         (Circle.get_x !base_circle)
+         (Circle.get_y !base_circle)
          (float_of_int (get_mouse_x ()))
          (float_of_int (get_mouse_y ()))
-       <= base_circle.radius
+       <= !base_circle.radius
   then (
     select := true;
-    selected_circle := base_circle)
+    selected_circle := !base_circle)
   else ();
   if Raylib.is_key_pressed Space then
-    Circle.fire_all base_circle !enemy_collection;
+    Circle.fire_all !base_circle !enemy_collection;
   enemy_update ();
   bullet_update ()
 
 let draw_game () =
   let open Raylib in
   begin_drawing ();
-  Circle.draw_circle base_circle;
+  Circle.draw_circle !base_circle;
   if !select then Circle.draw_circle !selected_circle;
   CircleCollection.draw_circles !circle_collection;
   EnemyCollection.draw_enemies !enemy_collection;
