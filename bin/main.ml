@@ -141,7 +141,7 @@ let draw_home (title_font, background, red_bal_texture) =
   draw_texture_ex background
     (Vector2.create 0. 0.0) (* Position *)
     0.0 (* Rotation (in radians) *)
-    0.60 (* Scale *)
+    (float_of_int !screen_width /. 1831.0) (* Scale *)
     Color.white;
 
   (* create -> x y width height*)
