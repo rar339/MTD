@@ -12,8 +12,8 @@ module Constants = struct
   type gamestate = Home | Active
 
   (*Screen Constants*)
-  let screen_width = 1100
-  let screen_height = 720
+  let screen_width = ref 1100
+  let screen_height = ref 720
 
   (*Current Gamestate*)
   let state = ref Home
@@ -31,13 +31,13 @@ module Balloon = struct
   let gen_balloon x y speed = { x; y; speed }
 
   let rec generate_all_balloons x_pos_start count : balloon list =
-    if x_pos_start < Constants.screen_width - 100 then
+    if x_pos_start < !Constants.screen_width - 100 then
       let rand_x = Random.float 300. in
       let rand_y = Random.int 200 in
       let rand_speed = Random.float 1. in
       gen_balloon
         (float_of_int x_pos_start +. rand_x)
-        (float_of_int (Constants.screen_height + rand_y))
+        (float_of_int (!Constants.screen_height + rand_y))
         (rand_speed +. 1.)
       :: generate_all_balloons (x_pos_start + int_of_float rand_x) (count - 1)
     else []
@@ -96,7 +96,10 @@ open Constants
 let balloons = ref []
 
 let setup () =
-  Raylib.init_window screen_width screen_height "MTD";
+  Raylib.init_window 0 0 "MTD";
+  screen_width := get_screen_width ();
+  screen_height := get_screen_height ();
+  toggle_fullscreen ();
   Raylib.set_target_fps 60;
 
   (*Create the intro screen art*)
