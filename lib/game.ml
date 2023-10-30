@@ -18,7 +18,7 @@ let update_game () = ()
 let draw_game () =
   let open Raylib in
   begin_drawing ();
-  clear_background Color.red;
+  clear_background Color.white;
 
   draw_texture_pro (Option.get !background)
     (Rectangle.create 0. 0. 2388. 1668.)
