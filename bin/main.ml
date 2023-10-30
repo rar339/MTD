@@ -89,7 +89,7 @@ let setup () =
 
   (*Create the intro screen art*)
   let title_font = Raylib.load_font_ex "machine-gunk.ttf" 100 None in
-  let custom_font = Raylib.load_font_ex "machine-gunk.ttf" 24 None in
+  let custom_font = Raylib.load_font_ex "machine-gunk.ttf" 36 None in
   Raygui.set_font custom_font;
   (*Create the intro screen art*)
   let intro_screen_art = Raylib.load_image "MTDCoverArt.png" in
@@ -102,7 +102,7 @@ let setup () =
   (* SETTING STYLE TO RED - USE HEX*)
   Raygui.(set_style (Button `Base_color_normal) 0xFF000010);
   Raygui.(set_style (Button `Text_color_normal) 0xFFFFFF);
-  Raygui.set_style (Default `Text_size) 24;
+  Raygui.set_style (Default `Text_size) 36;
 
   Raygui.(set_style (Button `Border_width) 0);
 
@@ -130,12 +130,12 @@ let draw_home (title_font, background, red_bal_texture) =
     Color.white;
 
   (* create -> x y width height*)
-  if Raygui.(button (Rectangle.create 660. 370. 120. 50.) "PLAY") then
+  if Raygui.(button (Rectangle.create (5. *.  (float_of_int (get_screen_width ())) /. 8.) (5. *. (float_of_int (get_screen_height())) /. 9. ) 160. 80.) "PLAY") then
     Constants.state := Active;
   (* Raylib.set_texture_filter (Font.texture (Raylib.get_font_default ())) TextureFilter.Point; *)
-  draw_text_ex title_font "McGraw Tower" (Vector2.create 430. 140.) 100. 3.
+  draw_text_ex title_font "McGraw Tower" (Vector2.create ((float_of_int (get_screen_width())) /. 2.) ((float_of_int (get_screen_height()))/. 3.)) 100. 3.
     (Color.create 255 6 0 255);
-  draw_text_ex title_font "Defense" (Vector2.create 570. 250.) 100. 3.
+  draw_text_ex title_font "Defense" (Vector2.create (4. *. float_of_int (get_screen_width()) /. 7.)  ( 3. *.(float_of_int (get_screen_height()))/. 7.)) 100. 3.
     (Color.create 255 6 0 255);
 
   (***** BALLOONS *****)
