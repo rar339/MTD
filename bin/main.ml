@@ -140,7 +140,7 @@ let draw_home (title_font, background, red_bal_texture) =
 
   (***** BALLOONS *****)
   Balloon.draw_balloons red_bal_texture !balloons;
-
+  
   end_drawing ()
 
 (*Updates and draws the window based on the current gamestate.*)
@@ -148,7 +148,8 @@ let update_and_draw tuple =
   update_home ();
   if !Constants.state = Active then
     let open MTD in
-    Dragdrop.loop ()
+    (* clear_background Color.lightgray; *)
+    Game.loop()
   else draw_home tuple
 
 (*This is the main game loop. This is the loop that is recursively called every

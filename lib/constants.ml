@@ -6,6 +6,9 @@ type gamestate = Home | Active
 let screen_width = ref 1100
 let screen_height = ref 720
 
+(*Backgrounds*)
+
+
 (*Current Gamestate*)
 let state = ref Home
 
