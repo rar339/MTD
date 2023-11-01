@@ -31,7 +31,7 @@ module Balloon = struct
 
   let update_balloon_position balloon =
     let new_y =
-      if balloon.y < -70. then 650. +. 70. else balloon.y -. balloon.speed
+      if balloon.y < -70. then !screen_height +. 70. else balloon.y -. balloon.speed
     in
     balloon.y <- new_y
 
