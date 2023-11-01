@@ -5,6 +5,7 @@ open Constants
 let count = ref 0
 let showInstructions = ref true
 let selected : bool ref = ref false
+let current_wave = ref []
 
 (******************************************************************************)
 module GameBackground = struct
@@ -82,7 +83,7 @@ module BalloonPath = struct
 
   (*start_point should be changed to be somewhere off the screen*)
   let turn_points : (int * int * int) list ref = ref []
-  let draw_turnpoint x_pos y_pos = draw_circle x_pos y_pos 10.0 Color.red
+  let draw_turnpoint x_pos y_pos = draw_circle x_pos y_pos 1.0 Color.red
 
   let rec draw_turnpoints (turn_points : (int * int * int) list) =
     match turn_points with
@@ -91,6 +92,8 @@ module BalloonPath = struct
         draw_turnpoint x y;
         draw_turnpoints t
 
+  (*Checks if the given balloon is colliding with a turn point, meaning it should
+     make a turn. *)
   let rec check_turn_collide (balloon : Balloons.balloon)
       (turn_pts : (int * int * int) list) =
     match turn_pts with
@@ -99,30 +102,48 @@ module BalloonPath = struct
         if
           check_collision_circle_rec
             (Vector2.create (float_of_int x) (float_of_int y))
-            10.
+            1.
             (Balloons.get_hitbox balloon)
-        then Some i
+          && balloon.current_turn < i
+        then (
+          balloon.current_turn <- balloon.current_turn + 1;
+          Some i)
         else check_turn_collide balloon t
-  (* let move_balloon (balloon : Balloons.balloon) turn_pts =
-     match (check_turn_collide balloon turn_pts) with
-     | None -> ()
-     | Some i -> () *)
 
-  (* let move_balloons (balloon_list : Balloons.balloon list) = () *)
+  let turn_balloon rate i =
+    match i with
+    | 1 -> Vector2.create 0.0 rate
+    | 2 -> Vector2.create (-.rate) 0.0
+    | 3 -> Vector2.create 0.0 (-.rate)
+    | 4 -> Vector2.create rate 0.0
+    | 5 -> Vector2.create 0.0 (-.rate)
+    | 6 -> Vector2.create rate 0.0
+    | 7 -> Vector2.create 0.0 rate
+    | 8 -> Vector2.create (-.rate) 0.0
+    | 9 -> Vector2.create 0.0 rate
+    | 10 -> Vector2.create rate 0.0
+    | 11 -> Vector2.create 0.0 (-.rate)
+    | _ -> failwith "impossible"
 
-  (* let turn_balloon (balloon : Balloons.balloon) (x, y, id) =
-          match (x, y, id) with
-     | x, y, 1 -> check_collision_circle_rec
-     | x, y, 2 -> ()
-        | x, y, 3 -> ()
-        | x, y, 4 -> ()
-        | x, y, 5 -> ()
-        | x, y, 6 -> ()
-        | x, y, 7 -> ()
-        | x, y, 8 -> ()
-        | x, y, 9 -> ()
-        | x, y, 10 -> ()
-     | _ -> failwith "impossible" *)
+  (*Moves the balloon, taking into consideration if a turn is reached. If a turn
+     is reached, changes the velocity but does not update position.*)
+  let move_balloon (balloon : Balloons.balloon) turn_pts =
+    let x = Vector2.x balloon.position in
+    let y = Vector2.y balloon.position in
+    let x_rate = Vector2.x balloon.velocity in
+    let y_rate = Vector2.y balloon.velocity in
+    match check_turn_collide balloon turn_pts with
+    | None -> balloon.position <- Vector2.create (x +. x_rate) (y +. y_rate)
+    | Some i ->
+        balloon.velocity <-
+          turn_balloon (if x_rate = 0.0 then y_rate else x_rate) i
+
+  let rec move_balloons (balloon_list : Balloons.balloon list) turn_pts =
+    match balloon_list with
+    | [] -> ()
+    | h :: t ->
+        move_balloon h turn_pts;
+        move_balloons t turn_pts
 end
 
 (******************************************************************************)
@@ -230,11 +251,11 @@ let setup () =
   (*Turn points on the path*)
   turn_points :=
     [
-      ( 22 * round_float (!screen_width /. 40.),
+      ( 22 * round_float (!screen_width /. 39.),
         3 * round_float (!screen_height /. 28.),
         1 );
       ( 22 * round_float (!screen_width /. 40.),
-        8 * round_float (!screen_height /. 28.),
+        8 * round_float (!screen_height /. 27.),
         2 );
       ( 4 * round_float (!screen_width /. 40.),
         8 * round_float (!screen_height /. 28.),
@@ -246,16 +267,16 @@ let setup () =
         26 * round_float (!screen_height /. 28.),
         5 );
       ( 25 * round_float (!screen_width /. 40.),
-        21 * round_float (!screen_height /. 28.),
+        21 * round_float (!screen_height /. 29.),
         6 );
       ( 9 * round_float (!screen_width /. 40.),
-        21 * round_float (!screen_height /. 28.),
+        21 * round_float (!screen_height /. 29.),
         7 );
       ( 9 * round_float (!screen_width /. 40.),
-        13 * round_float (!screen_height /. 28.),
+        13 * round_float (!screen_height /. 29.),
         8 );
       ( 14 * round_float (!screen_width /. 40.),
-        13 * round_float (!screen_height /. 28.),
+        13 * round_float (!screen_height /. 29.),
         9 );
       ( 14 * round_float (!screen_width /. 40.),
         16 * round_float (!screen_height /. 28.),
@@ -263,10 +284,17 @@ let setup () =
       ( 27 * round_float (!screen_width /. 40.),
         16 * round_float (!screen_height /. 28.),
         11 );
+    ];
+
+  (*Load initial wave, likely temporarily: just for testing*)
+  current_wave :=
+    [
+      Balloons.make_redb 0
+        (Vector2.create 0.0 (2. *. floor (!screen_height /. 28.)));
     ]
 
 (******************************************************************************)
-let update_game () = ()
+let update_game () = move_balloons !current_wave !turn_points
 
 (******************************************************************************)
 let draw_game () =
@@ -291,6 +319,9 @@ let draw_game () =
 
   (*Draw the turning points for reference, comment out if you want them invisible*)
   BalloonPath.draw_turnpoints !turn_points;
+
+  (*Draw the balloons*)
+  Balloons.draw_balloons !current_wave;
 
   if !showInstructions then (
     draw_rectangle 0 0

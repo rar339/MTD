@@ -1,9 +1,11 @@
-let wave1 () : Balloons.balloon list =
-  let balloon_lst = [] in
+let wave1 screen_height : Balloons.balloon list =
+  let balloon_lst = ref [] in
   for x = 0 to 20 do
-    ignore (Balloons.make_redb x :: balloon_lst)
+    balloon_lst :=
+      Balloons.make_redb x (Raylib.Vector2.create 0.0 (screen_height -. 500.))
+      :: !balloon_lst
   done;
-  balloon_lst
+  !balloon_lst
 
 let wave2 () =
   let balloon_lst = [||] in
