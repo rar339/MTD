@@ -15,9 +15,7 @@ module GameBackground = struct
     draw_texture_pro
       (Option.get !background_art)
       (Rectangle.create 0. 0. 2388. 1668.)
-      (Rectangle.create 0. 0.
-         (float_of_int !screen_width)
-         (float_of_int !screen_height))
+      (Rectangle.create 0. 0. !screen_width !screen_height)
       (Vector2.create 0. 0.) 0.
       (Color.create 255 255 255 255);
     ()
@@ -38,14 +36,13 @@ module ValidRectangles = struct
   let path_rectangles : Rectangle.t list ref = ref []
 
   (* let rect_one =
-    Rectangle.create 0.
-      (3. *. float_of_int (get_screen_height ()) /. 28.)
-      (float_of_int (get_screen_width ()))
-      (3. *. float_of_int (get_screen_height ()) /. 28.) *)
+     Rectangle.create 0.
+       (3. *. float_of_int (get_screen_height ()) /. 28.)
+       (float_of_int (get_screen_width ()))
+       (3. *. float_of_int (get_screen_height ()) /. 28.) *)
 
-  let create_rectangle x_pos y_pos width height = 
+  let create_rectangle x_pos y_pos width height =
     Rectangle.create x_pos y_pos width height
-
 
   let rec draw_rectangles (rectangles : Rectangle.t list) =
     match rectangles with
@@ -66,9 +63,12 @@ let setup () =
   background_width := Image.width game_image;
   background_height := Image.height game_image;
 
-  path_rectangles := (create_rectangle 0. (2. *. (float_of_int !screen_height) /. 28.)
-  (float_of_int (get_screen_width ()))
-  (2. *. (float_of_int !screen_height)  /. 28.)) :: !path_rectangles;
+  path_rectangles :=
+    create_rectangle 0.
+      (2. *. !screen_height /. 28.)
+      !screen_width
+      (2. *. !screen_height /. 28.)
+    :: !path_rectangles;
 
   ()
 
@@ -81,15 +81,17 @@ let draw_game () =
 
   (*Draw the background & reference grid*)
   GameBackground.draw_background background;
-  GameBackground.draw_ref_grid !screen_width !screen_height;
+  GameBackground.draw_ref_grid
+    (int_of_float !screen_width)
+    (int_of_float !screen_height);
   ValidRectangles.draw_rectangles !path_rectangles;
   if !showInstructions = 0 then
     if
       window_box
         (Rectangle.create
            (*Magic number to offset window location: 300*)
-           (float_of_int (!screen_width / 2) -. 300.)
-           (float_of_int (!screen_height / 2) -. 300.)
+           ((!screen_width /. 2.) -. 300.)
+           ((!screen_height /. 2.) -. 300.)
            600. 600.)
         "Instructions"
     then showInstructions := 1;

@@ -18,13 +18,13 @@ module Balloon = struct
   let gen_balloon x y speed = { x; y; speed }
 
   let rec generate_all_balloons x_pos_start count : balloon list =
-    if x_pos_start < !Constants.screen_width - 100 then
+    if x_pos_start < int_of_float (!Constants.screen_width -. 100.) then
       let rand_x = Random.float 300. in
-      let rand_y = Random.int 200 in
+      let rand_y = Random.float 200. in
       let rand_speed = Random.float 1. in
       gen_balloon
         (float_of_int x_pos_start +. rand_x)
-        (float_of_int (!Constants.screen_height + rand_y))
+        (!Constants.screen_height +. rand_y)
         (rand_speed +. 1.)
       :: generate_all_balloons (x_pos_start + int_of_float rand_x) (count - 1)
     else []
@@ -82,8 +82,8 @@ let balloons = ref []
 
 let setup () =
   Raylib.init_window 0 0 "MTD";
-  screen_width := get_screen_width ();
-  screen_height := get_screen_height ();
+  screen_width := float_of_int (get_screen_width ());
+  screen_height := float_of_int (get_screen_height ());
   toggle_fullscreen ();
   Raylib.set_target_fps 60;
 
@@ -126,7 +126,7 @@ let draw_home (title_font, background, red_bal_texture) =
   draw_texture_ex background
     (Vector2.create 0. 0.0) (* Position *)
     0.0 (* Rotation (in radians) *)
-    (float_of_int !screen_width /. 1831.0) (* Scale *)
+    (!screen_width /. 1831.0) (* Scale *)
     Color.white;
 
   (* create -> x y width height*)
@@ -134,21 +134,17 @@ let draw_home (title_font, background, red_bal_texture) =
     Raygui.(
       button
         (Rectangle.create
-           (5. *. float_of_int (get_screen_width ()) /. 8.)
-           (5. *. float_of_int (get_screen_height ()) /. 9.)
+           (5. *. !screen_width /. 8.)
+           (5. *. !screen_height /. 9.)
            160. 80.)
         "PLAY")
   then Constants.state := Active;
   (* Raylib.set_texture_filter (Font.texture (Raylib.get_font_default ())) TextureFilter.Point; *)
   draw_text_ex title_font "McGraw Tower"
-    (Vector2.create
-       (float_of_int (get_screen_width ()) /. 2.)
-       (float_of_int (get_screen_height ()) /. 3.))
+    (Vector2.create (!screen_width /. 2.) (!screen_height /. 3.))
     100. 3. (Color.create 255 6 0 255);
   draw_text_ex title_font "Defense"
-    (Vector2.create
-       (4. *. float_of_int (get_screen_width ()) /. 7.)
-       (3. *. float_of_int (get_screen_height ()) /. 7.))
+    (Vector2.create (4. *. !screen_width /. 7.) (3. *. !screen_height /. 7.))
     100. 3. (Color.create 255 6 0 255);
 
   (***** BALLOONS *****)
