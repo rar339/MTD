@@ -66,7 +66,7 @@ let setup () =
   path_rectangles :=
     create_rectangle 0.
       (2. *. !screen_height /. 28.)
-      !screen_width
+      (23. *. !screen_width /. 40.)
       (2. *. !screen_height /. 28.)
     :: !path_rectangles;
 
