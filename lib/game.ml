@@ -29,8 +29,6 @@ module GameBackground = struct
       draw_line 0 !y width !y Color.black;
       y := !y + (height / 28)
     done
-
-  (* let directionsOn : bool ref = ref true *)
 end
 
 module ValidRectangles = struct
@@ -63,7 +61,6 @@ let setup () =
   Raygui.set_style (Default `Text_size) 30;
   Raygui.set_style (Default `Background_color) 0x6699CC;
   Raygui.(set_style (Label `Text_color_normal) 0xFFFFFFFF);
-
 
   let game_image : Image.t = Raylib.load_image "mtd_map.png" in
   background := Some (load_texture_from_image game_image);
@@ -163,7 +160,7 @@ let draw_game () =
         window_box
           (Rectangle.create (*Magic number to offset window location: 300*)
              x_pos y_pos 800. 600.)
-          "Instructions"
+          ""
       in
       draw_text "Hello, welcome to McGraw Tower Defense..."
         (int_of_float (x_pos +. 10.))
