@@ -140,17 +140,24 @@ let draw_game () =
     (int_of_float !screen_width)
     (int_of_float !screen_height);
   ValidRectangles.draw_rectangles !path_rectangles;
+
+  (*Create the instructions pop-up only when the game starts.*)
   if !showInstructions = 0 then
     if
-      window_box
-        (Rectangle.create
-           (*Magic number to offset window location: 300*)
-           ((!screen_width /. 2.) -. 300.)
-           ((!screen_height /. 2.) -. 300.)
-           600. 600.)
-        "Instructions"
+      let x_pos = (!screen_width /. 2.) -. 300. in
+      let y_pos = (!screen_height /. 2.) -. 300. in
+      let show_window =
+        window_box
+          (Rectangle.create (*Magic number to offset window location: 300*)
+             x_pos y_pos 800. 600.)
+          "Instructions"
+      in
+      draw_text "Hello, welcome to McGraw Tower Defense..."
+        (round_float (x_pos +. 10.))
+        (round_float (y_pos +. 30.))
+        30 Color.red;
+      show_window
     then showInstructions := 1;
-
   end_drawing ()
 
 (*Main game loop*)

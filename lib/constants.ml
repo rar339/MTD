@@ -12,3 +12,4 @@ let screen_height = ref 720.0
 let state = ref Home
 
 (*Utility Functions*)
+let round_float x = int_of_float (Float.round x)
