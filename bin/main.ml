@@ -105,7 +105,10 @@ let setup () =
   Raygui.(set_style (TextBox `Text_alignment) TextAlignment.(to_int Center));
   (* SETTING STYLE TO RED - USE HEX*)
   Raygui.(set_style (Button `Base_color_normal) 0xFF000010);
-  Raygui.(set_style (Default `Text_color_normal) 0xFFFFFFFF);
+  Raygui.(set_style (Button `Base_color_focused) 0x7F000000);
+  Raygui.(set_style (Button `Base_color_pressed) 0x7F000000);
+
+  Raygui.(set_style (Default `Text_color_normal) 0xFFFFFF);
   Raygui.set_style (Default `Text_size) 36;
 
   Raygui.(set_style (Button `Border_width) 0);
@@ -143,6 +146,7 @@ let draw_home (title_font, background, red_bal_texture) =
            160. 80.)
         "PLAY")
   then Constants.state := Active;
+  (* Raylib.set_texture_filter (Font.texture (Raylib.get_font_default ())) TextureFilter.Point; *)
   draw_text_ex title_font "McGraw Tower"
     (Vector2.create (!screen_width /. 2.) (!screen_height /. 3.))
     100. 3. (Color.create 255 6 0 255);

@@ -1,5 +1,7 @@
+type bear_types = Dart | Hockey | Pumpkin | Ezra | Martha
+
 type bear = {
-  name : string;
+  bear_type : bear_types;
   mutable range : float;
   cost : int;
   mutable rate : Raylib.Vector2.t;
@@ -7,5 +9,5 @@ type bear = {
   upgrades : int list;
   is_bomb : bool;
   position : Raylib.Vector2.t;
-  img : Raylib.Image.t;
+  img : string;
 }
