@@ -1,7 +1,9 @@
 open Raylib
+open Raygui
 open Constants
 
 let count = ref 0
+let showInstructions = ref 0
 
 (******************************************************************************)
 module GameBackground = struct
@@ -81,6 +83,17 @@ let draw_game () =
   GameBackground.draw_background background;
   GameBackground.draw_ref_grid !screen_width !screen_height;
   ValidRectangles.draw_rectangles !path_rectangles;
+  if !showInstructions = 0 then
+    if
+      window_box
+        (Rectangle.create
+           (*Magic number to offset window location: 300*)
+           (float_of_int (!screen_width / 2) -. 300.)
+           (float_of_int (!screen_height / 2) -. 300.)
+           600. 600.)
+        "Instructions"
+    then showInstructions := 1;
+
   end_drawing ()
 
 (*Main game loop*)
