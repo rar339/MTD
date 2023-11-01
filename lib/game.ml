@@ -73,22 +73,37 @@ end
 
 (******************************************************************************)
 module BalloonPath = struct
-  (*Points are represetned as pairs of ints.*)
-  let start_point = (0, 0)
+  (*Points are represetned as triplet of ints, where the third int is the number
+     corresponding to that turn.*)
+  let start_point = (0, 0, 0)
 
   (*If a baloon is ever at a negative y value, it has reached the end of the path.*)
   let end_line = -10
 
   (*start_point should be changed to be somewhere off the screen*)
-  let turn_points : (int * int) list ref = ref []
+  let turn_points : (int * int * int) list ref = ref []
   let draw_turnpoint x_pos y_pos = draw_circle x_pos y_pos 10.0 Color.red
 
-  let rec draw_turnpoints (turn_points : (int * int) list) =
+  let rec draw_turnpoints (turn_points : (int * int * int) list) =
     match turn_points with
     | [] -> ()
-    | (x, y) :: t ->
+    | (x, y, _) :: t ->
         draw_turnpoint x y;
         draw_turnpoints t
+
+  let turn_balloon (x, y, id) =
+    match (x, y, id) with
+    (* | x, y, 1 -> check_collision_circle_rec  *)
+    (* | x, y, 2 -> ()
+       | x, y, 3 -> ()
+       | x, y, 4 -> ()
+       | x, y, 5 -> ()
+       | x, y, 6 -> ()
+       | x, y, 7 -> ()
+       | x, y, 8 -> ()
+       | x, y, 9 -> ()
+       | x, y, 10 -> () *)
+    | _ -> failwith "impossible"
 end
 
 (******************************************************************************)
@@ -197,27 +212,38 @@ let setup () =
   turn_points :=
     [
       ( 22 * round_float (!screen_width /. 40.),
-        3 * round_float (!screen_height /. 28.) );
+        3 * round_float (!screen_height /. 28.),
+        1 );
       ( 22 * round_float (!screen_width /. 40.),
-        8 * round_float (!screen_height /. 28.) );
+        8 * round_float (!screen_height /. 28.),
+        2 );
       ( 4 * round_float (!screen_width /. 40.),
-        8 * round_float (!screen_height /. 28.) );
+        8 * round_float (!screen_height /. 28.),
+        3 );
       ( 4 * round_float (!screen_width /. 40.),
-        26 * round_float (!screen_height /. 28.) );
+        26 * round_float (!screen_height /. 28.),
+        4 );
       ( 25 * round_float (!screen_width /. 40.),
-        26 * round_float (!screen_height /. 28.) );
+        26 * round_float (!screen_height /. 28.),
+        5 );
       ( 25 * round_float (!screen_width /. 40.),
-        21 * round_float (!screen_height /. 28.) );
+        21 * round_float (!screen_height /. 28.),
+        6 );
       ( 9 * round_float (!screen_width /. 40.),
-        21 * round_float (!screen_height /. 28.) );
+        21 * round_float (!screen_height /. 28.),
+        7 );
       ( 9 * round_float (!screen_width /. 40.),
-        13 * round_float (!screen_height /. 28.) );
+        13 * round_float (!screen_height /. 28.),
+        8 );
       ( 14 * round_float (!screen_width /. 40.),
-        13 * round_float (!screen_height /. 28.) );
+        13 * round_float (!screen_height /. 28.),
+        9 );
       ( 14 * round_float (!screen_width /. 40.),
-        16 * round_float (!screen_height /. 28.) );
+        16 * round_float (!screen_height /. 28.),
+        10 );
       ( 27 * round_float (!screen_width /. 40.),
-        16 * round_float (!screen_height /. 28.) );
+        16 * round_float (!screen_height /. 28.),
+        11 );
     ]
 
 (******************************************************************************)

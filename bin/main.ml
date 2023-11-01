@@ -31,7 +31,7 @@ module Balloon = struct
 
   let update_balloon_position balloon =
     let new_y =
-      if balloon.y < -70. then 650. +. 70. else balloon.y -. balloon.speed
+      if balloon.y < -70. then !screen_height +. 70. else balloon.y -. balloon.speed
     in
     balloon.y <- new_y
 
@@ -45,7 +45,11 @@ module Balloon = struct
   let draw_balloon (texture : Texture2D.t) balloon =
     draw_texture_ex texture
       (Vector2.create balloon.x balloon.y)
-      0.0 0.15 Color.white
+      0.0 0.15 Color.white;
+    draw_rectangle
+      (int_of_float (balloon.x +. 10.))
+      (int_of_float (balloon.y +. 10.))
+      40 50 Color.gold
 
   let rec draw_balloons (texture : Texture2D.t) (balloons : balloon list) =
     match balloons with
