@@ -31,6 +31,7 @@ module GameBackground = struct
     done
 
   let directionsOn : bool ref = ref true
+  let directionsOn : bool ref = ref true
 end
 
 module ValidRectangles = struct
