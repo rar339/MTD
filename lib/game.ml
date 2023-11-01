@@ -58,16 +58,6 @@ module MenuBar = struct
 end
 
 (******************************************************************************)
-module MenuBar = struct
-  let menu_rect : Rectangle.t option ref = ref None
-
-  let draw_menu rect =
-    draw_rectangle_rec rect Color.white;
-    draw_rectangle_lines_ex rect 10. Color.black;
-    ()
-end
-
-(******************************************************************************)
 module BalloonPath = struct
   (*Points are represetned as pairs of ints.*)
   let start_point = (0, 0)
