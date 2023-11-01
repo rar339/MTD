@@ -53,8 +53,28 @@ module ValidRectangles = struct
 end
 
 (******************************************************************************)
+module BalloonPath = struct
+  (*Points are represetned as pairs of ints.*)
+  let start_point = (0, 0)
+
+  (*If a baloon is ever at a negative y value, it has reached the end of the path.*)
+  let end_line = -10
+
+  (*start_point should be changed to be somewhere off the screen*)
+  let turn_points : (int * int) list ref = ref []
+  let draw_turnpoint x_pos y_pos = draw_circle x_pos y_pos 10.0 Color.red
+
+  let rec draw_turnpoints (turn_points : (int * int) list) =
+    match turn_points with
+    | [] -> ()
+    | (x, y) :: t ->
+        draw_turnpoint x y;
+        draw_turnpoints t
+end
+
 open GameBackground
 open ValidRectangles
+open BalloonPath
 
 let setup () =
   (*Setup backgrounds*)
@@ -127,7 +147,33 @@ let setup () =
          (2. *. floor (!screen_width /. 36.))
          (15. *. floor (!screen_height /. 28.))
     :: !path_rectangles;
-  ()
+
+  (*Turn points on the path*)
+  turn_points :=
+    [
+      ( 22 * round_float (!screen_width /. 40.),
+        3 * round_float (!screen_height /. 28.) );
+      ( 22 * round_float (!screen_width /. 40.),
+        8 * round_float (!screen_height /. 28.) );
+      ( 4 * round_float (!screen_width /. 40.),
+        8 * round_float (!screen_height /. 28.) );
+      ( 4 * round_float (!screen_width /. 40.),
+        26 * round_float (!screen_height /. 28.) );
+      ( 25 * round_float (!screen_width /. 40.),
+        26 * round_float (!screen_height /. 28.) );
+      ( 25 * round_float (!screen_width /. 40.),
+        21 * round_float (!screen_height /. 28.) );
+      ( 9 * round_float (!screen_width /. 40.),
+        21 * round_float (!screen_height /. 28.) );
+      ( 9 * round_float (!screen_width /. 40.),
+        13 * round_float (!screen_height /. 28.) );
+      ( 14 * round_float (!screen_width /. 40.),
+        13 * round_float (!screen_height /. 28.) );
+      ( 14 * round_float (!screen_width /. 40.),
+        16 * round_float (!screen_height /. 28.) );
+      ( 27 * round_float (!screen_width /. 40.),
+        16 * round_float (!screen_height /. 28.) );
+    ]
 
 let update_game () =
   Raygui.set_style (Label `Base_color_normal) 100;
@@ -151,6 +197,9 @@ let draw_game () =
   Raygui.set_style (Label `Base_color_normal) 100;
   (* Raygui.set_style (Label `)  100; *)
   Raygui.set_style (Label `Text_color_normal) 100;
+
+  (*Draw the turning points for reference, comment out if you want them invisible*)
+  BalloonPath.draw_turnpoints !turn_points;
 
   if !showInstructions then
     if
