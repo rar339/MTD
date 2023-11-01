@@ -4,6 +4,7 @@ open Constants
 
 let count = ref 0
 let showInstructions = ref true
+let selected : bool ref = ref false
 
 (******************************************************************************)
 module GameBackground = struct
@@ -49,7 +50,6 @@ end
 
 (******************************************************************************)
 module MenuBar = struct
-
   let menu_rect : Rectangle.t option ref = ref None
 
   let draw_menu rect =
@@ -57,7 +57,7 @@ module MenuBar = struct
     draw_rectangle_lines_ex rect 3. Color.black;
     ()
 
-  let play_button screen_width screen_height  =
+  let play_button screen_width screen_height =
     if
       Raygui.(
         button
@@ -69,6 +69,7 @@ module MenuBar = struct
           "Start Round")
     then print_endline "START"
 end
+(******************************************************************************)
 
 (******************************************************************************)
 module BalloonPath = struct
@@ -240,6 +241,10 @@ let draw_game () =
   MenuBar.draw_menu (Option.get !menu_rect);
   MenuBar.play_button !screen_width !screen_height;
 
+  (*Draw the BEAR reference images*)
+  Bears.draw_dart_bear_img !screen_width !screen_height;
+
+  
   (*Draw the turning points for reference, comment out if you want them invisible*)
   BalloonPath.draw_turnpoints !turn_points;
 
