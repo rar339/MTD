@@ -139,7 +139,6 @@ let draw_home (title_font, background, red_bal_texture) =
            160. 80.)
         "PLAY")
   then Constants.state := Active;
-  (* Raylib.set_texture_filter (Font.texture (Raylib.get_font_default ())) TextureFilter.Point; *)
   draw_text_ex title_font "McGraw Tower"
     (Vector2.create (!screen_width /. 2.) (!screen_height /. 3.))
     100. 3. (Color.create 255 6 0 255);

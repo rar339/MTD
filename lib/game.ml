@@ -31,15 +31,10 @@ module GameBackground = struct
     done
 end
 
-module ValidRectangles = struct
+(******************************************************************************)
+module GameBounds = struct
   let rect_color = Color.create 0 0 0 100
   let path_rectangles : Rectangle.t list ref = ref []
-
-  (* let rect_one =
-     Rectangle.create 0.
-       (3. *. float_of_int (get_screen_height ()) /. 28.)
-       (float_of_int (get_screen_width ()))
-       (3. *. float_of_int (get_screen_height ()) /. 28.) *)
 
   let create_rectangle x_pos y_pos width height =
     Rectangle.create x_pos y_pos width height
@@ -50,6 +45,26 @@ module ValidRectangles = struct
     | h :: t ->
         Raylib.draw_rectangle_rec h rect_color;
         draw_rectangles t
+end
+
+(******************************************************************************)
+module MenuBar = struct
+  let menu_rect : Rectangle.t option ref = ref None
+
+  let draw_menu rect =
+    draw_rectangle_rec rect Color.white;
+    draw_rectangle_lines_ex rect 10. Color.black;
+    ()
+end
+
+(******************************************************************************)
+module MenuBar = struct
+  let menu_rect : Rectangle.t option ref = ref None
+
+  let draw_menu rect =
+    draw_rectangle_rec rect Color.white;
+    draw_rectangle_lines_ex rect 10. Color.black;
+    ()
 end
 
 (******************************************************************************)
@@ -73,19 +88,34 @@ module BalloonPath = struct
 end
 
 open GameBackground
-open ValidRectangles
+open GameBounds
+open MenuBar
 open BalloonPath
 
 let setup () =
-  (*Setup backgrounds*)
+  (*Setup backgrounds and Raygui*)
   Raygui.set_style (Default `Text_size) 30;
+  Raygui.set_style (Default `Base_color_normal) 0x6699CC;
   Raygui.set_style (Default `Background_color) 0x6699CC;
+  Raygui.set_style (Default `Border_color_normal) 0x00000;
+  Raygui.set_style (Default `Border_width) 2;
   Raygui.(set_style (Label `Text_color_normal) 0xFFFFFFFF);
 
+  (*Setup background image*)
   let game_image : Image.t = Raylib.load_image "mtd_map.png" in
   background := Some (load_texture_from_image game_image);
   background_width := Image.width game_image;
   background_height := Image.height game_image;
+
+  (*Make the menu rectangle*)
+  menu_rect :=
+    Some
+      (Rectangle.create
+         (29. *. floor (!screen_width /. 40.))
+         (!screen_height /. 35.)
+         (8. *. floor (!screen_width /. 28.))
+         (38. *. !screen_height /. 40.));
+
   path_rectangles :=
     create_rectangle 0.
       (2. *. floor (!screen_height /. 28.))
@@ -148,6 +178,16 @@ let setup () =
          (15. *. floor (!screen_height /. 28.))
     :: !path_rectangles;
 
+  (*Create the ref rectangle for where the menu is
+    The side bar should be an invalid place for bears*)
+  path_rectangles :=
+    create_rectangle
+      (22. *. floor (!screen_width /. 30.))
+      0.
+      (8. *. floor (!screen_width /. 28.))
+      !screen_height
+    :: !path_rectangles;
+
   (*Turn points on the path*)
   turn_points :=
     [
@@ -191,33 +231,30 @@ let draw_game () =
     (int_of_float !screen_height);
 
   (*This line shows ref rectangles! Comment out if you want them invisible*)
-  ValidRectangles.draw_rectangles !path_rectangles;
-
-  Raygui.set_style (Default `Background_color) 0x99CCFF;
-  Raygui.set_style (Label `Base_color_normal) 100;
-  (* Raygui.set_style (Label `)  100; *)
-  Raygui.set_style (Label `Text_color_normal) 100;
+  GameBounds.draw_rectangles !path_rectangles;
+  MenuBar.draw_menu (Option.get !menu_rect);
 
   (*Draw the turning points for reference, comment out if you want them invisible*)
   BalloonPath.draw_turnpoints !turn_points;
 
   if !showInstructions then
     if
-      let x_pos = (!screen_width /. 2.) -. 300. in
-      let y_pos = (!screen_height /. 2.) -. 300. in
+      let x_pos = 1. *. !screen_width /. 5. in
+      let y_pos = 1. *. !screen_height /. 5. in
       let show_window =
         window_box
           (Rectangle.create (*Magic number to offset window location: 300*)
-             x_pos y_pos 800. 600.)
+             x_pos y_pos
+             (3. *. !screen_width /. 5.)
+             (3. *. !screen_height /. 5.))
           ""
       in
       draw_text "Hello, welcome to McGraw Tower Defense..."
         (int_of_float (x_pos +. 10.))
         (int_of_float (y_pos +. 30.))
-        30 Color.red;
+        30 Color.white;
       show_window
     then showInstructions := false;
-
   end_drawing ()
 
 (*Main game loop*)
