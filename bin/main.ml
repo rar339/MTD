@@ -130,17 +130,30 @@ let draw_home (title_font, background, red_bal_texture) =
     Color.white;
 
   (* create -> x y width height*)
-  if Raygui.(button (Rectangle.create (5. *.  (float_of_int (get_screen_width ())) /. 8.) (5. *. (float_of_int (get_screen_height())) /. 9. ) 160. 80.) "PLAY") then
-    Constants.state := Active;
+  if
+    Raygui.(
+      button
+        (Rectangle.create
+           (5. *. float_of_int (get_screen_width ()) /. 8.)
+           (5. *. float_of_int (get_screen_height ()) /. 9.)
+           160. 80.)
+        "PLAY")
+  then Constants.state := Active;
   (* Raylib.set_texture_filter (Font.texture (Raylib.get_font_default ())) TextureFilter.Point; *)
-  draw_text_ex title_font "McGraw Tower" (Vector2.create ((float_of_int (get_screen_width())) /. 2.) ((float_of_int (get_screen_height()))/. 3.)) 100. 3.
-    (Color.create 255 6 0 255);
-  draw_text_ex title_font "Defense" (Vector2.create (4. *. float_of_int (get_screen_width()) /. 7.)  ( 3. *.(float_of_int (get_screen_height()))/. 7.)) 100. 3.
-    (Color.create 255 6 0 255);
+  draw_text_ex title_font "McGraw Tower"
+    (Vector2.create
+       (float_of_int (get_screen_width ()) /. 2.)
+       (float_of_int (get_screen_height ()) /. 3.))
+    100. 3. (Color.create 255 6 0 255);
+  draw_text_ex title_font "Defense"
+    (Vector2.create
+       (4. *. float_of_int (get_screen_width ()) /. 7.)
+       (3. *. float_of_int (get_screen_height ()) /. 7.))
+    100. 3. (Color.create 255 6 0 255);
 
   (***** BALLOONS *****)
   Balloon.draw_balloons red_bal_texture !balloons;
-  
+
   end_drawing ()
 
 (*Updates and draws the window based on the current gamestate.*)
@@ -149,7 +162,7 @@ let update_and_draw tuple =
   if !Constants.state = Active then
     let open MTD in
     (* clear_background Color.lightgray; *)
-    Game.loop()
+    Game.loop ()
   else draw_home tuple
 
 (*This is the main game loop. This is the loop that is recursively called every

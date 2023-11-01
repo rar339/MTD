@@ -1,7 +1,9 @@
 open Raylib
+open Raygui
 open Constants
 
 let count = ref 0
+let showInstructions = ref 0
 
 (******************************************************************************)
 module GameBackground = struct
@@ -35,7 +37,6 @@ end
 open GameBackground
 
 let setup () =
-
   (*Setup backgrounds*)
   let game_image : Image.t = Raylib.load_image "mtd_map.png" in
   background := Some (load_texture_from_image game_image);
@@ -53,6 +54,17 @@ let draw_game () =
   (*Draw the background & reference grid*)
   GameBackground.draw_background background;
   GameBackground.draw_ref_grid !screen_width !screen_height;
+
+  if !showInstructions = 0 then
+    if
+      window_box
+        (Rectangle.create
+           (*Magic number to offset window location: 300*)
+           (float_of_int (!screen_width / 2) -. 300.)
+           (float_of_int (!screen_height / 2) -. 300.)
+           600. 600.)
+        "Instructions"
+    then showInstructions := 1;
 
   end_drawing ()
 
