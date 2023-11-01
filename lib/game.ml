@@ -61,6 +61,10 @@ open ValidRectangles
 let setup () =
   (*Setup backgrounds*)
   Raygui.set_style (Default `Text_size) 30;
+  Raygui.set_style (Default `Background_color) 0x6699CC;
+  Raygui.(set_style (Label `Text_color_normal) 0xFFFFFFFF);
+
+
   let game_image : Image.t = Raylib.load_image "mtd_map.png" in
   background := Some (load_texture_from_image game_image);
   background_width := Image.width game_image;
@@ -129,20 +133,20 @@ let setup () =
     :: !path_rectangles;
 
   (* if !showInstructions = true then (
-    showInstructions :=
-      (window_box
-         (Rectangle.create
-            ((*Magic number to offset window location: 300*)
-             (!screen_width /. 2.)
-            -. 300.)
-            ((!screen_height /. 2.) -. 300.)
-            600. 600.))
-        "Instructions";
-    label (Rectangle.create 350. 350. 100. 30.) "This is a label"); *)
+     showInstructions :=
+       (window_box
+          (Rectangle.create
+             ((*Magic number to offset window location: 300*)
+              (!screen_width /. 2.)
+             -. 300.)
+             ((!screen_height /. 2.) -. 300.)
+             600. 600.))
+         "Instructions";
+     label (Rectangle.create 350. 350. 100. 30.) "This is a label"); *)
   ()
 
 let update_game () =
-  Raygui.set_style (Label `Base_color_normal)  100;
+  Raygui.set_style (Label `Base_color_normal) 100;
   ()
 
 let draw_game () =
@@ -155,14 +159,11 @@ let draw_game () =
   GameBackground.draw_ref_grid
     (int_of_float !screen_width)
     (int_of_float !screen_height);
+
+  (*This line shows ref rectangles! Comment out if you want them invisible*)
   ValidRectangles.draw_rectangles !path_rectangles;
 
-  Raygui.set_style (Default `Background_color) 0x99CCFF;
-  Raygui.set_style (Label `Base_color_normal) 100;
-  (* Raygui.set_style (Label `)  100; *)
-  Raygui.set_style (Label `Text_color_normal) 100;
-
-  if !showInstructions = 0 then begin
+  if !showInstructions = 0 then (
     if
       window_box
         (Rectangle.create
@@ -172,21 +173,7 @@ let draw_game () =
            (3. *. !screen_height /. 5.))
         ""
     then showInstructions := 1;
-    label (Rectangle.create 350. 350. 100. 30.) "This is a label";
-end;
-
-  (* if !showInstructions = true then 
-    if
-      (window_box
-         (Rectangle.create
-            ((*Magic number to offset window location: 300*)
-             (!screen_width /. 2.)
-            -. 300.)
-            ((!screen_height /. 2.) -. 300.)
-            600. 600.))
-        "Instructions" then
-      label (Rectangle.create 350. 350. 100. 30.) "This is a label"
-      else showInstructions := false; *)
+    label (Rectangle.create 100. 350. 100. 30.) "This is a label");
 
   end_drawing ()
 
