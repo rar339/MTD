@@ -289,7 +289,6 @@ let draw_game () =
   (*Draw the BEAR reference images*)
   Bears.draw_dart_bear_img !screen_width !screen_height;
 
-  
   (*Draw the turning points for reference, comment out if you want them invisible*)
   BalloonPath.draw_turnpoints !turn_points;
 

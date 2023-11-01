@@ -4,8 +4,6 @@ let wave1 () : Balloons.balloon list =
     ignore (Balloons.make_redb x :: balloon_lst)
   done;
   balloon_lst
-  done;
-  balloon_lst
 
 let wave2 () =
   let balloon_lst = [||] in
