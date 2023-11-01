@@ -3,7 +3,7 @@ open Raygui
 open Constants
 
 let count = ref 0
-let showInstructions = ref 0
+let showInstructions = ref true
 
 (******************************************************************************)
 module GameBackground = struct
@@ -30,8 +30,7 @@ module GameBackground = struct
       y := !y + (height / 28)
     done
 
-  let directionsOn : bool ref = ref true
-  let directionsOn : bool ref = ref true
+  (* let directionsOn : bool ref = ref true *)
 end
 
 module ValidRectangles = struct
@@ -66,7 +65,6 @@ let setup () =
   background := Some (load_texture_from_image game_image);
   background_width := Image.width game_image;
   background_height := Image.height game_image;
-  showInstructions := 0;
   path_rectangles :=
     create_rectangle 0.
       (2. *. floor (!screen_height /. 28.))
@@ -128,18 +126,6 @@ let setup () =
          (2. *. floor (!screen_width /. 36.))
          (15. *. floor (!screen_height /. 28.))
     :: !path_rectangles;
-
-  (* if !showInstructions = true then (
-     showInstructions :=
-       (window_box
-          (Rectangle.create
-             ((*Magic number to offset window location: 300*)
-              (!screen_width /. 2.)
-             -. 300.)
-             ((!screen_height /. 2.) -. 300.)
-             600. 600.))
-         "Instructions";
-     label (Rectangle.create 350. 350. 100. 30.) "This is a label"); *)
   ()
 
 let update_game () =
@@ -163,30 +149,23 @@ let draw_game () =
   (* Raygui.set_style (Label `)  100; *)
   Raygui.set_style (Label `Text_color_normal) 100;
 
-  if !showInstructions = 0 then (
+  if !showInstructions then
     if
-      window_box
-        (Rectangle.create
-           (1. *. !screen_width /. 5.)
-           (1. *. !screen_height /. 5.)
-           (3. *. !screen_width /. 5.)
-           (3. *. !screen_height /. 5.))
-        ""
-    then showInstructions := 1;
-    label (Rectangle.create 350. 350. 100. 30.) "This is a label");
+      let x_pos = (!screen_width /. 2.) -. 300. in
+      let y_pos = (!screen_height /. 2.) -. 300. in
+      let show_window =
+        window_box
+          (Rectangle.create (*Magic number to offset window location: 300*)
+             x_pos y_pos 800. 600.)
+          "Instructions"
+      in
+      draw_text "Hello, welcome to McGraw Tower Defense..."
+        (round_float (x_pos +. 10.))
+        (round_float (y_pos +. 30.))
+        30 Color.red;
+      show_window
+    then showInstructions := false;
 
-  (* if !showInstructions = true then
-     if
-       (window_box
-          (Rectangle.create
-             ((*Magic number to offset window location: 300*)
-              (!screen_width /. 2.)
-             -. 300.)
-             ((!screen_height /. 2.) -. 300.)
-             600. 600.))
-         "Instructions" then
-       label (Rectangle.create 350. 350. 100. 30.) "This is a label"
-       else showInstructions := false; *)
   end_drawing ()
 
 (*Main game loop*)
