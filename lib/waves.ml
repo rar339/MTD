@@ -1,5 +1,3 @@
-open Balloons
-
 let wave1 () =
   let balloon_lst = [] in
   for x = 0 to 20 do
