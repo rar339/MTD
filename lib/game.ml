@@ -49,7 +49,6 @@ end
 
 (******************************************************************************)
 module MenuBar = struct
-
   let menu_rect : Rectangle.t option ref = ref None
 
   let draw_menu rect =
@@ -57,7 +56,7 @@ module MenuBar = struct
     draw_rectangle_lines_ex rect 3. Color.black;
     ()
 
-  let play_button screen_width screen_height  =
+  let play_button screen_width screen_height =
     if
       Raygui.(
         button
@@ -90,19 +89,38 @@ module BalloonPath = struct
         draw_turnpoint x y;
         draw_turnpoints t
 
-  let turn_balloon (x, y, id) =
-    match (x, y, id) with
-    (* | x, y, 1 -> check_collision_circle_rec  *)
-    (* | x, y, 2 -> ()
-       | x, y, 3 -> ()
-       | x, y, 4 -> ()
-       | x, y, 5 -> ()
-       | x, y, 6 -> ()
-       | x, y, 7 -> ()
-       | x, y, 8 -> ()
-       | x, y, 9 -> ()
-       | x, y, 10 -> () *)
-    | _ -> failwith "impossible"
+  let rec check_turn_collide (balloon : Balloons.balloon)
+      (turn_pts : (int * int * int) list) =
+    match turn_pts with
+    | [] -> None
+    | (x, y, i) :: t ->
+        if
+          check_collision_circle_rec
+            (Vector2.create (float_of_int x) (float_of_int y))
+            10.
+            (Balloons.get_hitbox balloon)
+        then Some i
+        else check_turn_collide balloon t
+  (* let move_balloon (balloon : Balloons.balloon) turn_pts =
+     match (check_turn_collide balloon turn_pts) with
+     | None -> ()
+     | Some i -> () *)
+
+  (* let move_balloons (balloon_list : Balloons.balloon list) = () *)
+
+  (* let turn_balloon (balloon : Balloons.balloon) (x, y, id) =
+          match (x, y, id) with
+     | x, y, 1 -> check_collision_circle_rec
+     | x, y, 2 -> ()
+        | x, y, 3 -> ()
+        | x, y, 4 -> ()
+        | x, y, 5 -> ()
+        | x, y, 6 -> ()
+        | x, y, 7 -> ()
+        | x, y, 8 -> ()
+        | x, y, 9 -> ()
+        | x, y, 10 -> ()
+     | _ -> failwith "impossible" *)
 end
 
 (******************************************************************************)

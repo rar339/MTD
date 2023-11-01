@@ -1,4 +1,6 @@
-type colors =
+open Raylib
+
+type balloon_colors =
   | None
   | Red of int
   | Blue of int
@@ -9,20 +11,26 @@ type colors =
   | Lead of int
 
 type balloon = {
-  mutable color : colors;
+  mutable color : balloon_colors;
   mutable velocity : Raylib.Vector2.t;
   mutable position : Raylib.Vector2.t;
-  mutable next_down : colors;
+  mutable next_down : balloon_colors;
   mutable is_lead : bool;
   mutable img : string;
   order : int;
 }
 
-let make_redb i =
+let get_hitbox (balloon : balloon) =
+  Rectangle.create
+    (Vector2.x balloon.position)
+    (Vector2.y balloon.position)
+    40.0 50.0
+
+let make_redb i position =
   {
     color = Red 1;
     velocity = Raylib.Vector2.create 1.0 1.0;
-    position = Raylib.Vector2.create 1.0 1.0;
+    position;
     next_down = None;
     is_lead = false;
     img = "red.png";
