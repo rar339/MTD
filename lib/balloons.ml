@@ -83,3 +83,13 @@ let make_blueb i position =
   }
 
 (*Balloon list updating functions**********************************************)
+let check_balloon_exit (balloon : balloon) =
+  let y = Vector2.y balloon.position in
+  if y < Constants.end_line then true else false
+
+let rec remove_out_of_bounds (balloon_lst : balloon list) =
+  match balloon_lst with
+  | [] -> []
+  | h :: t ->
+      if check_balloon_exit h then remove_out_of_bounds t
+      else h :: remove_out_of_bounds t

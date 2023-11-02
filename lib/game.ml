@@ -125,9 +125,6 @@ module BalloonPath = struct
   (*Points are represetned as pairs of ints.*)
   let start_point = (0, 0)
 
-  (*If a baloon is ever at a negative y value, it has reached the end of the path.*)
-  let end_line = -10
-
   (*start_point should be changed to be somewhere off the screen*)
   let turn_points : (int * int * int) list ref = ref []
   let draw_turnpoint x_pos y_pos = draw_circle x_pos y_pos 1.0 Color.red
