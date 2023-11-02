@@ -308,22 +308,22 @@ let setup () =
       ( 22 * round_float (!screen_width /. 40.),
         8 * round_float (!screen_height /. 27.),
         2 );
-      ( 4 * round_float (!screen_width /. 40.),
+      ( 4 * round_float (!screen_width /. 48.),
         8 * round_float (!screen_height /. 28.),
         3 );
-      ( 4 * round_float (!screen_width /. 40.),
-        26 * round_float (!screen_height /. 28.),
+      ( 4 * round_float (!screen_width /. 48.),
+        26 * round_float (!screen_height /. 27.),
         4 );
       ( 25 * round_float (!screen_width /. 40.),
         26 * round_float (!screen_height /. 28.),
         5 );
       ( 25 * round_float (!screen_width /. 40.),
-        21 * round_float (!screen_height /. 29.),
+        21 * round_float (!screen_height /. 28.5),
         6 );
-      ( 9 * round_float (!screen_width /. 40.),
-        21 * round_float (!screen_height /. 29.),
+      ( 9 * round_float (!screen_width /. 42.),
+        21 * round_float (!screen_height /. 28.5),
         7 );
-      ( 9 * round_float (!screen_width /. 40.),
+      ( 9 * round_float (!screen_width /. 42.),
         13 * round_float (!screen_height /. 29.),
         8 );
       ( 14 * round_float (!screen_width /. 40.),
@@ -332,7 +332,7 @@ let setup () =
       ( 14 * round_float (!screen_width /. 40.),
         16 * round_float (!screen_height /. 28.),
         10 );
-      ( 27 * round_float (!screen_width /. 40.),
+      ( 27 * round_float (!screen_width /. 39.),
         16 * round_float (!screen_height /. 28.),
         11 );
     ];

@@ -2,13 +2,13 @@ open Raylib
 
 type balloon_colors =
   | None
-  | Red 
+  | Red
   | Blue
   | Green
   | Orange
   | Purple
   | Yellow
-  | Lead 
+  | Lead
 
 type balloon = {
   mutable color : balloon_colors;
@@ -57,7 +57,7 @@ let rec draw_balloons path_width (balloon_list : balloon list) =
 let make_redb i position =
   {
     color = Red;
-    velocity = Raylib.Vector2.create 3.0 0.0;
+    velocity = Raylib.Vector2.create 5.0 0.0;
     position;
     next_down = None;
     is_lead = false;
@@ -71,7 +71,7 @@ let make_redb i position =
 let make_blueb i position =
   {
     color = Blue;
-    velocity = Raylib.Vector2.create 5.0 0.0;
+    velocity = Raylib.Vector2.create 15.0 0.0;
     position;
     next_down = Red;
     is_lead = false;
@@ -88,14 +88,14 @@ let check_balloon_exit (balloon : balloon) =
   if y < Constants.end_line then true else false
 
 let balloon_value = function
-| None -> 0
-| Red -> 1
-| Blue -> 2
-| Green -> 3
-| Yellow -> 4
-| Orange -> 5
-| Purple -> 6
-| _ -> 7
+  | None -> 0
+  | Red -> 1
+  | Blue -> 2
+  | Green -> 3
+  | Yellow -> 4
+  | Orange -> 5
+  | Purple -> 6
+  | _ -> 7
 
 let lower_lives balloon = Constants.(lives := !lives - balloon_value balloon)
 
@@ -103,7 +103,7 @@ let rec remove_out_of_bounds (balloon_lst : balloon list) =
   match balloon_lst with
   | [] -> []
   | h :: t ->
-      if check_balloon_exit h then 
-        (lower_lives h.color;
+      if check_balloon_exit h then (
+        lower_lives h.color;
         remove_out_of_bounds t)
       else h :: remove_out_of_bounds t
