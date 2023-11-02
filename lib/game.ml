@@ -73,56 +73,22 @@ end
 
 (******************************************************************************)
 module BalloonPath = struct
-  (*Points are represetned as triplet of ints, where the third int is the number
-     corresponding to that turn.*)
-  let start_point = (0, 0, 0)
+  (*Points are represetned as pairs of ints.*)
+  let start_point = (0, 0)
 
   (*If a baloon is ever at a negative y value, it has reached the end of the path.*)
   let end_line = -10
 
   (*start_point should be changed to be somewhere off the screen*)
-  let turn_points : (int * int * int) list ref = ref []
+  let turn_points : (int * int) list ref = ref []
   let draw_turnpoint x_pos y_pos = draw_circle x_pos y_pos 10.0 Color.red
 
-  let rec draw_turnpoints (turn_points : (int * int * int) list) =
+  let rec draw_turnpoints (turn_points : (int * int) list) =
     match turn_points with
     | [] -> ()
-    | (x, y, _) :: t ->
+    | (x, y) :: t ->
         draw_turnpoint x y;
         draw_turnpoints t
-
-  let rec check_turn_collide (balloon : Balloons.balloon)
-      (turn_pts : (int * int * int) list) =
-    match turn_pts with
-    | [] -> None
-    | (x, y, i) :: t ->
-        if
-          check_collision_circle_rec
-            (Vector2.create (float_of_int x) (float_of_int y))
-            10.
-            (Balloons.get_hitbox balloon)
-        then Some i
-        else check_turn_collide balloon t
-  (* let move_balloon (balloon : Balloons.balloon) turn_pts =
-     match (check_turn_collide balloon turn_pts) with
-     | None -> ()
-     | Some i -> () *)
-
-  (* let move_balloons (balloon_list : Balloons.balloon list) = () *)
-
-  (* let turn_balloon (balloon : Balloons.balloon) (x, y, id) =
-          match (x, y, id) with
-     | x, y, 1 -> check_collision_circle_rec
-     | x, y, 2 -> ()
-        | x, y, 3 -> ()
-        | x, y, 4 -> ()
-        | x, y, 5 -> ()
-        | x, y, 6 -> ()
-        | x, y, 7 -> ()
-        | x, y, 8 -> ()
-        | x, y, 9 -> ()
-        | x, y, 10 -> ()
-     | _ -> failwith "impossible" *)
 end
 
 (******************************************************************************)
@@ -231,38 +197,27 @@ let setup () =
   turn_points :=
     [
       ( 22 * round_float (!screen_width /. 40.),
-        3 * round_float (!screen_height /. 28.),
-        1 );
+        3 * round_float (!screen_height /. 28.) );
       ( 22 * round_float (!screen_width /. 40.),
-        8 * round_float (!screen_height /. 28.),
-        2 );
+        8 * round_float (!screen_height /. 28.) );
       ( 4 * round_float (!screen_width /. 40.),
-        8 * round_float (!screen_height /. 28.),
-        3 );
+        8 * round_float (!screen_height /. 28.) );
       ( 4 * round_float (!screen_width /. 40.),
-        26 * round_float (!screen_height /. 28.),
-        4 );
+        26 * round_float (!screen_height /. 28.) );
       ( 25 * round_float (!screen_width /. 40.),
-        26 * round_float (!screen_height /. 28.),
-        5 );
+        26 * round_float (!screen_height /. 28.) );
       ( 25 * round_float (!screen_width /. 40.),
-        21 * round_float (!screen_height /. 28.),
-        6 );
+        21 * round_float (!screen_height /. 28.) );
       ( 9 * round_float (!screen_width /. 40.),
-        21 * round_float (!screen_height /. 28.),
-        7 );
+        21 * round_float (!screen_height /. 28.) );
       ( 9 * round_float (!screen_width /. 40.),
-        13 * round_float (!screen_height /. 28.),
-        8 );
+        13 * round_float (!screen_height /. 28.) );
       ( 14 * round_float (!screen_width /. 40.),
-        13 * round_float (!screen_height /. 28.),
-        9 );
+        13 * round_float (!screen_height /. 28.) );
       ( 14 * round_float (!screen_width /. 40.),
-        16 * round_float (!screen_height /. 28.),
-        10 );
+        16 * round_float (!screen_height /. 28.) );
       ( 27 * round_float (!screen_width /. 40.),
-        16 * round_float (!screen_height /. 28.),
-        11 );
+        16 * round_float (!screen_height /. 28.) );
     ]
 
 (******************************************************************************)
@@ -283,12 +238,14 @@ let draw_game () =
 
   (*This line shows ref rectangles! Comment out if you want them invisible*)
   GameBounds.draw_rectangles !path_rectangles;
-  MenuBar.draw_menu (Option.get !menu_rect);
-  MenuBar.play_button !screen_width !screen_height;
-
+  if !showInstructions = false then begin
+    MenuBar.draw_menu (Option.get !menu_rect);
+    MenuBar.play_button !screen_width !screen_height;
+    Bears.draw_dart_bear_img !screen_width !screen_height;
+  end;
   (*Draw the BEAR reference images*)
-  Bears.draw_dart_bear_img !screen_width !screen_height;
 
+  
   (*Draw the turning points for reference, comment out if you want them invisible*)
   BalloonPath.draw_turnpoints !turn_points;
 
