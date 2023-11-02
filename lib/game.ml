@@ -63,6 +63,35 @@ module MenuBar = struct
     draw_rectangle_lines_ex rect 3. Color.black;
     ()
 
+  let lives screen_width screen_height =
+    (* let hearts = Raylib.load_image "heart.png" in  *)
+    Rectangle.create
+      (149. *. screen_width /. 200.)
+      (0.5 *. screen_height /. 9.)
+      (1. *. screen_width /. 9.)
+      (screen_height /. 19.)
+
+  let cash screen_width screen_height =
+    Rectangle.create
+      (173. *. screen_width /. 200.)
+      (0.5 *. screen_height /. 9.)
+      (1. *. screen_width /. 9.)
+      (screen_height /. 19.)
+
+  (* let draw_heart screen_width screen_height =
+    let heart = Raylib.(load_image "heart.png" |> load_texture_from_image) in 
+    unload_image heart; *)
+
+
+    (* let draw_background (background_art : Texture2D.t option ref) =
+        draw_texture_pro
+          (Option.get !background_art)
+          (Rectangle.create 0. 0. 2388. 1668.)
+          (Rectangle.create 0. 0. !screen_width !screen_height)
+          (Vector2.create 0. 0.) 0.
+          (Color.create 255 255 255 255);
+        () *)
+
   let play_button screen_width screen_height =
     if
       Raygui.(
@@ -75,11 +104,13 @@ module MenuBar = struct
           "Start Round")
     then Constants.state := Active
 end
+
 (******************************************************************************)
 
 (******************************************************************************)
+
 module BalloonPath = struct
-  (*Points are represetned as triplet of ints, where the third int is the number
+  (* Points are represetned as triplet of ints, where the third int is the number
      corresponding to that turn.*)
   let start_point = (0, 0, 0)
 
@@ -323,7 +354,19 @@ let draw_game () =
 
   (*This line shows ref rectangles! Comment out if you want them invisible*)
   GameBounds.draw_rectangles !path_rectangles;
+
   MenuBar.draw_menu (Option.get !menu_rect);
+
+  (* Drawing lives*)
+  Raylib.draw_rectangle_rec
+    (MenuBar.lives !screen_width !screen_height) (Color.create 150 0 0 100);
+
+  
+
+  (* Drawing cash *)
+  Raylib.draw_rectangle_rec
+    (MenuBar.cash !screen_width !screen_height) (Color.create 0 150 0 100);
+
   MenuBar.play_button !screen_width !screen_height;
 
   (*Draw the BEAR reference images*)
@@ -352,7 +395,14 @@ let draw_game () =
           ""
       in
 
-      draw_text "Hello, welcome to McGraw Tower Defense..."
+      draw_text
+        "Welcome to McGraw Tower Defense!\n\n\
+         Defend Cornell and McGraw Tower from waves of \n\
+         oncoming balloons. You earn cash for every \n\
+         layer of balloon that you pop and at the end \n\
+         of each round. Use it strategically to buy and \n\
+         upgrade bears. \n\n\
+         Good luck!"
         (int_of_float (x_pos +. 10.))
         (int_of_float (y_pos +. 30.))
         30 Color.white;
