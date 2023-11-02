@@ -209,7 +209,7 @@ let setup () =
   Raygui.(set_style (Label `Text_color_normal) 0xFFFFFFFF);
 
   (* Setup background image *)
-  let game_image : Image.t = Raylib.load_image "mtd_map.png" in
+  let game_image : Image.t = Raylib.load_image "./img/mtd_map.png" in
   background := Some (load_texture_from_image game_image);
   background_width := Image.width game_image;
   background_height := Image.height game_image;
@@ -225,9 +225,11 @@ let setup () =
          (7. *. floor (!screen_width /. 28.))
          (38. *. !screen_height /. 40.));
 
-  heart_img := Some Raylib.(load_texture_from_image (load_image "heart.png"));
+  heart_img := Some Raylib.(load_texture_from_image 
+  (load_image "./img/heart.png"));
 
-  cash_img := Some Raylib.(load_texture_from_image (load_image "dollar.png"));
+  cash_img := Some Raylib.(load_texture_from_image 
+  (load_image "./img/dollar.png"));
 
   path_rectangles :=
     create_rectangle 0.

@@ -56,7 +56,7 @@ module Balloon = struct
         draw_balloons texture t
 
   let check_clicked balloon (click_pos : Vector2.t) : bool =
-    (*Magic numbers represent the offset from the top left corner of png to
+    (*Magic numbers represent the offset from the top left corner of PNG to
        actual center of balloon ellipse.*)
     let bal_x = balloon.x +. 29.0 in
     let bal_y = balloon.y +. 35.0 in
@@ -93,10 +93,10 @@ let setup () =
   let custom_font = Raylib.load_font_ex "machine-gunk.ttf" 36 None in
   Raygui.set_font custom_font;
   (*Create the intro screen art*)
-  let intro_screen_art = Raylib.load_image "MTDCoverArt.png" in
+  let intro_screen_art = Raylib.load_image "./img/MTDCoverArt.png" in
   let background = Raylib.load_texture_from_image intro_screen_art in
   unload_image intro_screen_art;
-  let red_balloon = Raylib.load_image "red.png" in
+  let red_balloon = Raylib.load_image "./img/red.png" in
   let red_bal_texture = Raylib.load_texture_from_image red_balloon in
   unload_image red_balloon;
   Raygui.(set_style (TextBox `Text_alignment) TextAlignment.(to_int Center));
