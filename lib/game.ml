@@ -81,7 +81,6 @@ end
 module BalloonPath = struct
   (*Points are represetned as triplet of ints, where the third int is the number
      corresponding to that turn.*)
-  let start_point = (0, 0, 0)
 
   (*If a baloon is ever at a negative y value, it has reached the end of the path.*)
   let end_line = -10
@@ -108,7 +107,7 @@ module BalloonPath = struct
           check_collision_circle_rec
             (Vector2.create (float_of_int x) (float_of_int y))
             1.
-            (Balloons.get_hitbox balloon)
+            (Balloons.get_hitbox (2. *. !screen_height /. 28.) balloon)
           && balloon.current_turn < i
         then (
           balloon.current_turn <- balloon.current_turn + 1;
@@ -332,8 +331,10 @@ let draw_game () =
   (*Draw the turning points for reference, comment out if you want them invisible*)
   BalloonPath.draw_turnpoints !turn_points;
 
-  (*Draw the balloons*)
-  if !Constants.state = Active then Balloons.draw_balloons !current_bloons;
+  (*Draw the balloons, the number passed in is the path's width, so that balloons
+     are drawn as the correct size.*)
+  if !Constants.state = Active then
+    Balloons.draw_balloons (2. *. !screen_height /. 28.) !current_bloons;
 
   if !showInstructions then (
     draw_rectangle 0 0
