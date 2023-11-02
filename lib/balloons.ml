@@ -36,14 +36,14 @@ let draw_balloon path_width (balloon : balloon) =
     (Rectangle.create 0. 0. 375. 500.)
     (Rectangle.create x y 80. path_width)
     (Vector2.create 0. 0.) 0.
-    (Color.create 255 255 255 255);
+    (Color.create 255 255 255 255)
   (*Comment/uncomment the draw function below as needed for debugging hitbox*)
-  draw_rectangle
+  (* draw_rectangle
     (Constants.round_float (x +. (path_width *. 0.21)))
     (Constants.round_float (y +. (path_width *. 0.21)))
     (Constants.round_float (path_width /. 1.5))
     (Constants.round_float (path_width /. 1.5))
-    Color.gold
+    Color.gold *)
 
 (* draw_texture_ex balloon.img (Vector2.create x y) 0.0 0.15 Color.white *)
 
@@ -62,7 +62,7 @@ let make_redb i position =
     next_down = None;
     is_lead = false;
     img =
-      (let balloon_image = Raylib.load_image "red.png" in
+      (let balloon_image = Raylib.load_image "./img/red.png" in
        Raylib.load_texture_from_image balloon_image);
     current_turn = 0;
     order = i;
@@ -76,7 +76,7 @@ let make_blueb i position =
     next_down = Red 1;
     is_lead = false;
     img =
-      (let balloon_image = Raylib.load_image "blue.png" in
+      (let balloon_image = Raylib.load_image "./img/yellow.png" in
        Raylib.load_texture_from_image balloon_image);
     current_turn = 0;
     order = i;
