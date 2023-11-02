@@ -110,8 +110,8 @@ end
 (******************************************************************************)
 
 module BalloonPath = struct
-  (* Points are represetned as triplet of ints, where the third int is the number
-     corresponding to that turn.*)
+  (*Points are represetned as pairs of ints.*)
+  let start_point = (0, 0)
 
   (*If a baloon is ever at a negative y value, it has reached the end of the path.*)
   let end_line = -10
@@ -126,6 +126,7 @@ module BalloonPath = struct
     | (x, y, _) :: t ->
         draw_turnpoint x y;
         draw_turnpoints t
+        
 
   (*Checks if the given balloon is colliding with a turn point, meaning it should
      make a turn. *)
@@ -291,41 +292,41 @@ let setup () =
 
   (*Turn points on the path*)
   turn_points :=
-    [
-      ( 22 * round_float (!screen_width /. 39.),
-        3 * round_float (!screen_height /. 28.),
-        1 );
-      ( 22 * round_float (!screen_width /. 40.),
-        8 * round_float (!screen_height /. 27.),
-        2 );
-      ( 4 * round_float (!screen_width /. 40.),
-        8 * round_float (!screen_height /. 28.),
-        3 );
-      ( 4 * round_float (!screen_width /. 40.),
-        26 * round_float (!screen_height /. 28.),
-        4 );
-      ( 25 * round_float (!screen_width /. 40.),
-        26 * round_float (!screen_height /. 28.),
-        5 );
-      ( 25 * round_float (!screen_width /. 40.),
-        21 * round_float (!screen_height /. 29.),
-        6 );
-      ( 9 * round_float (!screen_width /. 40.),
-        21 * round_float (!screen_height /. 29.),
-        7 );
-      ( 9 * round_float (!screen_width /. 40.),
-        13 * round_float (!screen_height /. 29.),
-        8 );
-      ( 14 * round_float (!screen_width /. 40.),
-        13 * round_float (!screen_height /. 29.),
-        9 );
-      ( 14 * round_float (!screen_width /. 40.),
-        16 * round_float (!screen_height /. 28.),
-        10 );
-      ( 27 * round_float (!screen_width /. 40.),
-        16 * round_float (!screen_height /. 28.),
-        11 );
-    ];
+  [
+    ( 22 * round_float (!screen_width /. 39.),
+      3 * round_float (!screen_height /. 28.),
+      1 );
+    ( 22 * round_float (!screen_width /. 40.),
+      8 * round_float (!screen_height /. 27.),
+      2 );
+    ( 4 * round_float (!screen_width /. 40.),
+      8 * round_float (!screen_height /. 28.),
+      3 );
+    ( 4 * round_float (!screen_width /. 40.),
+      26 * round_float (!screen_height /. 28.),
+      4 );
+    ( 25 * round_float (!screen_width /. 40.),
+      26 * round_float (!screen_height /. 28.),
+      5 );
+    ( 25 * round_float (!screen_width /. 40.),
+      21 * round_float (!screen_height /. 29.),
+      6 );
+    ( 9 * round_float (!screen_width /. 40.),
+      21 * round_float (!screen_height /. 29.),
+      7 );
+    ( 9 * round_float (!screen_width /. 40.),
+      13 * round_float (!screen_height /. 29.),
+      8 );
+    ( 14 * round_float (!screen_width /. 40.),
+      13 * round_float (!screen_height /. 29.),
+      9 );
+    ( 14 * round_float (!screen_width /. 40.),
+      16 * round_float (!screen_height /. 28.),
+      10 );
+    ( 27 * round_float (!screen_width /. 40.),
+      16 * round_float (!screen_height /. 28.),
+      11 );
+  ];
 
   (*Load initial wave, likely temporarily: just for testing*)
   current_wave := Waves.wave2 screen_height
@@ -380,7 +381,6 @@ let draw_game () =
   MenuBar.play_button !screen_width !screen_height;
 
   (*Draw the BEAR reference images*)
-  Bears.draw_dart_bear_img !screen_width !screen_height;
 
   (*Draw the turning points for reference, comment out if you want them invisible*)
   BalloonPath.draw_turnpoints !turn_points;
