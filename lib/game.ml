@@ -121,7 +121,6 @@ module BalloonPath = struct
   let end_line = -10
 
   (*start_point should be changed to be somewhere off the screen*)
-
   let turn_points : (int * int * int) list ref = ref []
   let draw_turnpoint x_pos y_pos = draw_circle x_pos y_pos 1.0 Color.red
 
@@ -131,6 +130,7 @@ module BalloonPath = struct
     | (x, y, _) :: t ->
         draw_turnpoint x y;
         draw_turnpoints t
+        
 
   (*Checks if the given balloon is colliding with a turn point, meaning it should
      make a turn. *)
@@ -290,41 +290,41 @@ let setup () =
 
   (*Turn points on the path*)
   turn_points :=
-    [
-      ( 22 * round_float (!screen_width /. 39.),
-        3 * round_float (!screen_height /. 28.),
-        1 );
-      ( 22 * round_float (!screen_width /. 40.),
-        8 * round_float (!screen_height /. 27.),
-        2 );
-      ( 4 * round_float (!screen_width /. 40.),
-        8 * round_float (!screen_height /. 28.),
-        3 );
-      ( 4 * round_float (!screen_width /. 40.),
-        26 * round_float (!screen_height /. 28.),
-        4 );
-      ( 25 * round_float (!screen_width /. 40.),
-        26 * round_float (!screen_height /. 28.),
-        5 );
-      ( 25 * round_float (!screen_width /. 40.),
-        21 * round_float (!screen_height /. 29.),
-        6 );
-      ( 9 * round_float (!screen_width /. 40.),
-        21 * round_float (!screen_height /. 29.),
-        7 );
-      ( 9 * round_float (!screen_width /. 40.),
-        13 * round_float (!screen_height /. 29.),
-        8 );
-      ( 14 * round_float (!screen_width /. 40.),
-        13 * round_float (!screen_height /. 29.),
-        9 );
-      ( 14 * round_float (!screen_width /. 40.),
-        16 * round_float (!screen_height /. 28.),
-        10 );
-      ( 27 * round_float (!screen_width /. 40.),
-        16 * round_float (!screen_height /. 28.),
-        11 );
-    ];
+  [
+    ( 22 * round_float (!screen_width /. 39.),
+      3 * round_float (!screen_height /. 28.),
+      1 );
+    ( 22 * round_float (!screen_width /. 40.),
+      8 * round_float (!screen_height /. 27.),
+      2 );
+    ( 4 * round_float (!screen_width /. 40.),
+      8 * round_float (!screen_height /. 28.),
+      3 );
+    ( 4 * round_float (!screen_width /. 40.),
+      26 * round_float (!screen_height /. 28.),
+      4 );
+    ( 25 * round_float (!screen_width /. 40.),
+      26 * round_float (!screen_height /. 28.),
+      5 );
+    ( 25 * round_float (!screen_width /. 40.),
+      21 * round_float (!screen_height /. 29.),
+      6 );
+    ( 9 * round_float (!screen_width /. 40.),
+      21 * round_float (!screen_height /. 29.),
+      7 );
+    ( 9 * round_float (!screen_width /. 40.),
+      13 * round_float (!screen_height /. 29.),
+      8 );
+    ( 14 * round_float (!screen_width /. 40.),
+      13 * round_float (!screen_height /. 29.),
+      9 );
+    ( 14 * round_float (!screen_width /. 40.),
+      16 * round_float (!screen_height /. 28.),
+      10 );
+    ( 27 * round_float (!screen_width /. 40.),
+      16 * round_float (!screen_height /. 28.),
+      11 );
+  ];
 
   (*Load initial wave, likely temporarily: just for testing*)
   current_wave := Waves.wave2 screen_height
