@@ -1,8 +1,10 @@
-let wave1 screen_height : Balloons.balloon list =
+let wave1 screen_height : (Balloons.balloon * int) list =
   let balloon_lst = ref [] in
   for x = 0 to 20 do
     balloon_lst :=
-      Balloons.make_redb x (Raylib.Vector2.create 0.0 (screen_height -. 500.))
+      ( Balloons.make_redb x
+          (Raylib.Vector2.create 0.0 (2. *. floor (!screen_height /. 28.))),
+        15 )
       :: !balloon_lst
   done;
   !balloon_lst

@@ -5,7 +5,12 @@ open Constants
 let count = ref 0
 let showInstructions = ref true
 let selected : bool ref = ref false
+
+(*The current wave of baloons, when this is the empty list, the wave is over*)
 let current_wave = ref []
+
+(*The current list of balloons that are actually on the screen.*)
+let current_bloons = ref []
 
 (******************************************************************************)
 module GameBackground = struct
@@ -287,14 +292,20 @@ let setup () =
     ];
 
   (*Load initial wave, likely temporarily: just for testing*)
-  current_wave :=
-    [
-      Balloons.make_redb 0
-        (Vector2.create 0.0 (2. *. floor (!screen_height /. 28.)));
-    ]
+  current_wave := Waves.wave1 screen_height
 
 (******************************************************************************)
-let update_game () = move_balloons !current_wave !turn_points
+let bloons_spawner current_wave =
+  match !current_wave with
+  | [] -> ()
+  | (bloon, counter) :: t when counter = 0 ->
+      current_bloons := bloon :: !current_bloons;
+      current_wave := t
+  | (bloon, counter) :: t -> current_wave := (bloon, counter - 1) :: t
+
+let update_game () =
+  bloons_spawner current_wave;
+  move_balloons !current_bloons !turn_points
 
 (******************************************************************************)
 let draw_game () =
@@ -321,7 +332,7 @@ let draw_game () =
   BalloonPath.draw_turnpoints !turn_points;
 
   (*Draw the balloons*)
-  Balloons.draw_balloons !current_wave;
+  Balloons.draw_balloons !current_bloons;
 
   if !showInstructions then (
     draw_rectangle 0 0
