@@ -78,9 +78,14 @@ module MenuBar = struct
       (1. *. screen_width /. 9.)
       (screen_height /. 19.)
 
-  (* let draw_heart screen_width screen_height =
-     let heart = Raylib.(load_image "heart.png" |> load_texture_from_image) in
-     unload_image heart; *)
+  let draw_heart screen_width screen_height =
+    let heart = Raylib.(load_image "heart.png") in
+    let heart_texture = Raylib.(load_texture_from_image heart) in
+    draw_texture_ex heart_texture
+      (Vector2.create
+         (147. *. screen_width /. 200.)
+         (0.3 *. screen_height /. 9.))
+      0. 0.15 Color.white
 
   (* let draw_background (background_art : Texture2D.t option ref) =
       draw_texture_pro
@@ -333,7 +338,7 @@ let bloons_spawner current_wave =
       current_bloons := bloon :: !current_bloons;
       current_wave := t
   | (bloon, counter) :: t -> current_wave := (bloon, counter - 1) :: t
-   
+
 let update_game () =
   if !Constants.state = Active then (
     bloons_spawner current_wave;
@@ -361,6 +366,8 @@ let draw_game () =
   Raylib.draw_rectangle_rec
     (MenuBar.lives !screen_width !screen_height)
     (Color.create 150 0 0 100);
+
+  MenuBar.draw_heart !screen_width !screen_height;
 
   (* Drawing cash *)
   Raylib.draw_rectangle_rec
