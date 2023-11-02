@@ -6,7 +6,7 @@ let lives = ref 100
 let cash = ref 500
 
 (*If a baloon is ever at a negative y value, it has reached the end of the path.*)
-let end_line = -10.0
+let end_line = -60.
 
 (* Screen Constants *)
 let screen_width = ref 1194.
