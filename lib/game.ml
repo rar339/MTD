@@ -222,11 +222,11 @@ let setup () =
          (7. *. floor (!screen_width /. 28.))
          (38. *. !screen_height /. 40.));
 
-  heart_img := Some Raylib.(load_texture_from_image 
-  (load_image "./img/heart.png"));
+  heart_img :=
+    Some Raylib.(load_texture_from_image (load_image "./img/heart.png"));
 
-  cash_img := Some Raylib.(load_texture_from_image 
-  (load_image "./img/dollar.png"));
+  cash_img :=
+    Some Raylib.(load_texture_from_image (load_image "./img/dollar.png"));
 
   path_rectangles :=
     create_rectangle 0.
@@ -355,7 +355,8 @@ let bloons_spawner current_wave =
 let update_game () =
   if !Constants.state = Active then (
     bloons_spawner current_wave;
-    move_balloons !current_bloons !turn_points)
+    move_balloons !current_bloons !turn_points;
+    current_bloons := Balloons.remove_out_of_bounds !current_bloons)
 
 (******************************************************************************)
 let draw_game () =
