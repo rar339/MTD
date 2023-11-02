@@ -1,8 +1,11 @@
-(*Constants********************************************************************)
-(*Custom Types*)
+(*Constants *)
+
 type gamestate = Home | Inactive | Active
 
-(*Screen Constants*)
+let lives = ref 100
+let cash = ref 50000
+
+(* Screen Constants *)
 let screen_width = ref 1100.0
 let screen_height = ref 720.0
 

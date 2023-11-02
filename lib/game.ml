@@ -64,7 +64,7 @@ module MenuBar = struct
     draw_rectangle_lines_ex rect 3. Color.black;
     ()
 
-  let lives screen_width screen_height =
+  let lives_box screen_width screen_height =
     Rectangle.create
       (149. *. screen_width /. 200.)
       (0.5 *. screen_height /. 9.)
@@ -85,12 +85,24 @@ module MenuBar = struct
          (0.45 *. screen_height /. 9.))
       0. 0.10 Color.white
 
-  let draw_cash cash_text screen_width screen_height = 
+  let draw_cash cash_text screen_width screen_height =
     draw_texture_ex (Option.get cash_text)
-    (Vector2.create
-       (174. *. screen_width /. 200.)
-       (0.55 *. screen_height /. 9.))
-    0. 0.07 Color.white
+      (Vector2.create
+         (174. *. screen_width /. 200.)
+         (0.55 *. screen_height /. 9.))
+      0. 0.07 Color.white
+
+  let lives_and_cash_count screen_width screen_height =
+    Raylib.draw_text
+      (string_of_int !Constants.lives)
+      (int_of_float (158. *. screen_width /. 200.))
+      (int_of_float (0.62 *. screen_height /. 9.))
+      25 Color.white;
+    Raylib.draw_text
+      (string_of_int !Constants.cash)
+      (int_of_float (182. *. screen_width /. 200.))
+      (int_of_float (0.62 *. screen_height /. 9.))
+      25 Color.white
 
   let play_button screen_width screen_height =
     if
@@ -126,7 +138,6 @@ module BalloonPath = struct
     | (x, y, _) :: t ->
         draw_turnpoint x y;
         draw_turnpoints t
-        
 
   (*Checks if the given balloon is colliding with a turn point, meaning it should
      make a turn. *)
@@ -213,7 +224,7 @@ let setup () =
          (!screen_height /. 35.)
          (7. *. floor (!screen_width /. 28.))
          (38. *. !screen_height /. 40.));
-  
+
   heart_img := Some Raylib.(load_texture_from_image (load_image "heart.png"));
 
   cash_img := Some Raylib.(load_texture_from_image (load_image "dollar.png"));
@@ -292,41 +303,41 @@ let setup () =
 
   (*Turn points on the path*)
   turn_points :=
-  [
-    ( 22 * round_float (!screen_width /. 39.),
-      3 * round_float (!screen_height /. 28.),
-      1 );
-    ( 22 * round_float (!screen_width /. 40.),
-      8 * round_float (!screen_height /. 27.),
-      2 );
-    ( 4 * round_float (!screen_width /. 40.),
-      8 * round_float (!screen_height /. 28.),
-      3 );
-    ( 4 * round_float (!screen_width /. 40.),
-      26 * round_float (!screen_height /. 28.),
-      4 );
-    ( 25 * round_float (!screen_width /. 40.),
-      26 * round_float (!screen_height /. 28.),
-      5 );
-    ( 25 * round_float (!screen_width /. 40.),
-      21 * round_float (!screen_height /. 29.),
-      6 );
-    ( 9 * round_float (!screen_width /. 40.),
-      21 * round_float (!screen_height /. 29.),
-      7 );
-    ( 9 * round_float (!screen_width /. 40.),
-      13 * round_float (!screen_height /. 29.),
-      8 );
-    ( 14 * round_float (!screen_width /. 40.),
-      13 * round_float (!screen_height /. 29.),
-      9 );
-    ( 14 * round_float (!screen_width /. 40.),
-      16 * round_float (!screen_height /. 28.),
-      10 );
-    ( 27 * round_float (!screen_width /. 40.),
-      16 * round_float (!screen_height /. 28.),
-      11 );
-  ];
+    [
+      ( 22 * round_float (!screen_width /. 39.),
+        3 * round_float (!screen_height /. 28.),
+        1 );
+      ( 22 * round_float (!screen_width /. 40.),
+        8 * round_float (!screen_height /. 27.),
+        2 );
+      ( 4 * round_float (!screen_width /. 40.),
+        8 * round_float (!screen_height /. 28.),
+        3 );
+      ( 4 * round_float (!screen_width /. 40.),
+        26 * round_float (!screen_height /. 28.),
+        4 );
+      ( 25 * round_float (!screen_width /. 40.),
+        26 * round_float (!screen_height /. 28.),
+        5 );
+      ( 25 * round_float (!screen_width /. 40.),
+        21 * round_float (!screen_height /. 29.),
+        6 );
+      ( 9 * round_float (!screen_width /. 40.),
+        21 * round_float (!screen_height /. 29.),
+        7 );
+      ( 9 * round_float (!screen_width /. 40.),
+        13 * round_float (!screen_height /. 29.),
+        8 );
+      ( 14 * round_float (!screen_width /. 40.),
+        13 * round_float (!screen_height /. 29.),
+        9 );
+      ( 14 * round_float (!screen_width /. 40.),
+        16 * round_float (!screen_height /. 28.),
+        10 );
+      ( 27 * round_float (!screen_width /. 40.),
+        16 * round_float (!screen_height /. 28.),
+        11 );
+    ];
 
   (*Load initial wave, likely temporarily: just for testing*)
   current_wave := Waves.wave2 screen_height
@@ -367,7 +378,7 @@ let draw_game () =
 
   (*** Drawing lives and cash ***)
   Raylib.draw_rectangle_rec
-    (MenuBar.lives !screen_width !screen_height)
+    (MenuBar.lives_box !screen_width !screen_height)
     (Color.create 150 0 0 100);
 
   Raylib.draw_rectangle_rec
@@ -376,6 +387,7 @@ let draw_game () =
 
   MenuBar.draw_heart !heart_img !screen_width !screen_height;
   MenuBar.draw_cash !cash_img !screen_width !screen_height;
+  MenuBar.lives_and_cash_count !screen_width !screen_height;
 
   (* Drawing round button *)
   MenuBar.play_button !screen_width !screen_height;
