@@ -42,7 +42,7 @@ let rec draw_balloons (balloon_list : balloon list) =
 let make_redb i position =
   {
     color = Red 1;
-    velocity = Raylib.Vector2.create 9.0 0.0;
+    velocity = Raylib.Vector2.create 3.0 0.0;
     position;
     next_down = None;
     is_lead = false;
@@ -53,11 +53,11 @@ let make_redb i position =
     order = i;
   }
 
-let make_blueb i =
+let make_blueb i position =
   {
     color = Blue 2;
-    velocity = Raylib.Vector2.create 1.5 1.5;
-    position = Raylib.Vector2.create 1.0 1.0;
+    velocity = Raylib.Vector2.create 5.0 0.0;
+    position;
     next_down = Red 1;
     is_lead = false;
     img =

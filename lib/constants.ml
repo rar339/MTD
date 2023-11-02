@@ -1,6 +1,6 @@
 (*Constants********************************************************************)
 (*Custom Types*)
-type gamestate = Home | Active
+type gamestate = Home | Inactive | Active
 
 (*Screen Constants*)
 let screen_width = ref 1100.0

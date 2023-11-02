@@ -73,7 +73,7 @@ module MenuBar = struct
              (2. *. screen_width /. 9.)
              (screen_height /. 19.))
           "Start Round")
-    then print_endline "START"
+    then Constants.state := Active
 end
 (******************************************************************************)
 
@@ -292,7 +292,7 @@ let setup () =
     ];
 
   (*Load initial wave, likely temporarily: just for testing*)
-  current_wave := Waves.wave1 screen_height
+  current_wave := Waves.wave2 screen_height
 
 (******************************************************************************)
 let bloons_spawner current_wave =
@@ -304,8 +304,9 @@ let bloons_spawner current_wave =
   | (bloon, counter) :: t -> current_wave := (bloon, counter - 1) :: t
 
 let update_game () =
-  bloons_spawner current_wave;
-  move_balloons !current_bloons !turn_points
+  if !Constants.state = Active then (
+    bloons_spawner current_wave;
+    move_balloons !current_bloons !turn_points)
 
 (******************************************************************************)
 let draw_game () =
@@ -332,7 +333,7 @@ let draw_game () =
   BalloonPath.draw_turnpoints !turn_points;
 
   (*Draw the balloons*)
-  Balloons.draw_balloons !current_bloons;
+  if !Constants.state = Active then Balloons.draw_balloons !current_bloons;
 
   if !showInstructions then (
     draw_rectangle 0 0
