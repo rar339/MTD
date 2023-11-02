@@ -3,7 +3,7 @@
 type gamestate = Home | Inactive | Active
 
 let lives = ref 100
-let cash = ref 50000
+let cash = ref 500
 
 (* Screen Constants *)
 let screen_width = ref 1100.0
