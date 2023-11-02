@@ -21,7 +21,8 @@ type balloon = {
   order : int;
 }
 
-(*TODO, this should be dependent on the size of the balloon image.*)
+(*Balloon drawing functions****************************************************)
+(*This should be dependent on the size of the balloon image. Needs fine tuning.*)
 let get_hitbox path_width (balloon : balloon) =
   Rectangle.create
     (Vector2.x balloon.position +. (path_width *. 0.21))
@@ -80,3 +81,5 @@ let make_blueb i position =
     current_turn = 0;
     order = i;
   }
+
+(*Balloon list updating functions**********************************************)
