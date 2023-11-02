@@ -1,7 +1,8 @@
-(*Constants *)
-
+(* This is a file containing the relevant constants for our game. Those
+   that are mutable are declared as pointers. *)
 type gamestate = Home | Inactive | Active
 
+(* The number of lives *)
 let lives = ref 100
 let cash = ref 500
 
