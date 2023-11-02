@@ -121,13 +121,14 @@ module BalloonPath = struct
   let end_line = -10
 
   (*start_point should be changed to be somewhere off the screen*)
+
   let turn_points : (int * int * int) list ref = ref []
   let draw_turnpoint x_pos y_pos = draw_circle x_pos y_pos 1.0 Color.red
 
-  let rec draw_turnpoints (turn_points : (int * int) list) =
+  let rec draw_turnpoints (turn_points : (int * int * int) list) =
     match turn_points with
     | [] -> ()
-    | (x, y) :: t ->
+    | (x, y, _) :: t ->
         draw_turnpoint x y;
         draw_turnpoints t
 
@@ -297,11 +298,14 @@ let setup () =
         8 * round_float (!screen_height /. 27.),
         2 );
       ( 4 * round_float (!screen_width /. 40.),
-        8 * round_float (!screen_height /. 28.) );
+        8 * round_float (!screen_height /. 28.),
+        3 );
       ( 4 * round_float (!screen_width /. 40.),
-        26 * round_float (!screen_height /. 28.) );
+        26 * round_float (!screen_height /. 28.),
+        4 );
       ( 25 * round_float (!screen_width /. 40.),
-        26 * round_float (!screen_height /. 28.) );
+        26 * round_float (!screen_height /. 28.),
+        5 );
       ( 25 * round_float (!screen_width /. 40.),
         21 * round_float (!screen_height /. 29.),
         6 );
@@ -315,7 +319,8 @@ let setup () =
         13 * round_float (!screen_height /. 29.),
         9 );
       ( 14 * round_float (!screen_width /. 40.),
-        16 * round_float (!screen_height /. 28.) );
+        16 * round_float (!screen_height /. 28.),
+        10 );
       ( 27 * round_float (!screen_width /. 40.),
         16 * round_float (!screen_height /. 28.),
         11 );
@@ -374,7 +379,6 @@ let draw_game () =
 
   (*Draw the BEAR reference images*)
 
-  
   (*Draw the turning points for reference, comment out if you want them invisible*)
   BalloonPath.draw_turnpoints !turn_points;
 
