@@ -5,8 +5,18 @@ let count = ref 0
 let showInstructions = ref false
 let selected : bool ref = ref false
 
+(*A list of all the waves in our game.*)
+let waves = ref []
+
 (*The current wave of baloons, when this is the empty list, the wave is over*)
 let current_wave = ref []
+
+let initialize_round waves () =
+  match !waves with
+  | [] -> ()
+  | h :: t ->
+      current_wave := h;
+      waves := t
 
 (*The current list of balloons that are actually on the screen.*)
 let current_bloons = ref []
@@ -113,7 +123,10 @@ module MenuBar = struct
              (2. *. screen_width /. 9.)
              (screen_height /. 19.))
           "Start Round")
-    then Constants.state := Active
+    then (
+      initialize_round waves ();
+      print_string "hello";
+      Constants.state := Active)
 end
 
 (******************************************************************************)
@@ -337,8 +350,9 @@ let setup () =
         11 );
     ];
 
-  (*Load initial wave, likely temporarily: just for testing*)
-  current_wave := Waves.wave2 screen_height
+  (*Load all the waves for the game.*)
+  waves := [ Waves.wave1 screen_height; Waves.wave2 screen_height ]
+(*Load initial wave, likely temporarily: just for testing*)
 
 (******************************************************************************)
 (*Adds bloons that are ready to be added to the screen, to current_bloons. If
@@ -351,7 +365,11 @@ let bloons_spawner current_wave =
       current_wave := t
   | (bloon, counter) :: t -> current_wave := (bloon, counter - 1) :: t
 
+let update_state () =
+  if !current_bloons = [] && !current_wave = [] then Constants.state := Inactive
+
 let update_game () =
+  update_state ();
   if !Constants.state = Active then (
     bloons_spawner current_wave;
     move_balloons !current_bloons !turn_points;
@@ -389,7 +407,8 @@ let draw_game () =
   MenuBar.lives_and_cash_count !screen_width !screen_height;
 
   (* Drawing round button *)
-  MenuBar.play_button !screen_width !screen_height;
+  if !Constants.state <> Active then
+    MenuBar.play_button !screen_width !screen_height;
 
   (*Draw the BEAR reference images*)
 

@@ -159,7 +159,7 @@ let draw_home (title_font, background, red_bal_texture) =
 (*Updates and draws the window based on the current gamestate.*)
 let update_and_draw tuple =
   update_home ();
-  if !Constants.state != Home then
+  if !Constants.state <> Home then
     let open MTD in
     (* clear_background Color.lightgray; *)
     Game.loop ()
