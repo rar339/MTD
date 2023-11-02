@@ -24,8 +24,7 @@ module GameBackground = struct
       (Rectangle.create 0. 0. 2388. 1668.)
       (Rectangle.create 0. 0. !screen_width !screen_height)
       (Vector2.create 0. 0.) 0.
-      (Color.create 255 255 255 255);
-    ()
+      (Color.create 255 255 255 255)
 
   let draw_ref_grid width height =
     let x = ref 0 in
@@ -56,7 +55,9 @@ end
 
 (******************************************************************************)
 module MenuBar = struct
-  let menu_rect : Rectangle.t option ref = ref None
+  let menu_rect = ref None
+  let heart_img = ref None
+  let cash_img = ref None
 
   let draw_menu rect =
     draw_rectangle_rec rect (Color.create 183 201 226 255);
@@ -64,7 +65,6 @@ module MenuBar = struct
     ()
 
   let lives screen_width screen_height =
-    (* let hearts = Raylib.load_image "heart.png" in  *)
     Rectangle.create
       (149. *. screen_width /. 200.)
       (0.5 *. screen_height /. 9.)
@@ -78,23 +78,19 @@ module MenuBar = struct
       (1. *. screen_width /. 9.)
       (screen_height /. 19.)
 
-  let draw_heart screen_width screen_height =
-    let heart = Raylib.(load_image "heart.png") in
-    let heart_texture = Raylib.(load_texture_from_image heart) in
-    draw_texture_ex heart_texture
+  let draw_heart heart_text screen_width screen_height =
+    draw_texture_ex (Option.get heart_text)
       (Vector2.create
-         (147. *. screen_width /. 200.)
-         (0.3 *. screen_height /. 9.))
-      0. 0.15 Color.white
+         (149. *. screen_width /. 200.)
+         (0.45 *. screen_height /. 9.))
+      0. 0.10 Color.white
 
-  (* let draw_background (background_art : Texture2D.t option ref) =
-      draw_texture_pro
-        (Option.get !background_art)
-        (Rectangle.create 0. 0. 2388. 1668.)
-        (Rectangle.create 0. 0. !screen_width !screen_height)
-        (Vector2.create 0. 0.) 0.
-        (Color.create 255 255 255 255);
-      () *)
+  let draw_cash cash_text screen_width screen_height = 
+    draw_texture_ex (Option.get cash_text)
+    (Vector2.create
+       (174. *. screen_width /. 200.)
+       (0.55 *. screen_height /. 9.))
+    0. 0.07 Color.white
 
   let play_button screen_width screen_height =
     if
@@ -200,11 +196,13 @@ let setup () =
   (* Raygui.set_style (Default `Border_width) 2; *)
   Raygui.(set_style (Label `Text_color_normal) 0xFFFFFFFF);
 
-  (*Setup background image*)
+  (* Setup background image *)
   let game_image : Image.t = Raylib.load_image "mtd_map.png" in
   background := Some (load_texture_from_image game_image);
   background_width := Image.width game_image;
   background_height := Image.height game_image;
+
+  (* Setup heart and cash images *)
 
   (*Make the menu rectangle*)
   menu_rect :=
@@ -214,6 +212,10 @@ let setup () =
          (!screen_height /. 35.)
          (7. *. floor (!screen_width /. 28.))
          (38. *. !screen_height /. 40.));
+  
+  heart_img := Some Raylib.(load_texture_from_image (load_image "heart.png"));
+
+  cash_img := Some Raylib.(load_texture_from_image (load_image "dollar.png"));
 
   path_rectangles :=
     create_rectangle 0.
@@ -362,18 +364,19 @@ let draw_game () =
 
   MenuBar.draw_menu (Option.get !menu_rect);
 
-  (* Drawing lives*)
+  (*** Drawing lives and cash ***)
   Raylib.draw_rectangle_rec
     (MenuBar.lives !screen_width !screen_height)
     (Color.create 150 0 0 100);
 
-  MenuBar.draw_heart !screen_width !screen_height;
-
-  (* Drawing cash *)
   Raylib.draw_rectangle_rec
     (MenuBar.cash !screen_width !screen_height)
     (Color.create 0 150 0 100);
 
+  MenuBar.draw_heart !heart_img !screen_width !screen_height;
+  MenuBar.draw_cash !cash_img !screen_width !screen_height;
+
+  (* Drawing round button *)
   MenuBar.play_button !screen_width !screen_height;
 
   (*Draw the BEAR reference images*)
