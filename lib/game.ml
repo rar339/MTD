@@ -1,9 +1,8 @@
 open Raylib
-open Raygui
 open Constants
 
 let count = ref 0
-let showInstructions = ref true
+let showInstructions = ref false
 let selected : bool ref = ref false
 
 (*The current wave of baloons, when this is the empty list, the wave is over*)
@@ -411,7 +410,7 @@ let draw_game () =
       let x_pos = 1. *. !screen_width /. 5. in
       let y_pos = 1. *. !screen_height /. 5. in
       let show_window =
-        window_box
+        Raygui.window_box
           (Rectangle.create (*Magic number to offset window location: 300*)
              x_pos y_pos
              (3. *. !screen_width /. 5.)

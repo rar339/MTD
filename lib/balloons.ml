@@ -33,17 +33,17 @@ let draw_balloon path_width (balloon : balloon) =
   let x = Vector2.x balloon.position in
   let y = Vector2.y balloon.position in
   draw_texture_pro balloon.img
-    (Rectangle.create 0. 0. 375. 500.)
+    (Rectangle.create 0. 0. 385. 500.)
     (Rectangle.create x y 80. path_width)
     (Vector2.create 0. 0.) 0.
-    (Color.create 255 255 255 255)
+    (Color.create 255 255 255 255);
   (*Comment/uncomment the draw function below as needed for debugging hitbox*)
-  (* draw_rectangle
+  draw_rectangle
     (Constants.round_float (x +. (path_width *. 0.21)))
     (Constants.round_float (y +. (path_width *. 0.21)))
     (Constants.round_float (path_width /. 1.5))
     (Constants.round_float (path_width /. 1.5))
-    Color.gold *)
+    Color.gold
 
 (* draw_texture_ex balloon.img (Vector2.create x y) 0.0 0.15 Color.white *)
 
