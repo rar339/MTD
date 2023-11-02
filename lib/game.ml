@@ -6,6 +6,12 @@ let count = ref 0
 let showInstructions = ref true
 let selected : bool ref = ref false
 
+(*The current wave of baloons, when this is the empty list, the wave is over*)
+let current_wave = ref []
+
+(*The current list of balloons that are actually on the screen.*)
+let current_bloons = ref []
+
 (******************************************************************************)
 module GameBackground = struct
   let background : Texture2D.t option ref = ref None
@@ -57,6 +63,39 @@ module MenuBar = struct
     draw_rectangle_lines_ex rect 3. Color.black;
     ()
 
+  let lives screen_width screen_height =
+    (* let hearts = Raylib.load_image "heart.png" in  *)
+    Rectangle.create
+      (149. *. screen_width /. 200.)
+      (0.5 *. screen_height /. 9.)
+      (1. *. screen_width /. 9.)
+      (screen_height /. 19.)
+
+  let cash screen_width screen_height =
+    Rectangle.create
+      (173. *. screen_width /. 200.)
+      (0.5 *. screen_height /. 9.)
+      (1. *. screen_width /. 9.)
+      (screen_height /. 19.)
+
+  let draw_heart screen_width screen_height =
+    let heart = Raylib.(load_image "heart.png") in
+    let heart_texture = Raylib.(load_texture_from_image heart) in
+    draw_texture_ex heart_texture
+      (Vector2.create
+         (147. *. screen_width /. 200.)
+         (0.3 *. screen_height /. 9.))
+      0. 0.15 Color.white
+
+  (* let draw_background (background_art : Texture2D.t option ref) =
+      draw_texture_pro
+        (Option.get !background_art)
+        (Rectangle.create 0. 0. 2388. 1668.)
+        (Rectangle.create 0. 0. !screen_width !screen_height)
+        (Vector2.create 0. 0.) 0.
+        (Color.create 255 255 255 255);
+      () *)
+
   let play_button screen_width screen_height =
     if
       Raygui.(
@@ -67,11 +106,13 @@ module MenuBar = struct
              (2. *. screen_width /. 9.)
              (screen_height /. 19.))
           "Start Round")
-    then print_endline "START"
+    then Constants.state := Active
 end
+
 (******************************************************************************)
 
 (******************************************************************************)
+
 module BalloonPath = struct
   (*Points are represetned as pairs of ints.*)
   let start_point = (0, 0)
@@ -80,8 +121,8 @@ module BalloonPath = struct
   let end_line = -10
 
   (*start_point should be changed to be somewhere off the screen*)
-  let turn_points : (int * int) list ref = ref []
-  let draw_turnpoint x_pos y_pos = draw_circle x_pos y_pos 10.0 Color.red
+  let turn_points : (int * int * int) list ref = ref []
+  let draw_turnpoint x_pos y_pos = draw_circle x_pos y_pos 1.0 Color.red
 
   let rec draw_turnpoints (turn_points : (int * int) list) =
     match turn_points with
@@ -89,6 +130,59 @@ module BalloonPath = struct
     | (x, y) :: t ->
         draw_turnpoint x y;
         draw_turnpoints t
+
+  (*Checks if the given balloon is colliding with a turn point, meaning it should
+     make a turn. *)
+  let rec check_turn_collide (balloon : Balloons.balloon)
+      (turn_pts : (int * int * int) list) =
+    match turn_pts with
+    | [] -> None
+    | (x, y, i) :: t ->
+        if
+          check_collision_circle_rec
+            (Vector2.create (float_of_int x) (float_of_int y))
+            1.
+            (Balloons.get_hitbox (2. *. !screen_height /. 28.) balloon)
+          && balloon.current_turn < i
+        then (
+          balloon.current_turn <- balloon.current_turn + 1;
+          Some i)
+        else check_turn_collide balloon t
+
+  let turn_balloon rate i =
+    match i with
+    | 1 -> Vector2.create 0.0 rate
+    | 2 -> Vector2.create (-.rate) 0.0
+    | 3 -> Vector2.create 0.0 (-.rate)
+    | 4 -> Vector2.create rate 0.0
+    | 5 -> Vector2.create 0.0 (-.rate)
+    | 6 -> Vector2.create rate 0.0
+    | 7 -> Vector2.create 0.0 rate
+    | 8 -> Vector2.create (-.rate) 0.0
+    | 9 -> Vector2.create 0.0 rate
+    | 10 -> Vector2.create rate 0.0
+    | 11 -> Vector2.create 0.0 (-.rate)
+    | _ -> failwith "impossible"
+
+  (*Moves the balloon, taking into consideration if a turn is reached. If a turn
+     is reached, changes the velocity but does not update position.*)
+  let move_balloon (balloon : Balloons.balloon) turn_pts =
+    let x = Vector2.x balloon.position in
+    let y = Vector2.y balloon.position in
+    let x_rate = Vector2.x balloon.velocity in
+    let y_rate = Vector2.y balloon.velocity in
+    match check_turn_collide balloon turn_pts with
+    | None -> balloon.position <- Vector2.create (x +. x_rate) (y +. y_rate)
+    | Some i ->
+        balloon.velocity <-
+          turn_balloon (if x_rate = 0.0 then y_rate else x_rate) i
+
+  let rec move_balloons (balloon_list : Balloons.balloon list) turn_pts =
+    match balloon_list with
+    | [] -> ()
+    | h :: t ->
+        move_balloon h turn_pts;
+        move_balloons t turn_pts
 end
 
 (******************************************************************************)
@@ -196,10 +290,12 @@ let setup () =
   (*Turn points on the path*)
   turn_points :=
     [
+      ( 22 * round_float (!screen_width /. 39.),
+        3 * round_float (!screen_height /. 28.),
+        1 );
       ( 22 * round_float (!screen_width /. 40.),
-        3 * round_float (!screen_height /. 28.) );
-      ( 22 * round_float (!screen_width /. 40.),
-        8 * round_float (!screen_height /. 28.) );
+        8 * round_float (!screen_height /. 27.),
+        2 );
       ( 4 * round_float (!screen_width /. 40.),
         8 * round_float (!screen_height /. 28.) );
       ( 4 * round_float (!screen_width /. 40.),
@@ -207,21 +303,42 @@ let setup () =
       ( 25 * round_float (!screen_width /. 40.),
         26 * round_float (!screen_height /. 28.) );
       ( 25 * round_float (!screen_width /. 40.),
-        21 * round_float (!screen_height /. 28.) );
+        21 * round_float (!screen_height /. 29.),
+        6 );
       ( 9 * round_float (!screen_width /. 40.),
-        21 * round_float (!screen_height /. 28.) );
+        21 * round_float (!screen_height /. 29.),
+        7 );
       ( 9 * round_float (!screen_width /. 40.),
-        13 * round_float (!screen_height /. 28.) );
+        13 * round_float (!screen_height /. 29.),
+        8 );
       ( 14 * round_float (!screen_width /. 40.),
-        13 * round_float (!screen_height /. 28.) );
+        13 * round_float (!screen_height /. 29.),
+        9 );
       ( 14 * round_float (!screen_width /. 40.),
         16 * round_float (!screen_height /. 28.) );
       ( 27 * round_float (!screen_width /. 40.),
-        16 * round_float (!screen_height /. 28.) );
-    ]
+        16 * round_float (!screen_height /. 28.),
+        11 );
+    ];
+
+  (*Load initial wave, likely temporarily: just for testing*)
+  current_wave := Waves.wave2 screen_height
 
 (******************************************************************************)
-let update_game () = ()
+(*Adds bloons that are ready to be added to the screen, to current_bloons. If
+   none are ready, decreases the counter on the next balloon to be added.*)
+let bloons_spawner current_wave =
+  match !current_wave with
+  | [] -> ()
+  | (bloon, counter) :: t when counter = 0 ->
+      current_bloons := bloon :: !current_bloons;
+      current_wave := t
+  | (bloon, counter) :: t -> current_wave := (bloon, counter - 1) :: t
+
+let update_game () =
+  if !Constants.state = Active then (
+    bloons_spawner current_wave;
+    move_balloons !current_bloons !turn_points)
 
 (******************************************************************************)
 let draw_game () =
@@ -238,16 +355,33 @@ let draw_game () =
 
   (*This line shows ref rectangles! Comment out if you want them invisible*)
   GameBounds.draw_rectangles !path_rectangles;
-  if !showInstructions = false then begin
-    MenuBar.draw_menu (Option.get !menu_rect);
-    MenuBar.play_button !screen_width !screen_height;
-    Bears.draw_dart_bear_img !screen_width !screen_height;
-  end;
+
+  MenuBar.draw_menu (Option.get !menu_rect);
+
+  (* Drawing lives*)
+  Raylib.draw_rectangle_rec
+    (MenuBar.lives !screen_width !screen_height)
+    (Color.create 150 0 0 100);
+
+  MenuBar.draw_heart !screen_width !screen_height;
+
+  (* Drawing cash *)
+  Raylib.draw_rectangle_rec
+    (MenuBar.cash !screen_width !screen_height)
+    (Color.create 0 150 0 100);
+
+  MenuBar.play_button !screen_width !screen_height;
+
   (*Draw the BEAR reference images*)
 
   
   (*Draw the turning points for reference, comment out if you want them invisible*)
   BalloonPath.draw_turnpoints !turn_points;
+
+  (*Draw the balloons, the number passed in is the path's width, so that balloons
+     are drawn as the correct size.*)
+  if !Constants.state = Active then
+    Balloons.draw_balloons (2. *. !screen_height /. 28.) !current_bloons;
 
   if !showInstructions then (
     draw_rectangle 0 0
@@ -266,7 +400,14 @@ let draw_game () =
           ""
       in
 
-      draw_text "Hello, welcome to McGraw Tower Defense..."
+      draw_text
+        "Welcome to McGraw Tower Defense!\n\n\
+         Defend Cornell and McGraw Tower from waves of \n\
+         oncoming balloons. You earn cash for every \n\
+         layer of balloon that you pop and at the end \n\
+         of each round. Use it strategically to buy and \n\
+         upgrade bears. \n\n\
+         Good luck!"
         (int_of_float (x_pos +. 10.))
         (int_of_float (y_pos +. 30.))
         30 Color.white;

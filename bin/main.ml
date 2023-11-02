@@ -142,7 +142,7 @@ let draw_home (title_font, background, red_bal_texture) =
            (5. *. !screen_height /. 9.)
            160. 80.)
         "PLAY")
-  then Constants.state := Active;
+  then Constants.state := Inactive;
   (* Raylib.set_texture_filter (Font.texture (Raylib.get_font_default ())) TextureFilter.Point; *)
   draw_text_ex title_font "McGraw Tower"
     (Vector2.create (!screen_width /. 2.) (!screen_height /. 3.))
@@ -159,7 +159,7 @@ let draw_home (title_font, background, red_bal_texture) =
 (*Updates and draws the window based on the current gamestate.*)
 let update_and_draw tuple =
   update_home ();
-  if !Constants.state = Active then
+  if !Constants.state != Home then
     let open MTD in
     (* clear_background Color.lightgray; *)
     Game.loop ()
