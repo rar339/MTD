@@ -1,9 +1,11 @@
 open Raylib
 open Constants
 open Waves
+open Bears
 open Gamebackground
 open Gamebounds
 open Balloonpath
+open Projectiles
 
 (******************************************************************************)
 let play_button screen_width screen_height =
@@ -122,11 +124,14 @@ let place_bear () =
     Constants.cash := !Constants.cash - (Option.get !selected_bear).cost;
     selected_bear := None)
 
+(******************************************************************************)
 let update_game () =
   update_state ();
   place_bear ();
 
   Bears.update_selected_bear !selected_bear (get_mouse_position ());
+  fire_all_shots !bear_collection !current_bloons;
+  update_bullets !bullet_collection;
 
   if !Constants.state = Active then (
     bloons_spawner current_wave;
@@ -193,6 +198,9 @@ let draw_game () =
 
   (*Draw PLACED bears!*)
   Bears.draw_bears !Bears.bear_collection;
+
+  (*Draw bullets*)
+  draw_bullets !bullet_collection;
 
   (*Draw the turning points for reference, comment out if you want them invisible*)
   Balloonpath.draw_turnpoints !turn_points;

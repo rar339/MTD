@@ -72,7 +72,7 @@ let rec draw_balloons path_width (balloon_list : balloon list) =
 let make_redb i position =
   {
     color = Red;
-    velocity = Raylib.Vector2.create 25.0 0.0;
+    velocity = Raylib.Vector2.create 3.0 0.0;
     position;
     next_down = None;
     is_lead = false;

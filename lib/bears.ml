@@ -14,6 +14,9 @@ type bear = {
   mutable position : Raylib.Vector2.t;
   img : string;
   is_placed : bool;
+  attack_speed : int;
+  counter : int;
+  projectile_speed : float
 }
 
 let bear_collection : bear list ref = ref []
@@ -42,6 +45,9 @@ let make_dart_bear pos =
     position = pos;
     img = "YO";
     is_placed = true;
+    attack_speed  = 10;
+    counter = 50;
+    projectile_speed = 10.
   }
 
 let draw_dart_bear (bear : bear) =
@@ -63,6 +69,9 @@ let make_hockey_bear pos =
     position = pos;
     img = "YO";
     is_placed = true;
+    attack_speed  = 10;
+    counter = 50;
+    projectile_speed = 10.
   }
 
 let make_pumpkin_bear pos =
@@ -77,6 +86,9 @@ let make_pumpkin_bear pos =
     position = pos;
     img = "YO";
     is_placed = true;
+    attack_speed  = 10;
+    counter = 50;
+    projectile_speed = 10.
   }
 
 let make_ezra_bear pos =
@@ -91,6 +103,9 @@ let make_ezra_bear pos =
     position = pos;
     img = "YO";
     is_placed = true;
+    attack_speed  = 10;
+    counter = 50;
+    projectile_speed = 10.
   }
 
 let make_dragon_bear pos =
@@ -105,6 +120,9 @@ let make_dragon_bear pos =
     position = pos;
     img = "YO";
     is_placed = true;
+    attack_speed  = 10;
+    counter = 50;
+    projectile_speed = 10.
   }
 
 (*Reference Bear Helpers!*)
