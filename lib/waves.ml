@@ -16,6 +16,13 @@ let initialize_round (waves : (Balloons.balloon * int) list list ref) () =
       current_wave := h;
       waves := t
 
+let test_wave screen_height =
+  [
+    ( Balloons.make_redb 0
+        (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.))),
+      15 );
+  ]
+
 let wave1 screen_height : (Balloons.balloon * int) list =
   let balloon_lst = ref [] in
   for x = 0 to 20 do

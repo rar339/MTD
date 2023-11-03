@@ -62,7 +62,12 @@ let setup () =
   turn_points := generate_turn_points screen_width screen_height;
 
   (*Load all the waves for the game.*)
-  waves := [ Waves.wave1 screen_height; Waves.wave2 screen_height ]
+  waves :=
+    [
+      Waves.test_wave screen_height;
+      Waves.wave1 screen_height;
+      Waves.wave2 screen_height;
+    ]
 (*Load initial wave, likely temporarily: just for testing*)
 
 (******************************************************************************)
