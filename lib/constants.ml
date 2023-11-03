@@ -21,7 +21,7 @@ let screen_height = ref 834.
 
 (* Current gamestate *)
 let state = ref Home
-
+let round = ref 1
 (*Game global attributes*)
 let count = ref 0
 let showInstructions = ref true
