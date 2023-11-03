@@ -2,12 +2,12 @@ open Raylib
 open Constants
 
 let count = ref 0
-let showInstructions = ref false
+let showInstructions = ref true
 let selected : bool ref = ref false
+let selected_bear : Bears.bear option ref = ref None
 
 (*A list of all the waves in our game.*)
 let waves = ref []
-let selected_bear : Bears.bear_types option ref = ref None
 
 (*The current wave of baloons, when this is the empty list, the wave is over*)
 let current_wave = ref []
@@ -133,13 +133,6 @@ end
 (******************************************************************************)
 module BearCollection = struct
   let bear_collection : Bears.bear list ref = ref []
-  let draw_selected_bear (bear : Bears.bear_types option) =
-    match bear with
-    | None -> (print_endline "NO BEAR")
-    | Some _ ->begin
-      print_endline "DRAWN";
-    (* Bears.draw_dart_bear *)
-    end;
 end
 (******************************************************************************)
 
@@ -379,34 +372,32 @@ let bloons_spawner current_wave =
 let update_state () =
   if !current_bloons = [] && !current_wave = [] then Constants.state := Inactive
 
-let rec check_valid_placement (mouse_pos : Vector2.t) (rectangle_bounds : Rectangle.t list) = 
+let rec check_valid_placement (mouse_pos : Vector2.t)
+    (rectangle_bounds : Rectangle.t list) =
   match rectangle_bounds with
   | [] -> true
-  | h :: t -> if (check_collision_point_rec mouse_pos h) == true then check_valid_placement mouse_pos t else false
+  | h :: t ->
+      if check_collision_point_rec mouse_pos h == true then
+        false else check_valid_placement mouse_pos t
+      
 
 let update_game () =
   update_state ();
+
   if
-    !selected == false
+    !selected = false
     && is_mouse_button_pressed Left
     && Bears.determine_ref_bear_clicked (get_mouse_position ()) !screen_width
          !screen_height
-  then begin selected_bear := Some Bears.Dart;
-  selected := true; end;
-
-  if !selected == true && is_mouse_button_pressed Left then
-    print_endline "released";
-
-
-  
-     (* && (check_valid_placement (get_mouse_position()) (!path_rectangles))  *)
-
-  if !selected == true
-    && (is_mouse_button_pressed Left) then
-    bear_collection := Bears.make_dart_bear (get_mouse_position()) :: !bear_collection;
-    selected_bear := None;
+  then (
+    selected_bear := Some (Bears.make_dart_bear (get_mouse_position ()));
+    selected := true)
+  else if !selected = true && is_mouse_button_pressed Left && (check_valid_placement (get_mouse_position()) !path_rectangles) then (
     selected := false;
+    bear_collection := Option.get !selected_bear :: !bear_collection;
+    selected_bear := None);
 
+  Bears.update_selected_bear !selected_bear (get_mouse_position ());
 
   if !Constants.state = Active then (
     bloons_spawner current_wave;
@@ -448,9 +439,15 @@ let draw_game () =
   if !Constants.state <> Active then
     MenuBar.play_button !screen_width !screen_height;
 
-  (*Draw the BEAR reference images*)
-  Bears.draw_dart_bear_img !screen_width !screen_height;
-  (*Draw the bears!*)
+  (*Draw the SELECTED bear to PLACE*)
+  Bears.draw_selected_bear !selected_bear;
+
+  (*Draw the MENU bears*)
+  Bears.draw_dart_bear_img
+    (6. *. !screen_width /. 7.)
+    (1. *. !screen_height /. 4.);
+
+  (*Draw PLACED bears!*)
   Bears.draw_bears !bear_collection;
 
   (*Draw the turning points for reference, comment out if you want them invisible*)

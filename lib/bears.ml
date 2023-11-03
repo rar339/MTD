@@ -1,7 +1,7 @@
 open Raylib
 (* open Constants *)
 
-type bear_types = Dart | Hockey | Pumpkin | Ezra | Martha
+type bear_types = Dart | Hockey | Pumpkin | Ezra | Dragon
 
 type bear = {
   bear_type : bear_types;
@@ -17,15 +17,14 @@ type bear = {
 }
 
 let bear_radius = 30.
-let reference_img_radius = 50.
+let reference_img_radius = bear_radius
+let get_x bear = Vector2.x bear.position
+let get_y bear = Vector2.y bear.position
 
 (*DART BEARS*******************************************************************)
 
-let draw_dart_bear_img width height =
-  draw_circle
-    (int_of_float (6. *. width /. 7.))
-    (int_of_float (1. *. height /. 4.))
-    reference_img_radius Color.red
+let draw_dart_bear_img x y =
+  draw_circle (int_of_float x) (int_of_float y) reference_img_radius Color.red
 
 let make_dart_bear pos =
   {
@@ -41,8 +40,11 @@ let make_dart_bear pos =
     is_placed = true;
   }
 
-let draw_dart_bear (bear : bear)  =
-  draw_circle (int_of_float(Vector2.x bear.position)) (int_of_float(Vector2.y bear.position)) 25. Color.red
+let draw_dart_bear (bear : bear) =
+  draw_circle
+    (int_of_float (Vector2.x bear.position))
+    (int_of_float (Vector2.y bear.position))
+    (bear_radius) Color.red
 
 (******************************************************************************)
 let make_hockey_bear pos =
@@ -87,7 +89,7 @@ let make_ezra_bear pos =
     is_placed = true;
   }
 
-let make_martha_bear pos =
+let make_dragon_bear pos =
   {
     bear_type = Dart;
     range = 30.;
@@ -106,20 +108,20 @@ let determine_ref_bear_clicked (click_pos : Vector2.t) (screen_w : float)
     (screen_h : float) =
   if
     Vector2.x click_pos <= (6. *. screen_w /. 7.) +. 70.
-    && Vector2.x click_pos >= (6. *. screen_w /. 7.) -. +. 70.
+    && Vector2.x click_pos >= (6. *. screen_w /. 7.) -. 70.
     && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 70.
     && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 70.
   then true
   else false
 
 (*Draws the placed bears in the game*)
-let rec draw_bears (bears : bear list)  =
+let rec draw_bears (bears : bear list) =
   match bears with
   | [] -> ()
   | bear :: rest -> (
       match bear with
       | { bear_type = Dart; _ } ->
-          draw_dart_bear bear ;
+          draw_dart_bear bear;
           draw_bears rest
       | { bear_type = Hockey; _ } ->
           print_endline "Drawing a Hockey bear";
@@ -127,10 +129,25 @@ let rec draw_bears (bears : bear list)  =
       | { bear_type = Pumpkin; _ } ->
           print_endline "Drawing a Pumpkin bear";
           draw_bears rest
-      | { bear_type = Martha; _ } ->
-          print_endline "Drawing a Martha bear";
+      | { bear_type = Dragon; _ } ->
+          print_endline "Drawing a Dragon bear";
           draw_bears rest
       | { bear_type = Ezra; _ } ->
           print_endline "Drawing an Ezra bear";
           draw_bears rest)
 
+let draw_selected_bear (bear : bear option) =
+  match bear with 
+  | None -> ()
+  | Some bear -> match bear with
+    | { bear_type = Dart; _ } -> draw_dart_bear_img (get_x bear) (get_y bear);
+    | { bear_type = Hockey; _ } -> ()
+    | { bear_type = Pumpkin; _ } -> ()
+    | { bear_type = Dragon; _ } -> ()
+    | { bear_type = Ezra; _ } -> ()
+
+
+let update_selected_bear (bear : bear option) (new_pos : Vector2.t) =
+  match bear with
+  | None -> ();
+  | Some bear -> bear.position <- new_pos;
