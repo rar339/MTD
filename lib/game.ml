@@ -17,7 +17,7 @@ let play_button screen_width screen_height =
            (8. *. screen_height /. 9.)
            (2. *. screen_width /. 9.)
            (screen_height /. 19.))
-        "Start Round")
+        ("Start Round " ^ string_of_int !Constants.round))
   then (
     initialize_round waves ();
     Constants.state := Active)
@@ -81,7 +81,8 @@ let update_state () =
   if !current_bloons = [] && !current_wave = [] && !Constants.state = Active
   then (
     Constants.state := Inactive;
-    Constants.cash := !Constants.cash + 100)
+    Constants.cash := !Constants.cash + 100;
+    Constants.round := !Constants.round + 1)
 
 (* Checks if a bear can be placed in the right  *)
 let rec check_valid_placement (mouse_pos : Vector2.t)
