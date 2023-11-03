@@ -16,6 +16,7 @@ type bear = {
   is_placed : bool;
 }
 
+let bear_collection : bear list ref = ref []
 let bear_radius = 30.
 let reference_img_radius = bear_radius
 let get_x bear = Vector2.x bear.position
@@ -24,7 +25,10 @@ let get_y bear = Vector2.y bear.position
 (*DART BEARS*******************************************************************)
 
 let draw_dart_bear_img x y =
-  draw_circle (int_of_float x) (int_of_float y) reference_img_radius Color.red
+  draw_circle (int_of_float x) (int_of_float y) reference_img_radius Color.red;
+  draw_ring_lines (Vector2.create x y)
+    (reference_img_radius /. 1.2)
+    reference_img_radius 0. 0. 10 Color.black
 
 let make_dart_bear pos =
   {
@@ -44,7 +48,7 @@ let draw_dart_bear (bear : bear) =
   draw_circle
     (int_of_float (Vector2.x bear.position))
     (int_of_float (Vector2.y bear.position))
-    (bear_radius) Color.red
+    bear_radius Color.red
 
 (******************************************************************************)
 let make_hockey_bear pos =
@@ -137,17 +141,29 @@ let rec draw_bears (bears : bear list) =
           draw_bears rest)
 
 let draw_selected_bear (bear : bear option) =
-  match bear with 
+  match bear with
   | None -> ()
-  | Some bear -> match bear with
-    | { bear_type = Dart; _ } -> draw_dart_bear_img (get_x bear) (get_y bear);
-    | { bear_type = Hockey; _ } -> ()
-    | { bear_type = Pumpkin; _ } -> ()
-    | { bear_type = Dragon; _ } -> ()
-    | { bear_type = Ezra; _ } -> ()
+  | Some bear -> (
+      match bear with
+      | { bear_type = Dart; _ } -> draw_dart_bear_img (get_x bear) (get_y bear)
+      | { bear_type = Hockey; _ } -> ()
+      | { bear_type = Pumpkin; _ } -> ()
+      | { bear_type = Dragon; _ } -> ()
+      | { bear_type = Ezra; _ } -> ())
 
+let check_circle_collision circ_one circ_two radius =
+  if Vector2.distance circ_one circ_two < 2. *. radius then true else false
 
 let update_selected_bear (bear : bear option) (new_pos : Vector2.t) =
-  match bear with
-  | None -> ();
-  | Some bear -> bear.position <- new_pos;
+  match bear with None -> () | Some bear -> bear.position <- new_pos
+
+let rec check_collision_bears (selected_bear : bear option)
+    (placed_bears : bear list) =
+  match placed_bears with
+  | [] -> false
+  | h :: t -> (
+      match selected_bear with
+      | None -> true
+      | Some bear ->
+          if (check_circle_collision (bear.position) (h.position) bear_radius) then true
+          else check_collision_bears selected_bear t)

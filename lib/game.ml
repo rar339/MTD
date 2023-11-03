@@ -128,11 +128,6 @@ module MenuBar = struct
       initialize_round waves ();
       Constants.state := Active)
 end
-
-(******************************************************************************)
-module BearCollection = struct
-  let bear_collection : Bears.bear list ref = ref []
-end
 (******************************************************************************)
 
 module BalloonPath = struct
@@ -209,7 +204,6 @@ open GameBackground
 open GameBounds
 open MenuBar
 open BalloonPath
-open BearCollection
 
 let setup () =
   (*Setup backgrounds and Raygui*)
@@ -378,16 +372,16 @@ let rec check_valid_placement (mouse_pos : Vector2.t)
   match rectangle_bounds with
   | [] -> true
   | h :: t ->
-      if check_collision_point_rec mouse_pos h == true then
-        false else check_valid_placement mouse_pos t
+      if check_collision_point_rec mouse_pos h == true then false
+      else check_valid_placement mouse_pos t
 
-let nevermind (mouse_pos : Vector2.t) (menu : Rectangle.t) = 
-   check_collision_point_rec mouse_pos menu
+let nevermind (mouse_pos : Vector2.t) (menu : Rectangle.t) =
+  check_collision_point_rec mouse_pos menu
 
 (* Checks for valid placement of bear, contingent on position and cash.
    If a player no longer wants to place a bear, they can move the selected
-   choice back to the menu to discard their choice.  *)
-let place_bear () = 
+   choice back to the menu to discard their choice. *)
+let place_bear () =
   if
     !selected = false
     && is_mouse_button_pressed Left
@@ -395,26 +389,30 @@ let place_bear () =
          !screen_height
   then (
     selected_bear := Some (Bears.make_dart_bear (get_mouse_position ()));
-    selected := true; 
-    
-    )
-  else if nevermind (get_mouse_position ()) (Option.get !menu_rect) 
-    && !selected = true && is_mouse_button_pressed Left then (
-      selected := false;
-    selected_bear := None)
-  else if !selected = true && is_mouse_button_pressed Left && 
-    (check_valid_placement (get_mouse_position()) !path_rectangles) 
-    && (Option.get !selected_bear).cost <= !Constants.cash
-    then (
+    selected := true)
+  else if
+    nevermind (get_mouse_position ()) (Option.get !menu_rect)
+    && !selected = true
+    && is_mouse_button_pressed Left
+  then (
     selected := false;
-    bear_collection := Option.get !selected_bear :: !bear_collection;
+    selected_bear := None)
+  else if
+    !selected = true
+    && is_mouse_button_pressed Left
+    && check_valid_placement (get_mouse_position ()) !path_rectangles
+    && (Option.get !selected_bear).cost <= !Constants.cash
+    && Bears.check_collision_bears !selected_bear !Bears.bear_collection
+       == false
+  then (
+    selected := false;
+    Bears.bear_collection := Option.get !selected_bear :: !Bears.bear_collection;
     Constants.cash := !Constants.cash - (Option.get !selected_bear).cost;
     selected_bear := None)
 
-
 let update_game () =
   update_state ();
-  place_bear();
+  place_bear ();
 
   Bears.update_selected_bear !selected_bear (get_mouse_position ());
 
@@ -466,21 +464,24 @@ let draw_game () =
     (6. *. !screen_width /. 7.)
     (1. *. !screen_height /. 4.);
 
-  if !selected
-  then if check_valid_placement (get_mouse_position()) (!path_rectangles) then
-    draw_circle 
-    (Constants.round_float (Vector2.x (Option.get !selected_bear).position))
-    (Constants.round_float (Vector2.y (Option.get !selected_bear).position))
-    ((Option.get !selected_bear).range)
-    (Color.create 0 0 0 100) else begin
-    draw_circle 
-    (Constants.round_float (Vector2.x (Option.get !selected_bear).position))
-    (Constants.round_float (Vector2.y (Option.get !selected_bear).position))
-    ((Option.get !selected_bear).range)
-    (Color.create 100 0 0 100); end;
+  if !selected then
+    if
+      check_valid_placement (get_mouse_position ()) !path_rectangles
+      && Bears.check_collision_bears !selected_bear !Bears.bear_collection
+         == false
+    then
+      draw_circle
+        (Constants.round_float (Vector2.x (Option.get !selected_bear).position))
+        (Constants.round_float (Vector2.y (Option.get !selected_bear).position))
+        (Option.get !selected_bear).range (Color.create 0 0 0 100)
+    else
+      draw_circle
+        (Constants.round_float (Vector2.x (Option.get !selected_bear).position))
+        (Constants.round_float (Vector2.y (Option.get !selected_bear).position))
+        (Option.get !selected_bear).range (Color.create 100 0 0 100);
 
   (*Draw PLACED bears!*)
-  Bears.draw_bears !bear_collection;
+  Bears.draw_bears !Bears.bear_collection;
 
   (*Draw the turning points for reference, comment out if you want them invisible*)
   BalloonPath.draw_turnpoints !turn_points;
@@ -500,8 +501,7 @@ let draw_game () =
       let y_pos = 1. *. !screen_height /. 5. in
       let show_window =
         Raygui.window_box
-          (Rectangle.create 
-             x_pos y_pos
+          (Rectangle.create x_pos y_pos
              (3. *. !screen_width /. 5.)
              (3. *. !screen_height /. 5.))
           ""
