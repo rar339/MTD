@@ -1,14 +1,23 @@
 open Raylib
-open Raygui
 open Constants
 
 let count = ref 0
-let showInstructions = ref true
+let showInstructions = ref false
 let selected : bool ref = ref false
+
+(*A list of all the waves in our game.*)
+let waves = ref []
 let selected_bear : Bears.bear_types option ref = ref None
 
 (*The current wave of baloons, when this is the empty list, the wave is over*)
 let current_wave = ref []
+
+let initialize_round waves () =
+  match !waves with
+  | [] -> ()
+  | h :: t ->
+      current_wave := h;
+      waves := t
 
 (*The current list of balloons that are actually on the screen.*)
 let current_bloons = ref []
@@ -115,7 +124,10 @@ module MenuBar = struct
              (2. *. screen_width /. 9.)
              (screen_height /. 19.))
           "Start Round")
-    then Constants.state := Active
+    then (
+      initialize_round waves ();
+      print_string "hello";
+      Constants.state := Active)
 end
 
 (******************************************************************************)
@@ -134,9 +146,6 @@ end
 module BalloonPath = struct
   (*Points are represetned as pairs of ints.*)
   let start_point = (0, 0)
-
-  (*If a baloon is ever at a negative y value, it has reached the end of the path.*)
-  let end_line = -10
 
   (*start_point should be changed to be somewhere off the screen*)
   let turn_points : (int * int * int) list ref = ref []
@@ -220,7 +229,7 @@ let setup () =
   Raygui.(set_style (Label `Text_color_normal) 0xFFFFFFFF);
 
   (* Setup background image *)
-  let game_image : Image.t = Raylib.load_image "mtd_map.png" in
+  let game_image : Image.t = Raylib.load_image "./img/mtd_map.png" in
   background := Some (load_texture_from_image game_image);
   background_width := Image.width game_image;
   background_height := Image.height game_image;
@@ -236,9 +245,11 @@ let setup () =
          (7. *. floor (!screen_width /. 28.))
          (38. *. !screen_height /. 40.));
 
-  heart_img := Some Raylib.(load_texture_from_image (load_image "heart.png"));
+  heart_img :=
+    Some Raylib.(load_texture_from_image (load_image "./img/heart.png"));
 
-  cash_img := Some Raylib.(load_texture_from_image (load_image "dollar.png"));
+  cash_img :=
+    Some Raylib.(load_texture_from_image (load_image "./img/dollar.png"));
 
   path_rectangles :=
     create_rectangle 0.
@@ -321,22 +332,22 @@ let setup () =
       ( 22 * round_float (!screen_width /. 40.),
         8 * round_float (!screen_height /. 27.),
         2 );
-      ( 4 * round_float (!screen_width /. 40.),
+      ( 4 * round_float (!screen_width /. 48.),
         8 * round_float (!screen_height /. 28.),
         3 );
-      ( 4 * round_float (!screen_width /. 40.),
-        26 * round_float (!screen_height /. 28.),
+      ( 4 * round_float (!screen_width /. 48.),
+        26 * round_float (!screen_height /. 27.),
         4 );
       ( 25 * round_float (!screen_width /. 40.),
         26 * round_float (!screen_height /. 28.),
         5 );
       ( 25 * round_float (!screen_width /. 40.),
-        21 * round_float (!screen_height /. 29.),
+        21 * round_float (!screen_height /. 28.5),
         6 );
-      ( 9 * round_float (!screen_width /. 40.),
-        21 * round_float (!screen_height /. 29.),
+      ( 9 * round_float (!screen_width /. 42.),
+        21 * round_float (!screen_height /. 28.5),
         7 );
-      ( 9 * round_float (!screen_width /. 40.),
+      ( 9 * round_float (!screen_width /. 42.),
         13 * round_float (!screen_height /. 29.),
         8 );
       ( 14 * round_float (!screen_width /. 40.),
@@ -345,13 +356,14 @@ let setup () =
       ( 14 * round_float (!screen_width /. 40.),
         16 * round_float (!screen_height /. 28.),
         10 );
-      ( 27 * round_float (!screen_width /. 40.),
+      ( 27 * round_float (!screen_width /. 39.),
         16 * round_float (!screen_height /. 28.),
         11 );
     ];
 
-  (*Load initial wave, likely temporarily: just for testing*)
-  current_wave := Waves.wave2 screen_height
+  (*Load all the waves for the game.*)
+  waves := [ Waves.wave1 screen_height; Waves.wave2 screen_height ]
+(*Load initial wave, likely temporarily: just for testing*)
 
 (******************************************************************************)
 (*Adds bloons that are ready to be added to the screen, to current_bloons. If
@@ -364,12 +376,16 @@ let bloons_spawner current_wave =
       current_wave := t
   | (bloon, counter) :: t -> current_wave := (bloon, counter - 1) :: t
 
+let update_state () =
+  if !current_bloons = [] && !current_wave = [] then Constants.state := Inactive
+
 let rec check_valid_placement (mouse_pos : Vector2.t) (rectangle_bounds : Rectangle.t list) = 
   match rectangle_bounds with
   | [] -> true
   | h :: t -> if (check_collision_point_rec mouse_pos h) == true then check_valid_placement mouse_pos t else false
 
 let update_game () =
+  update_state ();
   if
     !selected == false
     && is_mouse_button_pressed Left
@@ -394,7 +410,8 @@ let update_game () =
 
   if !Constants.state = Active then (
     bloons_spawner current_wave;
-    move_balloons !current_bloons !turn_points)
+    move_balloons !current_bloons !turn_points;
+    current_bloons := Balloons.remove_out_of_bounds !current_bloons)
 
 (******************************************************************************)
 let draw_game () =
@@ -428,7 +445,8 @@ let draw_game () =
   MenuBar.lives_and_cash_count !screen_width !screen_height;
 
   (* Drawing round button *)
-  MenuBar.play_button !screen_width !screen_height;
+  if !Constants.state <> Active then
+    MenuBar.play_button !screen_width !screen_height;
 
   (*Draw the BEAR reference images*)
   Bears.draw_dart_bear_img !screen_width !screen_height;
@@ -452,7 +470,7 @@ let draw_game () =
       let x_pos = 1. *. !screen_width /. 5. in
       let y_pos = 1. *. !screen_height /. 5. in
       let show_window =
-        window_box
+        Raygui.window_box
           (Rectangle.create (*Magic number to offset window location: 300*)
              x_pos y_pos
              (3. *. !screen_width /. 5.)
