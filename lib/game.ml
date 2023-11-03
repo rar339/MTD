@@ -126,7 +126,6 @@ module MenuBar = struct
           "Start Round")
     then (
       initialize_round waves ();
-      print_string "hello";
       Constants.state := Active)
 end
 
@@ -369,9 +368,11 @@ let bloons_spawner current_wave =
       current_wave := t
   | (bloon, counter) :: t -> current_wave := (bloon, counter - 1) :: t
 
+(* If there are no balloons on the screen, the round is over. *)
 let update_state () =
   if !current_bloons = [] && !current_wave = [] then Constants.state := Inactive
 
+(* Checks if a bear can be placed in the right  *)
 let rec check_valid_placement (mouse_pos : Vector2.t)
     (rectangle_bounds : Rectangle.t list) =
   match rectangle_bounds with
@@ -379,11 +380,14 @@ let rec check_valid_placement (mouse_pos : Vector2.t)
   | h :: t ->
       if check_collision_point_rec mouse_pos h == true then
         false else check_valid_placement mouse_pos t
-      
 
-let update_game () =
-  update_state ();
+let nevermind (mouse_pos : Vector2.t) (menu : Rectangle.t) = 
+   check_collision_point_rec mouse_pos menu
 
+(* Checks for valid placement of bear, contingent on position and cash.
+   If a player no longer wants to place a bear, they can move the selected
+   choice back to the menu to discard their choice.  *)
+let place_bear () = 
   if
     !selected = false
     && is_mouse_button_pressed Left
@@ -391,11 +395,25 @@ let update_game () =
          !screen_height
   then (
     selected_bear := Some (Bears.make_dart_bear (get_mouse_position ()));
-    selected := true)
-  else if !selected = true && is_mouse_button_pressed Left && (check_valid_placement (get_mouse_position()) !path_rectangles) then (
+    selected := true; 
+    
+    )
+  else if nevermind (get_mouse_position ()) (Option.get !menu_rect) 
+    && !selected = true && is_mouse_button_pressed Left then (
+      selected := false;
+    selected_bear := None)
+  else if !selected = true && is_mouse_button_pressed Left && 
+    (check_valid_placement (get_mouse_position()) !path_rectangles) 
+    && (Option.get !selected_bear).cost <= !Constants.cash
+    then (
     selected := false;
     bear_collection := Option.get !selected_bear :: !bear_collection;
-    selected_bear := None);
+    Constants.cash := !Constants.cash - (Option.get !selected_bear).cost;
+    selected_bear := None)
+  
+let update_game () =
+  update_state ();
+  place_bear();
 
   Bears.update_selected_bear !selected_bear (get_mouse_position ());
 
@@ -446,6 +464,13 @@ let draw_game () =
   Bears.draw_dart_bear_img
     (6. *. !screen_width /. 7.)
     (1. *. !screen_height /. 4.);
+
+  if !selected
+  then draw_circle 
+    (Constants.round_float (Vector2.x (Option.get !selected_bear).position))
+    (Constants.round_float (Vector2.y (Option.get !selected_bear).position))
+    ((Option.get !selected_bear).range)
+    (Color.create 0 0 0 100);
 
   (*Draw PLACED bears!*)
   Bears.draw_bears !bear_collection;

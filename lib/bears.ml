@@ -29,8 +29,8 @@ let draw_dart_bear_img x y =
 let make_dart_bear pos =
   {
     bear_type = Dart;
-    range = 30.;
-    cost = 10;
+    range = 120.;
+    cost = 200;
     radius = 20.;
     rate = Vector2.create 0. 0.;
     upgrades = [];
@@ -50,8 +50,8 @@ let draw_dart_bear (bear : bear) =
 let make_hockey_bear pos =
   {
     bear_type = Hockey;
-    range = 30.;
-    cost = 10;
+    range = 80.;
+    cost = 200;
     radius = 20.;
     rate = Vector2.create 0. 0.;
     upgrades = [];
@@ -64,8 +64,8 @@ let make_hockey_bear pos =
 let make_pumpkin_bear pos =
   {
     bear_type = Dart;
-    range = 30.;
-    cost = 10;
+    range = 80.;
+    cost = 350;
     radius = 20.;
     rate = Vector2.create 0. 0.;
     upgrades = [];
@@ -78,8 +78,8 @@ let make_pumpkin_bear pos =
 let make_ezra_bear pos =
   {
     bear_type = Dart;
-    range = 30.;
-    cost = 10;
+    range = 80.;
+    cost = 400;
     radius = 20.;
     rate = Vector2.create 0. 0.;
     upgrades = [];
@@ -92,8 +92,8 @@ let make_ezra_bear pos =
 let make_dragon_bear pos =
   {
     bear_type = Dart;
-    range = 30.;
-    cost = 10;
+    range = 120.;
+    cost = 1000;
     radius = 20.;
     rate = Vector2.create 0. 0.;
     upgrades = [];

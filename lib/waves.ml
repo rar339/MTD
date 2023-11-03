@@ -1,3 +1,5 @@
+(* This file builds waves of balloons for the player pop with bears. *)
+
 let wave1 screen_height : (Balloons.balloon * int) list =
   let balloon_lst = ref [] in
   for x = 0 to 20 do
