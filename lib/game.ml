@@ -23,47 +23,6 @@ let initialize_round waves () =
 let current_bloons = ref []
 
 (******************************************************************************)
-module GameBackground = struct
-  let background : Texture2D.t option ref = ref None
-  let background_width : int ref = ref 0
-  let background_height : int ref = ref 0
-
-  let draw_background (background_art : Texture2D.t option ref) =
-    draw_texture_pro
-      (Option.get !background_art)
-      (Rectangle.create 0. 0. 2388. 1668.)
-      (Rectangle.create 0. 0. !screen_width !screen_height)
-      (Vector2.create 0. 0.) 0.
-      (Color.create 255 255 255 255)
-
-  let draw_ref_grid width height =
-    let x = ref 0 in
-    let y = ref 0 in
-    while !x < width do
-      draw_line !x 0 !x height Color.black;
-      x := !x + (width / 40);
-      draw_line 0 !y width !y Color.black;
-      y := !y + (height / 28)
-    done
-end
-
-(******************************************************************************)
-module GameBounds = struct
-  let rect_color = Color.create 0 0 0 100
-  let path_rectangles : Rectangle.t list ref = ref []
-
-  let create_rectangle x_pos y_pos width height =
-    Rectangle.create x_pos y_pos width height
-
-  let rec draw_rectangles (rectangles : Rectangle.t list) =
-    match rectangles with
-    | [] -> ()
-    | h :: t ->
-        Raylib.draw_rectangle_rec h rect_color;
-        draw_rectangles t
-end
-
-(******************************************************************************)
 module MenuBar = struct
   let menu_rect = ref None
   let heart_img = ref None
@@ -205,8 +164,8 @@ module BalloonPath = struct
 end
 
 (******************************************************************************)
-open GameBackground
-open GameBounds
+open Gamebackground
+open Gamebounds
 open MenuBar
 open BalloonPath
 open BearCollection
@@ -222,7 +181,7 @@ let setup () =
 
   (* Setup background image *)
   let game_image : Image.t = Raylib.load_image "./img/mtd_map.png" in
-  background := Some (load_texture_from_image game_image);
+  Gamebackground.background := Some (load_texture_from_image game_image);
   background_width := Image.width game_image;
   background_height := Image.height game_image;
 
@@ -432,14 +391,14 @@ let draw_game () =
   clear_background Color.white;
 
   (*Draw the background & reference grid*)
-  GameBackground.draw_background background;
+  Gamebackground.draw_background background;
 
-  GameBackground.draw_ref_grid
+  Gamebackground.draw_ref_grid
     (int_of_float !screen_width)
     (int_of_float !screen_height);
 
   (*This line shows ref rectangles! Comment out if you want them invisible*)
-  GameBounds.draw_rectangles !path_rectangles;
+  Gamebounds.draw_rectangles !path_rectangles;
 
   MenuBar.draw_menu (Option.get !menu_rect);
 
