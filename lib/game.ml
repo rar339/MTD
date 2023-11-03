@@ -413,7 +413,7 @@ let place_bear () =
     bear_collection := Option.get !selected_bear :: !bear_collection;
     Constants.cash := !Constants.cash - (Option.get !selected_bear).cost;
     selected_bear := None)
-
+  
 let update_game () =
   update_state ();
   place_bear ();
@@ -468,11 +468,12 @@ let draw_game () =
     (6. *. !screen_width /. 7.)
     (1. *. !screen_height /. 4.);
 
-  if !selected then
-    draw_circle
-      (Constants.round_float (Vector2.x (Option.get !selected_bear).position))
-      (Constants.round_float (Vector2.y (Option.get !selected_bear).position))
-      (Option.get !selected_bear).range (Color.create 0 0 0 100);
+  if !selected
+  then draw_circle 
+    (Constants.round_float (Vector2.x (Option.get !selected_bear).position))
+    (Constants.round_float (Vector2.y (Option.get !selected_bear).position))
+    ((Option.get !selected_bear).range)
+    (Color.create 0 0 0 100);
 
   (*Draw PLACED bears!*)
   Bears.draw_bears !bear_collection;
@@ -495,7 +496,7 @@ let draw_game () =
       let y_pos = 1. *. !screen_height /. 5. in
       let show_window =
         Raygui.window_box
-          (Rectangle.create (*Magic number to offset window location: 300*)
+          (Rectangle.create 
              x_pos y_pos
              (3. *. !screen_width /. 5.)
              (3. *. !screen_height /. 5.))
