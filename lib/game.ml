@@ -93,7 +93,7 @@ end
 open Gamebackground
 open Gamebounds
 open MenuBar
-open BalloonPath
+open Balloonpath
 
 let setup () =
   (*Setup backgrounds and Raygui*)
