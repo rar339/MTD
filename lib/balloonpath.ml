@@ -26,7 +26,7 @@ let rec check_turn_collide (balloon : Balloons.balloon)
         check_collision_circle_rec
           (Vector2.create (float_of_int x) (float_of_int y))
           1.
-          (Balloons.get_hitbox (2. *. !screen_height /. 28.) balloon)
+          (Balloons.get_hitbox balloon)
         && balloon.current_turn < i
       then (
         balloon.current_turn <- balloon.current_turn + 1;

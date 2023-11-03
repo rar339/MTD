@@ -38,6 +38,8 @@ let setup () =
   Gamebackground.background := Some (load_texture_from_image game_image);
   background_width := Image.width game_image;
   background_height := Image.height game_image;
+  (*The expression in setup_hitbox corresponds to the path_width*)
+  Balloons.setup_hitbox (2. *. !screen_height /. 28.);
 
   (* Setup heart and cash images *)
 
@@ -246,6 +248,7 @@ let draw_game () =
         30 Color.white;
       show_window
     then showInstructions := false);
+
   end_drawing ()
 
 (*Main game loop***************************************************************)
