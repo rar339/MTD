@@ -1,100 +1,27 @@
 open Raylib
 open Constants
-
-let count = ref 0
-let showInstructions = ref true
-let selected : bool ref = ref false
-let selected_bear : Bears.bear option ref = ref None
-
-(*A list of all the waves in our game.*)
-let waves = ref []
-
-(*The current wave of baloons, when this is the empty list, the wave is over*)
-let current_wave = ref []
-
-let initialize_round waves () =
-  match !waves with
-  | [] -> ()
-  | h :: t ->
-      current_wave := h;
-      waves := t
-
-(*The current list of balloons that are actually on the screen.*)
-let current_bloons = ref []
-
-(******************************************************************************)
-module MenuBar = struct
-  let menu_rect = ref None
-  let heart_img = ref None
-  let cash_img = ref None
-
-  let draw_menu rect =
-    draw_rectangle_rec rect (Color.create 183 201 226 255);
-    draw_rectangle_lines_ex rect 3. Color.black;
-    ()
-
-  let lives_box screen_width screen_height =
-    Rectangle.create
-      (149. *. screen_width /. 200.)
-      (0.5 *. screen_height /. 9.)
-      (1. *. screen_width /. 9.)
-      (screen_height /. 19.)
-
-  let cash screen_width screen_height =
-    Rectangle.create
-      (173. *. screen_width /. 200.)
-      (0.5 *. screen_height /. 9.)
-      (1. *. screen_width /. 9.)
-      (screen_height /. 19.)
-
-  let draw_heart heart_text screen_width screen_height =
-    draw_texture_ex (Option.get heart_text)
-      (Vector2.create
-         (149. *. screen_width /. 200.)
-         (0.45 *. screen_height /. 9.))
-      0. 0.10 Color.white
-
-  let draw_cash cash_text screen_width screen_height =
-    draw_texture_ex (Option.get cash_text)
-      (Vector2.create
-         (174. *. screen_width /. 200.)
-         (0.55 *. screen_height /. 9.))
-      0. 0.07 Color.white
-
-  let lives_and_cash_count screen_width screen_height =
-    Raylib.draw_text
-      (string_of_int !Constants.lives)
-      (int_of_float (158. *. screen_width /. 200.))
-      (int_of_float (0.62 *. screen_height /. 9.))
-      25 Color.white;
-    Raylib.draw_text
-      (string_of_int !Constants.cash)
-      (int_of_float (182. *. screen_width /. 200.))
-      (int_of_float (0.62 *. screen_height /. 9.))
-      25 Color.white
-
-  let play_button screen_width screen_height =
-    if
-      Raygui.(
-        button
-          (Rectangle.create
-             (149. *. screen_width /. 200.)
-             (8. *. screen_height /. 9.)
-             (2. *. screen_width /. 9.)
-             (screen_height /. 19.))
-          "Start Round")
-    then (
-      initialize_round waves ();
-      Constants.state := Active)
-end
-(******************************************************************************)
-
-(******************************************************************************)
+open Waves
 open Gamebackground
 open Gamebounds
-open MenuBar
 open Balloonpath
 
+(******************************************************************************)
+let play_button screen_width screen_height =
+  if
+    Raygui.(
+      button
+        (Rectangle.create
+           (149. *. screen_width /. 200.)
+           (8. *. screen_height /. 9.)
+           (2. *. screen_width /. 9.)
+           (screen_height /. 19.))
+        "Start Round")
+  then (
+    initialize_round waves ();
+    Constants.state := Active)
+(******************************************************************************)
+
+(******************************************************************************)
 let setup () =
   (*Setup backgrounds and Raygui*)
   Raygui.set_style (Default `Text_size) 30;
@@ -113,7 +40,7 @@ let setup () =
   (* Setup heart and cash images *)
 
   (*Make the menu rectangle*)
-  menu_rect :=
+  Constants.menu_rect :=
     Some
       (Rectangle.create
          (29.5 *. floor (!screen_width /. 40.))
@@ -121,121 +48,16 @@ let setup () =
          (7. *. floor (!screen_width /. 28.))
          (38. *. !screen_height /. 40.));
 
-  heart_img :=
+  Constants.heart_img :=
     Some Raylib.(load_texture_from_image (load_image "./img/heart.png"));
 
-  cash_img :=
+  Constants.cash_img :=
     Some Raylib.(load_texture_from_image (load_image "./img/dollar.png"));
 
-  path_rectangles :=
-    create_rectangle 0.
-      (2. *. floor (!screen_height /. 28.))
-      (23. *. floor (!screen_width /. 40.))
-      (2. *. floor (!screen_height /. 28.))
-    :: create_rectangle
-         (21. *. floor (!screen_width /. 40.))
-         (4. *. floor (!screen_height /. 28.))
-         (2. *. floor (!screen_width /. 40.))
-         (5. *. floor (!screen_height /. 28.))
-    :: create_rectangle
-         (3. *. floor (!screen_width /. 40.))
-         (7. *. floor (!screen_height /. 28.))
-         (18. *. floor (!screen_width /. 40.))
-         (2. *. floor (!screen_height /. 28.))
-    :: create_rectangle
-         (3. *. floor (!screen_width /. 40.))
-         (9. *. floor (!screen_height /. 28.))
-         (2. *. floor (!screen_width /. 40.))
-         (19. *. floor (!screen_height /. 29.))
-    :: create_rectangle
-         (5. *. floor (!screen_width /. 40.))
-         (26. *. floor (!screen_height /. 29.))
-         (19. *. floor (!screen_width /. 40.))
-         (3. *. floor (!screen_height /. 38.))
-    :: create_rectangle
-         (24. *. floor (!screen_width /. 40.))
-         (18. *. floor (!screen_height /. 25.))
-         (2. *. floor (!screen_width /. 40.))
-         (8. *. floor (!screen_height /. 31.))
-    :: create_rectangle
-         (8. *. floor (!screen_width /. 40.))
-         (12. *. floor (!screen_height /. 28.))
-         (2. *. floor (!screen_width /. 40.))
-         (11. *. floor (!screen_height /. 30.))
-    :: create_rectangle
-         (10. *. floor (!screen_width /. 40.))
-         (24. *. floor (!screen_height /. 33.))
-         (14. *. floor (!screen_width /. 40.))
-         (3. *. floor (!screen_height /. 37.))
-    :: create_rectangle
-         (10. *. floor (!screen_width /. 40.))
-         (12. *. floor (!screen_height /. 28.))
-         (3. *. floor (!screen_width /. 40.))
-         (3. *. floor (!screen_height /. 36.))
-    :: create_rectangle
-         (13. *. floor (!screen_width /. 40.))
-         (12. *. floor (!screen_height /. 28.))
-         (2. *. floor (!screen_width /. 40.))
-         (5. *. floor (!screen_height /. 27.))
-    :: create_rectangle
-         (15. *. floor (!screen_width /. 40.))
-         (15. *. floor (!screen_height /. 28.))
-         (13. *. floor (!screen_width /. 40.))
-         (2. *. floor (!screen_height /. 25.))
-    :: create_rectangle
-         (26. *. floor (!screen_width /. 40.))
-         (0. *. floor (!screen_height /. 28.))
-         (2. *. floor (!screen_width /. 36.))
-         (15. *. floor (!screen_height /. 28.))
-    :: !path_rectangles;
-
-  (*Create the ref rectangle for where the menu is
-    The side bar should be an invalid place for bears*)
-  path_rectangles :=
-    create_rectangle
-      (22. *. floor (!screen_width /. 30.))
-      0.
-      (8. *. floor (!screen_width /. 28.))
-      !screen_height
-    :: !path_rectangles;
+  path_rectangles := generate_rectangles screen_width screen_height;
 
   (*Turn points on the path*)
-  turn_points :=
-    [
-      ( 22 * round_float (!screen_width /. 39.),
-        3 * round_float (!screen_height /. 28.),
-        1 );
-      ( 22 * round_float (!screen_width /. 40.),
-        8 * round_float (!screen_height /. 27.),
-        2 );
-      ( 4 * round_float (!screen_width /. 48.),
-        8 * round_float (!screen_height /. 28.),
-        3 );
-      ( 4 * round_float (!screen_width /. 48.),
-        26 * round_float (!screen_height /. 27.),
-        4 );
-      ( 25 * round_float (!screen_width /. 40.),
-        26 * round_float (!screen_height /. 28.),
-        5 );
-      ( 25 * round_float (!screen_width /. 40.),
-        21 * round_float (!screen_height /. 28.5),
-        6 );
-      ( 9 * round_float (!screen_width /. 42.),
-        21 * round_float (!screen_height /. 28.5),
-        7 );
-      ( 9 * round_float (!screen_width /. 42.),
-        13 * round_float (!screen_height /. 29.),
-        8 );
-      ( 14 * round_float (!screen_width /. 40.),
-        13 * round_float (!screen_height /. 29.),
-        9 );
-      ( 14 * round_float (!screen_width /. 40.),
-        16 * round_float (!screen_height /. 28.),
-        10 );
-      ( 27 * round_float (!screen_width /. 39.),
-        16 * round_float (!screen_height /. 28.),
-        11 );
-    ];
+  turn_points := generate_turn_points screen_width screen_height;
 
   (*Load all the waves for the game.*)
   waves := [ Waves.wave1 screen_height; Waves.wave2 screen_height ]
@@ -281,7 +103,7 @@ let place_bear () =
     selected_bear := Some (Bears.make_dart_bear (get_mouse_position ()));
     selected := true)
   else if
-    nevermind (get_mouse_position ()) (Option.get !menu_rect)
+    nevermind (get_mouse_position ()) (Option.get !Constants.menu_rect)
     && !selected = true
     && is_mouse_button_pressed Left
   then (
@@ -327,24 +149,23 @@ let draw_game () =
   (*This line shows ref rectangles! Comment out if you want them invisible*)
   Gamebounds.draw_rectangles !path_rectangles;
 
-  MenuBar.draw_menu (Option.get !menu_rect);
+  Menubar.draw_menu (Option.get !Constants.menu_rect);
 
   (*** Drawing lives and cash ***)
   Raylib.draw_rectangle_rec
-    (MenuBar.lives_box !screen_width !screen_height)
+    (Menubar.lives_box !screen_width !screen_height)
     (Color.create 150 0 0 100);
 
   Raylib.draw_rectangle_rec
-    (MenuBar.cash !screen_width !screen_height)
+    (Menubar.cash !screen_width !screen_height)
     (Color.create 0 150 0 100);
 
-  MenuBar.draw_heart !heart_img !screen_width !screen_height;
-  MenuBar.draw_cash !cash_img !screen_width !screen_height;
-  MenuBar.lives_and_cash_count !screen_width !screen_height;
+  Menubar.draw_heart !Constants.heart_img !screen_width !screen_height;
+  Menubar.draw_cash !Constants.cash_img !screen_width !screen_height;
+  Menubar.lives_and_cash_count !screen_width !screen_height;
 
   (* Drawing round button *)
-  if !Constants.state <> Active then
-    MenuBar.play_button !screen_width !screen_height;
+  if !Constants.state <> Active then play_button !screen_width !screen_height;
 
   (*Draw the SELECTED bear to PLACE*)
   Bears.draw_selected_bear !selected_bear;
