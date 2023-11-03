@@ -5,6 +5,7 @@ open Constants
 let count = ref 0
 let showInstructions = ref true
 let selected : bool ref = ref false
+let selected_bear : Bears.bear_types option ref = ref None
 
 (*The current wave of baloons, when this is the empty list, the wave is over*)
 let current_wave = ref []
@@ -118,7 +119,16 @@ module MenuBar = struct
 end
 
 (******************************************************************************)
-
+module BearCollection = struct
+  let bear_collection : Bears.bear list ref = ref []
+  let draw_selected_bear (bear : Bears.bear_types option) =
+    match bear with
+    | None -> (print_endline "NO BEAR")
+    | Some _ ->begin
+      print_endline "DRAWN";
+    (* Bears.draw_dart_bear *)
+    end;
+end
 (******************************************************************************)
 
 module BalloonPath = struct
@@ -198,6 +208,7 @@ open GameBackground
 open GameBounds
 open MenuBar
 open BalloonPath
+open BearCollection
 
 let setup () =
   (*Setup backgrounds and Raygui*)
@@ -353,7 +364,34 @@ let bloons_spawner current_wave =
       current_wave := t
   | (bloon, counter) :: t -> current_wave := (bloon, counter - 1) :: t
 
+let rec check_valid_placement (mouse_pos : Vector2.t) (rectangle_bounds : Rectangle.t list) = 
+  match rectangle_bounds with
+  | [] -> true
+  | h :: t -> if (check_collision_point_rec mouse_pos h) == true then check_valid_placement mouse_pos t else false
+
 let update_game () =
+  if
+    !selected == false
+    && is_mouse_button_pressed Left
+    && Bears.determine_ref_bear_clicked (get_mouse_position ()) !screen_width
+         !screen_height
+  then begin selected_bear := Some Bears.Dart;
+  selected := true; end;
+
+  if !selected == true && is_mouse_button_pressed Left then
+    print_endline "released";
+
+
+  
+     (* && (check_valid_placement (get_mouse_position()) (!path_rectangles))  *)
+
+  if !selected == true
+    && (is_mouse_button_pressed Left) then
+    bear_collection := Bears.make_dart_bear (get_mouse_position()) :: !bear_collection;
+    selected_bear := None;
+    selected := false;
+
+
   if !Constants.state = Active then (
     bloons_spawner current_wave;
     move_balloons !current_bloons !turn_points)
@@ -393,6 +431,9 @@ let draw_game () =
   MenuBar.play_button !screen_width !screen_height;
 
   (*Draw the BEAR reference images*)
+  Bears.draw_dart_bear_img !screen_width !screen_height;
+  (*Draw the bears!*)
+  Bears.draw_bears !bear_collection;
 
   (*Draw the turning points for reference, comment out if you want them invisible*)
   BalloonPath.draw_turnpoints !turn_points;
