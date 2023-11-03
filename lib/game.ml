@@ -147,7 +147,7 @@ let draw_game () =
      (int_of_float !screen_height); *)
 
   (*This line shows ref rectangles! Comment out if you want them invisible*)
-  Gamebounds.draw_rectangles !path_rectangles;
+  (* Gamebounds.draw_rectangles !path_rectangles; *)
 
   Menubar.draw_menu (Option.get !Constants.menu_rect);
 
