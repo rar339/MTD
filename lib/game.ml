@@ -23,47 +23,6 @@ let initialize_round waves () =
 let current_bloons = ref []
 
 (******************************************************************************)
-module GameBackground = struct
-  let background : Texture2D.t option ref = ref None
-  let background_width : int ref = ref 0
-  let background_height : int ref = ref 0
-
-  let draw_background (background_art : Texture2D.t option ref) =
-    draw_texture_pro
-      (Option.get !background_art)
-      (Rectangle.create 0. 0. 2388. 1668.)
-      (Rectangle.create 0. 0. !screen_width !screen_height)
-      (Vector2.create 0. 0.) 0.
-      (Color.create 255 255 255 255)
-
-  let draw_ref_grid width height =
-    let x = ref 0 in
-    let y = ref 0 in
-    while !x < width do
-      draw_line !x 0 !x height Color.black;
-      x := !x + (width / 40);
-      draw_line 0 !y width !y Color.black;
-      y := !y + (height / 28)
-    done
-end
-
-(******************************************************************************)
-module GameBounds = struct
-  let rect_color = Color.create 0 0 0 100
-  let path_rectangles : Rectangle.t list ref = ref []
-
-  let create_rectangle x_pos y_pos width height =
-    Rectangle.create x_pos y_pos width height
-
-  let rec draw_rectangles (rectangles : Rectangle.t list) =
-    match rectangles with
-    | [] -> ()
-    | h :: t ->
-        Raylib.draw_rectangle_rec h rect_color;
-        draw_rectangles t
-end
-
-(******************************************************************************)
 module MenuBar = struct
   let menu_rect = ref None
   let heart_img = ref None
@@ -130,78 +89,9 @@ module MenuBar = struct
 end
 (******************************************************************************)
 
-module BalloonPath = struct
-  (*Points are represetned as pairs of ints.*)
-  let start_point = (0, 0)
-
-  (*start_point should be changed to be somewhere off the screen*)
-  let turn_points : (int * int * int) list ref = ref []
-  let draw_turnpoint x_pos y_pos = draw_circle x_pos y_pos 1.0 Color.red
-
-  let rec draw_turnpoints (turn_points : (int * int * int) list) =
-    match turn_points with
-    | [] -> ()
-    | (x, y, _) :: t ->
-        draw_turnpoint x y;
-        draw_turnpoints t
-
-  (*Checks if the given balloon is colliding with a turn point, meaning it should
-     make a turn. *)
-  let rec check_turn_collide (balloon : Balloons.balloon)
-      (turn_pts : (int * int * int) list) =
-    match turn_pts with
-    | [] -> None
-    | (x, y, i) :: t ->
-        if
-          check_collision_circle_rec
-            (Vector2.create (float_of_int x) (float_of_int y))
-            1.
-            (Balloons.get_hitbox (2. *. !screen_height /. 28.) balloon)
-          && balloon.current_turn < i
-        then (
-          balloon.current_turn <- balloon.current_turn + 1;
-          Some i)
-        else check_turn_collide balloon t
-
-  let turn_balloon rate i =
-    match i with
-    | 1 -> Vector2.create 0.0 rate
-    | 2 -> Vector2.create (-.rate) 0.0
-    | 3 -> Vector2.create 0.0 (-.rate)
-    | 4 -> Vector2.create rate 0.0
-    | 5 -> Vector2.create 0.0 (-.rate)
-    | 6 -> Vector2.create rate 0.0
-    | 7 -> Vector2.create 0.0 rate
-    | 8 -> Vector2.create (-.rate) 0.0
-    | 9 -> Vector2.create 0.0 rate
-    | 10 -> Vector2.create rate 0.0
-    | 11 -> Vector2.create 0.0 (-.rate)
-    | _ -> failwith "impossible"
-
-  (*Moves the balloon, taking into consideration if a turn is reached. If a turn
-     is reached, changes the velocity but does not update position.*)
-  let move_balloon (balloon : Balloons.balloon) turn_pts =
-    let x = Vector2.x balloon.position in
-    let y = Vector2.y balloon.position in
-    let x_rate = Vector2.x balloon.velocity in
-    let y_rate = Vector2.y balloon.velocity in
-    match check_turn_collide balloon turn_pts with
-    | None -> balloon.position <- Vector2.create (x +. x_rate) (y +. y_rate)
-    | Some i ->
-        balloon.velocity <-
-          turn_balloon (if x_rate = 0.0 then y_rate else x_rate) i
-
-  let rec move_balloons (balloon_list : Balloons.balloon list) turn_pts =
-    match balloon_list with
-    | [] -> ()
-    | h :: t ->
-        move_balloon h turn_pts;
-        move_balloons t turn_pts
-end
-
 (******************************************************************************)
-open GameBackground
-open GameBounds
+open Gamebackground
+open Gamebounds
 open MenuBar
 open BalloonPath
 
@@ -216,7 +106,7 @@ let setup () =
 
   (* Setup background image *)
   let game_image : Image.t = Raylib.load_image "./img/mtd_map.png" in
-  background := Some (load_texture_from_image game_image);
+  Gamebackground.background := Some (load_texture_from_image game_image);
   background_width := Image.width game_image;
   background_height := Image.height game_image;
 
@@ -428,14 +318,14 @@ let draw_game () =
   clear_background Color.white;
 
   (*Draw the background & reference grid*)
-  GameBackground.draw_background background;
+  Gamebackground.draw_background background;
 
-  GameBackground.draw_ref_grid
+  Gamebackground.draw_ref_grid
     (int_of_float !screen_width)
     (int_of_float !screen_height);
 
   (*This line shows ref rectangles! Comment out if you want them invisible*)
-  GameBounds.draw_rectangles !path_rectangles;
+  Gamebounds.draw_rectangles !path_rectangles;
 
   MenuBar.draw_menu (Option.get !menu_rect);
 
@@ -484,7 +374,7 @@ let draw_game () =
   Bears.draw_bears !Bears.bear_collection;
 
   (*Draw the turning points for reference, comment out if you want them invisible*)
-  BalloonPath.draw_turnpoints !turn_points;
+  Balloonpath.draw_turnpoints !turn_points;
 
   (*Draw the balloons, the number passed in is the path's width, so that balloons
      are drawn as the correct size.*)
