@@ -89,8 +89,8 @@ let setup () =
   Raylib.set_target_fps 60;
 
   (*Create the intro screen art*)
-  let title_font = Raylib.load_font_ex "machine-gunk.ttf" 100 None in
-  let custom_font = Raylib.load_font_ex "machine-gunk.ttf" 36 None in
+  let title_font = Raylib.load_font_ex "./img/machine-gunk.ttf" 100 None in
+  let custom_font = Raylib.load_font_ex "./img/machine-gunk.ttf" 36 None in
   Raygui.set_font custom_font;
   (*Create the intro screen art*)
   let intro_screen_art = Raylib.load_image "./img/MTDCoverArt.png" in
