@@ -78,7 +78,10 @@ let bloons_spawner current_wave =
 
 (* If there are no balloons on the screen, the round is over. *)
 let update_state () =
-  if !current_bloons = [] && !current_wave = [] then Constants.state := Inactive
+  if !current_bloons = [] && !current_wave = [] && !Constants.state = Active
+  then (
+    Constants.state := Inactive;
+    Constants.cash := !Constants.cash + 100)
 
 (* Checks if a bear can be placed in the right  *)
 let rec check_valid_placement (mouse_pos : Vector2.t)
@@ -153,7 +156,6 @@ let draw_game () =
 
   (*This line shows ref rectangles! Comment out if you want them invisible*)
   (* Gamebounds.draw_rectangles !path_rectangles; *)
-
   Menubar.draw_menu (Option.get !Constants.menu_rect);
 
   (*** Drawing lives and cash ***)
