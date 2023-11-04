@@ -62,9 +62,10 @@ let is_balloon_in_range (bear : Bears.bear) (balloon : Balloons.balloon) : bool
     =
   Vector2.distance bear.position balloon.position <= bear.range
 
+(*Precondition: balloons must be in the order they appear on the screen.*)
 let rec find_target (bear : Bears.bear) (balloons : Balloons.balloon list) :
     Balloons.balloon option =
-  match List.rev balloons with
+  match balloons with
   | [] -> None
   | first :: rest ->
       if is_balloon_in_range bear first then Some first

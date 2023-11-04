@@ -164,7 +164,7 @@ let update_game () =
   if !Constants.state = Active then (
     bloons_spawner current_wave;
     move_balloons !current_bloons !turn_points;
-    fire_all_shots !bear_collection !current_bloons;
+    fire_all_shots !bear_collection (List.rev !current_bloons);
     update_bullets !bullet_collection;
     update_collisions !bullet_collection !current_bloons;
     bullet_collection := Projectiles.remove_bullets !bullet_collection;
