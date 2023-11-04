@@ -11,6 +11,7 @@ type bullet = {
   color : Color.t;
   image : Texture2D.t option;
   radius : float;
+  mutable pierce : int;
 }
 
 let bullet_collection : bullet list ref = ref []
@@ -78,6 +79,7 @@ let fire_dart (bear : Bears.bear) (balloon : Balloons.balloon) =
       color = Color.black;
       image = None;
       radius = bullet_radius;
+      pierce = 1;
     }
     :: !bullet_collection
 
@@ -115,18 +117,39 @@ let rec update_bullets bullets =
       update_bullet first;
       update_bullets rest
 
+(*Set a projectile to be removed when it collides with a balloon.*)
+let rec update_bullet_collision bullet balloon_list =
+  match balloon_list with
+  | [] -> ()
+  | balloon :: t ->
+      if
+        check_collision_circle_rec bullet.position bullet_radius
+          (get_hitbox balloon)
+      then (
+        bullet.pierce <- bullet.pierce - 1;
+        balloon.collision <- true)
+      else update_bullet_collision bullet t
+
+let rec update_collisions bullet_list balloon_list =
+  match bullet_list with
+  | [] -> ()
+  | bullet :: t ->
+      update_bullet_collision bullet balloon_list;
+      update_collisions t balloon_list
+
 (*Delete bullets that have gone off the screen.*)
 let check_bullet_bounds bullet =
   let x = Vector2.x bullet.position in
   let y = Vector2.y bullet.position in
   x > !screen_width +. 10. || x < -10.0 || y > !screen_width +. 10. || y < -10.0
 
-let rec remove_out_of_bounds bullet_list =
+(*Remove bullets whether they are out of bounds or have collided.*)
+let rec remove_bullets bullet_list =
   match bullet_list with
   | [] -> []
-  | h :: t ->
-      if check_bullet_bounds h then remove_out_of_bounds t
-      else h :: remove_out_of_bounds t
+  | bullet :: t ->
+      if check_bullet_bounds bullet || bullet.pierce = 0 then remove_bullets t
+      else bullet :: remove_bullets t
 
 let draw_bullet bullet =
   draw_circle

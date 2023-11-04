@@ -151,8 +151,9 @@ let update_game () =
     move_balloons !current_bloons !turn_points;
     fire_all_shots !bear_collection !current_bloons;
     update_bullets !bullet_collection;
-    bullet_collection := Projectiles.remove_out_of_bounds !bullet_collection;
-    current_bloons := Balloons.remove_out_of_bounds !current_bloons)
+    update_collisions !bullet_collection !current_bloons;
+    bullet_collection := Projectiles.remove_bullets !bullet_collection;
+    current_bloons := Balloons.remove_balloons !current_bloons)
 
 (******************************************************************************)
 let draw_game () =
