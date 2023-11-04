@@ -98,9 +98,11 @@ let rec fire_all_shots (bears : Bears.bear list)
   | [] -> ()
   | first :: rest -> (
       match find_target first balloons with
-      | None -> fire_all_shots rest balloons
+      | None ->
+          first.counter <- first.counter - 1;
+          fire_all_shots rest balloons
       | Some balloon ->
-          if first.counter = 0 then (
+          if first.counter <= 0 then (
             first.counter <- first.attack_speed;
             init_projectile first balloon)
           else first.counter <- first.counter - 1;
