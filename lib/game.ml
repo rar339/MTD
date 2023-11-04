@@ -108,17 +108,31 @@ let nevermind (mouse_pos : Vector2.t) (menu : Rectangle.t) =
    If a player no longer wants to place a bear, they can move the selected
    choice back to the menu to discard their choice. *)
 
-(* NOTE: ADDED FUNCTIONS FOR EACH TYPE OF BEAR. RIGHT NOW, THIS ONLY HANDLES DART BEARS.
-   CONSIDER MAKING PLACE_BEAR TAKE IN A SELECTED_BEAR AFTER CHECKING DETERMINE_BEAR_CLICKED*)
+let check_click () =
+  if is_mouse_button_pressed Left then
+    if
+      determine_dart_bear_clicked (get_mouse_position ()) !screen_width
+        !screen_height
+    then selected_bear := Some (Bears.make_dart_bear (get_mouse_position ()))
+    else if
+      determine_hockey_bear_clicked (get_mouse_position ()) !screen_width
+        !screen_height
+    then selected_bear := Some (Bears.make_hockey_bear (get_mouse_position ()))
+    else if
+      (determine_pumpkin_bear_clicked (get_mouse_position ()))
+        !screen_width !screen_height
+    then selected_bear := Some (Bears.make_pumpkin_bear (get_mouse_position ()))
+    else if
+      (determine_ezra_bear_clicked (get_mouse_position ()))
+        !screen_width !screen_height
+    then selected_bear := Some (Bears.make_ezra_bear (get_mouse_position ()))
+    else if
+      (determine_dragon_bear_clicked (get_mouse_position ()))
+        !screen_width !screen_height
+    then selected_bear := Some (Bears.make_dragon_bear (get_mouse_position ()))
+
 let place_bear () =
-  if
-    !selected = false
-    && is_mouse_button_pressed Left
-    && Bears.determine_dart_bear_clicked (get_mouse_position ()) !screen_width
-         !screen_height
-  then (
-    selected_bear := Some (Bears.make_dart_bear (get_mouse_position ()));
-    selected := true)
+  if !selected = false && !selected_bear <> None then selected := true
   else if
     nevermind (get_mouse_position ()) (Option.get !Constants.menu_rect)
     && !selected = true
@@ -142,6 +156,7 @@ let place_bear () =
 (******************************************************************************)
 let update_game () =
   update_state ();
+  check_click ();
   place_bear ();
 
   Bears.update_selected_bear !selected_bear (get_mouse_position ());

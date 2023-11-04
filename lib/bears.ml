@@ -50,12 +50,6 @@ let make_dart_bear pos =
     projectile_speed = 10.;
   }
 
-let draw_dart_bear (bear : bear) =
-  draw_circle
-    (int_of_float (Vector2.x bear.position))
-    (int_of_float (Vector2.y bear.position))
-    bear_radius Color.red
-
 (******************************************************************************)
 let make_hockey_bear pos =
   {
@@ -76,7 +70,7 @@ let make_hockey_bear pos =
 
 let make_pumpkin_bear pos =
   {
-    bear_type = Dart;
+    bear_type = Pumpkin;
     range = 80.;
     cost = 350;
     radius = 20.;
@@ -93,7 +87,7 @@ let make_pumpkin_bear pos =
 
 let make_ezra_bear pos =
   {
-    bear_type = Dart;
+    bear_type = Ezra;
     range = 80.;
     cost = 400;
     radius = 20.;
@@ -110,7 +104,7 @@ let make_ezra_bear pos =
 
 let make_dragon_bear pos =
   {
-    bear_type = Dart;
+    bear_type = Dragon;
     range = 120.;
     cost = 1000;
     radius = 20.;
@@ -137,46 +131,77 @@ let determine_dart_bear_clicked (click_pos : Vector2.t) (screen_w : float)
   else false
 
 let determine_hockey_bear_clicked (click_pos : Vector2.t) (screen_w : float)
-  (screen_h : float) =
-if
-  Vector2.x click_pos <= (5.75 *. screen_w /. 7.) +. 35.
-  && Vector2.x click_pos >= (5.75 *. screen_w /. 7.) -. 35.
-  && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 35.
-  && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 35.
-then true
-else false
+    (screen_h : float) =
+  if
+    Vector2.x click_pos <= (5.75 *. screen_w /. 7.) +. 35.
+    && Vector2.x click_pos >= (5.75 *. screen_w /. 7.) -. 35.
+    && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 35.
+    && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 35.
+  then true
+  else false
 
 let determine_pumpkin_bear_clicked (click_pos : Vector2.t) (screen_w : float)
-  (screen_h : float) =
-if
-  Vector2.x click_pos <= (6.05 *. screen_w /. 7.) +. 35.
-  && Vector2.x click_pos >= (6.05 *. screen_w /. 7.) -. 35.
-  && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 35.
-  && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 35.
-then true
-else false
+    (screen_h : float) =
+  if
+    Vector2.x click_pos <= (6.05 *. screen_w /. 7.) +. 35.
+    && Vector2.x click_pos >= (6.05 *. screen_w /. 7.) -. 35.
+    && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 35.
+    && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 35.
+  then (
+    print_endline "hello";
+    true)
+  else false
 
 let determine_ezra_bear_clicked (click_pos : Vector2.t) (screen_w : float)
-  (screen_h : float) =
-if
-  Vector2.x click_pos <= (6.35 *. screen_w /. 7.) +. 35.
-  && Vector2.x click_pos >= (6.35 *. screen_w /. 7.) -. 35.
-  && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 35.
-  && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 35.
-then true
-else false
+    (screen_h : float) =
+  if
+    Vector2.x click_pos <= (6.35 *. screen_w /. 7.) +. 35.
+    && Vector2.x click_pos >= (6.35 *. screen_w /. 7.) -. 35.
+    && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 35.
+    && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 35.
+  then true
+  else false
 
 let determine_dragon_bear_clicked (click_pos : Vector2.t) (screen_w : float)
-  (screen_h : float) =
-if
-  Vector2.x click_pos <= (5.45 *. screen_w /. 7.) +. 35.
-  && Vector2.x click_pos >= (5.45 *. screen_w /. 7.) -. 35.
-  && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 35.
-  && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 35.
-then true
-else false
+    (screen_h : float) =
+  if
+    Vector2.x click_pos <= (6.65 *. screen_w /. 7.) +. 35.
+    && Vector2.x click_pos >= (6.65 *. screen_w /. 7.) -. 35.
+    && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 35.
+    && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 35.
+  then true
+  else false
 
+(* draw_bear functions *)
+let draw_dart_bear (bear : bear) =
+  draw_circle
+    (int_of_float (Vector2.x bear.position))
+    (int_of_float (Vector2.y bear.position))
+    bear_radius Color.red
 
+let draw_hockey_bear (bear : bear) =
+  draw_circle
+    (int_of_float (Vector2.x bear.position))
+    (int_of_float (Vector2.y bear.position))
+    bear_radius Color.blue
+
+let draw_pumpkin_bear (bear : bear) =
+  draw_circle
+    (int_of_float (Vector2.x bear.position))
+    (int_of_float (Vector2.y bear.position))
+    bear_radius Color.orange
+
+let draw_ezra_bear (bear : bear) =
+  draw_circle
+    (int_of_float (Vector2.x bear.position))
+    (int_of_float (Vector2.y bear.position))
+    bear_radius Color.purple
+
+let draw_dragon_bear (bear : bear) =
+  draw_circle
+    (int_of_float (Vector2.x bear.position))
+    (int_of_float (Vector2.y bear.position))
+    bear_radius Color.green
 
 (*Draws the placed bears in the game*)
 let rec draw_bears (bears : bear list) =
@@ -188,16 +213,16 @@ let rec draw_bears (bears : bear list) =
           draw_dart_bear bear;
           draw_bears rest
       | { bear_type = Hockey; _ } ->
-          print_endline "Drawing a Hockey bear";
+          draw_hockey_bear bear;
           draw_bears rest
       | { bear_type = Pumpkin; _ } ->
-          print_endline "Drawing a Pumpkin bear";
-          draw_bears rest
-      | { bear_type = Dragon; _ } ->
-          print_endline "Drawing a Dragon bear";
+          draw_pumpkin_bear bear;
           draw_bears rest
       | { bear_type = Ezra; _ } ->
-          print_endline "Drawing an Ezra bear";
+          draw_ezra_bear bear;
+          draw_bears rest
+      | { bear_type = Dragon; _ } ->
+          draw_dragon_bear bear;
           draw_bears rest)
 
 let draw_selected_bear (bear : bear option) =
@@ -207,10 +232,14 @@ let draw_selected_bear (bear : bear option) =
       match bear with
       | { bear_type = Dart; _ } ->
           draw_bear_img (get_x bear) (get_y bear) Color.red
-      | { bear_type = Hockey; _ } -> ()
-      | { bear_type = Pumpkin; _ } -> ()
-      | { bear_type = Dragon; _ } -> ()
-      | { bear_type = Ezra; _ } -> ())
+      | { bear_type = Hockey; _ } ->
+          draw_bear_img (get_x bear) (get_y bear) Color.blue
+      | { bear_type = Pumpkin; _ } ->
+          draw_bear_img (get_x bear) (get_y bear) Color.orange
+      | { bear_type = Ezra; _ } ->
+          draw_bear_img (get_x bear) (get_y bear) Color.purple
+      | { bear_type = Dragon; _ } ->
+          draw_bear_img (get_x bear) (get_y bear) Color.green)
 
 let check_circle_collision circ_one circ_two radius =
   if Vector2.distance circ_one circ_two < 2. *. radius then true else false
