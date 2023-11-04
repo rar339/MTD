@@ -115,6 +115,19 @@ let rec update_bullets bullets =
       update_bullet first;
       update_bullets rest
 
+(*Delete bullets that have gone off the screen.*)
+let check_bullet_bounds bullet =
+  let x = Vector2.x bullet.position in
+  let y = Vector2.y bullet.position in
+  x > !screen_width +. 10. || x < -10.0 || y > !screen_width +. 10. || y < -10.0
+
+let rec remove_out_of_bounds bullet_list =
+  match bullet_list with
+  | [] -> []
+  | h :: t ->
+      if check_bullet_bounds h then remove_out_of_bounds t
+      else h :: remove_out_of_bounds t
+
 let draw_bullet bullet =
   draw_circle
     (round_float (Vector2.x bullet.position))

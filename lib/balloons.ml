@@ -96,7 +96,7 @@ let make_redb i position =
   let y = Vector2.y position in
   {
     color = Red;
-    velocity = Raylib.Vector2.create 3.0 0.0;
+    velocity = Raylib.Vector2.create 5.0 0.0;
     position =
       Vector2.create
         (x +. !hitbox_y_offset +. (!hitbox_width /. 2.))

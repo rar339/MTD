@@ -87,6 +87,7 @@ let bloons_spawner current_wave =
 let update_state () =
   if !current_bloons = [] && !current_wave = [] && !Constants.state = Active
   then (
+    Projectiles.bullet_collection := [];
     Constants.state := Inactive;
     Constants.cash := !Constants.cash + 100;
     Constants.round := !Constants.round + 1)
@@ -147,6 +148,7 @@ let update_game () =
     move_balloons !current_bloons !turn_points;
     fire_all_shots !bear_collection !current_bloons;
     update_bullets !bullet_collection;
+    bullet_collection := Projectiles.remove_out_of_bounds !bullet_collection;
     current_bloons := Balloons.remove_out_of_bounds !current_bloons)
 
 (******************************************************************************)
