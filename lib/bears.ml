@@ -16,19 +16,19 @@ type bear = {
   is_placed : bool;
   attack_speed : int;
   counter : int;
-  projectile_speed : float
+  projectile_speed : float;
 }
 
 let bear_collection : bear list ref = ref []
 let bear_radius = 30.
-let reference_img_radius = bear_radius
+let reference_img_radius = bear_radius /. 2.
 let get_x bear = Vector2.x bear.position
 let get_y bear = Vector2.y bear.position
 
-(*DART BEARS*******************************************************************)
+(* Bear-Drawers *)
 
-let draw_dart_bear_img x y =
-  draw_circle (int_of_float x) (int_of_float y) reference_img_radius Color.red;
+let draw_bear_img x y color =
+  draw_circle (int_of_float x) (int_of_float y) reference_img_radius color;
   draw_ring_lines (Vector2.create x y)
     (reference_img_radius /. 1.2)
     reference_img_radius 0. 0. 10 Color.black
@@ -45,9 +45,9 @@ let make_dart_bear pos =
     position = pos;
     img = "YO";
     is_placed = true;
-    attack_speed  = 10;
+    attack_speed = 10;
     counter = 50;
-    projectile_speed = 10.
+    projectile_speed = 10.;
   }
 
 let draw_dart_bear (bear : bear) =
@@ -69,9 +69,9 @@ let make_hockey_bear pos =
     position = pos;
     img = "YO";
     is_placed = true;
-    attack_speed  = 10;
+    attack_speed = 10;
     counter = 50;
-    projectile_speed = 10.
+    projectile_speed = 10.;
   }
 
 let make_pumpkin_bear pos =
@@ -86,9 +86,9 @@ let make_pumpkin_bear pos =
     position = pos;
     img = "YO";
     is_placed = true;
-    attack_speed  = 10;
+    attack_speed = 10;
     counter = 50;
-    projectile_speed = 10.
+    projectile_speed = 10.;
   }
 
 let make_ezra_bear pos =
@@ -103,9 +103,9 @@ let make_ezra_bear pos =
     position = pos;
     img = "YO";
     is_placed = true;
-    attack_speed  = 10;
+    attack_speed = 10;
     counter = 50;
-    projectile_speed = 10.
+    projectile_speed = 10.;
   }
 
 let make_dragon_bear pos =
@@ -120,21 +120,63 @@ let make_dragon_bear pos =
     position = pos;
     img = "YO";
     is_placed = true;
-    attack_speed  = 10;
+    attack_speed = 10;
     counter = 50;
-    projectile_speed = 10.
+    projectile_speed = 10.;
   }
 
 (*Reference Bear Helpers!*)
-let determine_ref_bear_clicked (click_pos : Vector2.t) (screen_w : float)
+let determine_dart_bear_clicked (click_pos : Vector2.t) (screen_w : float)
     (screen_h : float) =
   if
-    Vector2.x click_pos <= (6. *. screen_w /. 7.) +. 70.
-    && Vector2.x click_pos >= (6. *. screen_w /. 7.) -. 70.
-    && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 70.
-    && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 70.
+    Vector2.x click_pos <= (5.45 *. screen_w /. 7.) +. 35.
+    && Vector2.x click_pos >= (5.45 *. screen_w /. 7.) -. 35.
+    && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 35.
+    && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 35.
   then true
   else false
+
+let determine_hockey_bear_clicked (click_pos : Vector2.t) (screen_w : float)
+  (screen_h : float) =
+if
+  Vector2.x click_pos <= (5.75 *. screen_w /. 7.) +. 35.
+  && Vector2.x click_pos >= (5.75 *. screen_w /. 7.) -. 35.
+  && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 35.
+  && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 35.
+then true
+else false
+
+let determine_pumpkin_bear_clicked (click_pos : Vector2.t) (screen_w : float)
+  (screen_h : float) =
+if
+  Vector2.x click_pos <= (6.05 *. screen_w /. 7.) +. 35.
+  && Vector2.x click_pos >= (6.05 *. screen_w /. 7.) -. 35.
+  && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 35.
+  && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 35.
+then true
+else false
+
+let determine_ezra_bear_clicked (click_pos : Vector2.t) (screen_w : float)
+  (screen_h : float) =
+if
+  Vector2.x click_pos <= (6.35 *. screen_w /. 7.) +. 35.
+  && Vector2.x click_pos >= (6.35 *. screen_w /. 7.) -. 35.
+  && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 35.
+  && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 35.
+then true
+else false
+
+let determine_dragon_bear_clicked (click_pos : Vector2.t) (screen_w : float)
+  (screen_h : float) =
+if
+  Vector2.x click_pos <= (5.45 *. screen_w /. 7.) +. 35.
+  && Vector2.x click_pos >= (5.45 *. screen_w /. 7.) -. 35.
+  && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 35.
+  && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 35.
+then true
+else false
+
+
 
 (*Draws the placed bears in the game*)
 let rec draw_bears (bears : bear list) =
@@ -163,7 +205,8 @@ let draw_selected_bear (bear : bear option) =
   | None -> ()
   | Some bear -> (
       match bear with
-      | { bear_type = Dart; _ } -> draw_dart_bear_img (get_x bear) (get_y bear)
+      | { bear_type = Dart; _ } ->
+          draw_bear_img (get_x bear) (get_y bear) Color.red
       | { bear_type = Hockey; _ } -> ()
       | { bear_type = Pumpkin; _ } -> ()
       | { bear_type = Dragon; _ } -> ()
@@ -183,5 +226,6 @@ let rec check_collision_bears (selected_bear : bear option)
       match selected_bear with
       | None -> true
       | Some bear ->
-          if (check_circle_collision (bear.position) (h.position) bear_radius) then true
+          if check_circle_collision bear.position h.position bear_radius then
+            true
           else check_collision_bears selected_bear t)

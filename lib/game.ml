@@ -104,11 +104,14 @@ let nevermind (mouse_pos : Vector2.t) (menu : Rectangle.t) =
 (* Checks for valid placement of bear, contingent on position and cash.
    If a player no longer wants to place a bear, they can move the selected
    choice back to the menu to discard their choice. *)
+
+(* NOTE: ADDED FUNCTIONS FOR EACH TYPE OF BEAR. RIGHT NOW, THIS ONLY HANDLES DART BEARS.
+   CONSIDER MAKING PLACE_BEAR TAKE IN A SELECTED_BEAR AFTER CHECKING DETERMINE_BEAR_CLICKED*)
 let place_bear () =
   if
     !selected = false
     && is_mouse_button_pressed Left
-    && Bears.determine_ref_bear_clicked (get_mouse_position ()) !screen_width
+    && Bears.determine_dart_bear_clicked (get_mouse_position ()) !screen_width
          !screen_height
   then (
     selected_bear := Some (Bears.make_dart_bear (get_mouse_position ()));
@@ -183,10 +186,31 @@ let draw_game () =
   (*Draw the SELECTED bear to PLACE*)
   Bears.draw_selected_bear !selected_bear;
 
-  (*Draw the MENU bears*)
-  Bears.draw_dart_bear_img
-    (6. *. !screen_width /. 7.)
-    (1. *. !screen_height /. 4.);
+  (* Draw the menu bears *)
+  Bears.draw_bear_img
+    (5.45 *. !screen_width /. 7.)
+    (1. *. !screen_height /. 4.)
+    Color.red;
+
+  Bears.draw_bear_img
+    (5.75 *. !screen_width /. 7.)
+    (1. *. !screen_height /. 4.)
+    Color.blue;
+
+  Bears.draw_bear_img
+    (6.05 *. !screen_width /. 7.)
+    (1. *. !screen_height /. 4.)
+    Color.orange;
+
+  Bears.draw_bear_img
+    (6.35 *. !screen_width /. 7.)
+    (1. *. !screen_height /. 4.)
+    Color.purple;
+
+  Bears.draw_bear_img
+    (6.65 *. !screen_width /. 7.)
+    (1. *. !screen_height /. 4.)
+    Color.green;
 
   if !selected then
     if
