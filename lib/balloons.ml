@@ -127,7 +127,7 @@ let determine_next = function
   | _ -> Purple
 
 (* Creates a balloon given the position and color. *)
-let make_balloon i position color =
+let make_balloon i position color is_lead =
   let x = Vector2.x position in
   let y = Vector2.y position in
   {
@@ -138,7 +138,7 @@ let make_balloon i position color =
         (x +. !hitbox_y_offset +. (!hitbox_width /. 2.))
         (y +. !hitbox_y_offset +. (!hitbox_height /. 2.));
     next_down = determine_next color;
-    is_lead = false;
+    is_lead;
     img = determine_image color;
     current_turn = 0;
     collision = false;

@@ -20,7 +20,7 @@ let test_wave screen_height =
   [
     ( Balloons.make_balloon 0
         (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.)))
-        Purple,
+        Purple false,
       15 );
   ]
 
@@ -30,7 +30,7 @@ let wave1 screen_height : (Balloons.balloon * int) list =
     balloon_lst :=
       ( Balloons.make_balloon x
           (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.)))
-          Red,
+          Red false,
         15 )
       :: !balloon_lst
   done;
@@ -42,13 +42,13 @@ let wave2 screen_height =
     balloon_lst :=
       ( Balloons.make_balloon x
           (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.)))
-          Red,
+          Red false,
         15 )
       :: !balloon_lst;
     balloon_lst :=
       ( Balloons.make_balloon x
           (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.)))
-          Blue,
+          Blue false,
         15 )
       :: !balloon_lst
   done;
