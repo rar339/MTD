@@ -10,7 +10,7 @@ let lives = ref 100
 (* The player's spending money for bears and their upgrades. Cash is
    spent with every purchase and accrued with every layer of balloon popped
    or level completed. *)
-let cash = ref 500
+let cash = ref 5000
 
 (* If a baloon is ever at a negative y value, it has reached the end of the path. *)
 let end_line = -60.
@@ -22,6 +22,7 @@ let screen_height = ref 834.
 (* Current gamestate *)
 let state = ref Home
 let round = ref 1
+
 (*Game global attributes*)
 let count = ref 0
 let showInstructions = ref true

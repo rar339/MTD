@@ -15,7 +15,7 @@ type bear = {
   img : string;
   is_placed : bool;
   attack_speed : int;
-  counter : int;
+  mutable counter : int;
   projectile_speed : float;
 }
 
@@ -36,7 +36,7 @@ let draw_bear_img x y color =
 let make_dart_bear pos =
   {
     bear_type = Dart;
-    range = 120.;
+    range = 250.;
     cost = 200;
     radius = 20.;
     rate = Vector2.create 0. 0.;
@@ -46,7 +46,7 @@ let make_dart_bear pos =
     img = "YO";
     is_placed = true;
     attack_speed = 10;
-    counter = 50;
+    counter = 0;
     projectile_speed = 10.;
   }
 

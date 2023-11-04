@@ -2,6 +2,7 @@
    are several different colors of balloons, each with their own velocities
    and associated values. *)
 open Raylib
+open Constants
 
 type balloon_colors =
   | None
@@ -35,30 +36,51 @@ type balloon = {
   order : int;
 }
 
+let hitbox_width = ref 0.0
+let hitbox_height = ref 0.0
+let hitbox_x_offset = ref 0.0
+let hitbox_y_offset = ref 0.0
+
+let setup_hitbox path_width =
+  hitbox_width := path_width /. 1.5;
+  hitbox_height := path_width /. 1.5;
+  hitbox_x_offset := path_width *. 0.21;
+  hitbox_y_offset := path_width *. 0.21
+
 (* This should be dependent on the size of the balloon image. Needs fine tuning. *)
-let get_hitbox path_width (balloon : balloon) =
+let get_hitbox (balloon : balloon) =
   Rectangle.create
-    (Vector2.x balloon.position +. (path_width *. 0.21))
-    (Vector2.y balloon.position +. (path_width *. 0.21))
-    (path_width /. 1.5) (path_width /. 1.5)
+    (Vector2.x balloon.position -. (!hitbox_width /. 2.))
+    (Vector2.y balloon.position -. (!hitbox_height /. 2.))
+    !hitbox_width !hitbox_height
 
 let draw_balloon path_width (balloon : balloon) =
-  let x = Vector2.x balloon.position in
-  let y = Vector2.y balloon.position in
+  let x =
+    Vector2.x balloon.position -. !hitbox_y_offset -. (!hitbox_width /. 2.)
+  in
+  let y =
+    Vector2.y balloon.position -. !hitbox_y_offset -. (!hitbox_width /. 2.)
+  in
   draw_texture_pro balloon.img
     (Rectangle.create 0. 0. 385. 500.)
     (Rectangle.create x y 80. path_width)
     (Vector2.create 0. 0.) 0.
-    (Color.create 255 255 255 255)
-  (*Comment/uncomment the draw function below as needed for debugging hitbox*)
-  (* draw_rectangle
-    (Constants.round_float (x +. (path_width *. 0.21)))
-    (Constants.round_float (y +. (path_width *. 0.21)))
-    (Constants.round_float (path_width /. 1.5))
-    (Constants.round_float (path_width /. 1.5))
-    Color.gold *)
+    (Color.create 255 255 255 255);
 
-(* draw_texture_ex balloon.img (Vector2.create x y) 0.0 0.15 Color.white *)
+  (*Comment/uncomment the draw function below as needed for debugging hitbox.*)
+  draw_rectangle
+    (Constants.round_float
+       (Vector2.x balloon.position -. (!hitbox_width /. 2.)))
+    (Constants.round_float
+       (Vector2.y balloon.position -. (!hitbox_height /. 2.)))
+    (Constants.round_float !hitbox_width)
+    (Constants.round_float !hitbox_height)
+    Color.gold;
+  (*Comment/uncomment the draw function below as needed for debugging hitbox.*)
+  draw_circle
+    (round_float (x +. !hitbox_y_offset +. (!hitbox_width /. 2.)))
+    (round_float (y +. !hitbox_y_offset +. (!hitbox_height /. 2.)))
+    5.0 Color.green
 
 (* Draws balloons in a balloon list. *)
 let rec draw_balloons path_width (balloon_list : balloon list) =
@@ -70,10 +92,15 @@ let rec draw_balloons path_width (balloon_list : balloon list) =
 
 (* Creates a red balloon. *)
 let make_redb i position =
+  let x = Vector2.x position in
+  let y = Vector2.y position in
   {
     color = Red;
-    velocity = Raylib.Vector2.create 3.0 0.0;
-    position;
+    velocity = Raylib.Vector2.create 5.0 0.0;
+    position =
+      Vector2.create
+        (x +. !hitbox_y_offset +. (!hitbox_width /. 2.))
+        (y +. !hitbox_y_offset +. (!hitbox_height /. 2.));
     next_down = None;
     is_lead = false;
     img =

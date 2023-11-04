@@ -38,6 +38,8 @@ let setup () =
   Gamebackground.background := Some (load_texture_from_image game_image);
   background_width := Image.width game_image;
   background_height := Image.height game_image;
+  (*The expression in setup_hitbox corresponds to the path_width*)
+  Balloons.setup_hitbox (2. *. !screen_height /. 28.);
 
   (* Setup heart and cash images *)
 
@@ -85,6 +87,7 @@ let bloons_spawner current_wave =
 let update_state () =
   if !current_bloons = [] && !current_wave = [] && !Constants.state = Active
   then (
+    Projectiles.bullet_collection := [];
     Constants.state := Inactive;
     Constants.cash := !Constants.cash + 100;
     Constants.round := !Constants.round + 1)
@@ -142,12 +145,13 @@ let update_game () =
   place_bear ();
 
   Bears.update_selected_bear !selected_bear (get_mouse_position ());
-  fire_all_shots !bear_collection !current_bloons;
-  update_bullets !bullet_collection;
 
   if !Constants.state = Active then (
     bloons_spawner current_wave;
     move_balloons !current_bloons !turn_points;
+    fire_all_shots !bear_collection !current_bloons;
+    update_bullets !bullet_collection;
+    bullet_collection := Projectiles.remove_out_of_bounds !bullet_collection;
     current_bloons := Balloons.remove_out_of_bounds !current_bloons)
 
 (******************************************************************************)
@@ -271,6 +275,7 @@ let draw_game () =
         30 Color.white;
       show_window
     then showInstructions := false);
+
   end_drawing ()
 
 (*Main game loop***************************************************************)

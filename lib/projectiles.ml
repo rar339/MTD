@@ -26,7 +26,7 @@ let projectile_moving_calc (bear : Bears.bear) (balloon : Balloons.balloon) =
   let enemy_vel_y = Vector2.y balloon.velocity in
   let enemy_vel_x = Vector2.x balloon.velocity in
   let bullet_speed = bear.projectile_speed in
-  let x_target = (Vector2.x balloon.position) in
+  let x_target = Vector2.x balloon.position in
   let y_target = Vector2.y balloon.position in
   let x_origin = Vector2.x bear.position in
   let y_origin = Vector2.y bear.position in
@@ -95,9 +95,14 @@ let rec fire_all_shots (bears : Bears.bear list)
   | [] -> ()
   | first :: rest -> (
       match find_target first balloons with
-      | None -> fire_all_shots rest balloons
+      | None ->
+          first.counter <- 0;
+          fire_all_shots rest balloons
       | Some balloon ->
-          init_projectile first balloon;
+          if first.counter = 0 then (
+            first.counter <- first.attack_speed;
+            init_projectile first balloon)
+          else first.counter <- first.counter - 1;
           fire_all_shots rest balloons)
 
 let update_bullet bullet =
@@ -109,6 +114,19 @@ let rec update_bullets bullets =
   | first :: rest ->
       update_bullet first;
       update_bullets rest
+
+(*Delete bullets that have gone off the screen.*)
+let check_bullet_bounds bullet =
+  let x = Vector2.x bullet.position in
+  let y = Vector2.y bullet.position in
+  x > !screen_width +. 10. || x < -10.0 || y > !screen_width +. 10. || y < -10.0
+
+let rec remove_out_of_bounds bullet_list =
+  match bullet_list with
+  | [] -> []
+  | h :: t ->
+      if check_bullet_bounds h then remove_out_of_bounds t
+      else h :: remove_out_of_bounds t
 
 let draw_bullet bullet =
   draw_circle
