@@ -26,7 +26,7 @@ let projectile_moving_calc (bear : Bears.bear) (balloon : Balloons.balloon) =
   let enemy_vel_y = Vector2.y balloon.velocity in
   let enemy_vel_x = Vector2.x balloon.velocity in
   let bullet_speed = bear.projectile_speed in
-  let x_target = (Vector2.x balloon.position) in
+  let x_target = Vector2.x balloon.position in
   let y_target = Vector2.y balloon.position in
   let x_origin = Vector2.x bear.position in
   let y_origin = Vector2.y bear.position in
@@ -95,9 +95,14 @@ let rec fire_all_shots (bears : Bears.bear list)
   | [] -> ()
   | first :: rest -> (
       match find_target first balloons with
-      | None -> fire_all_shots rest balloons
+      | None ->
+          first.counter <- 0;
+          fire_all_shots rest balloons
       | Some balloon ->
-          init_projectile first balloon;
+          if first.counter = 0 then (
+            first.counter <- first.attack_speed;
+            init_projectile first balloon)
+          else first.counter <- first.counter - 1;
           fire_all_shots rest balloons)
 
 let update_bullet bullet =

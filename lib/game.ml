@@ -141,12 +141,12 @@ let update_game () =
   place_bear ();
 
   Bears.update_selected_bear !selected_bear (get_mouse_position ());
-  fire_all_shots !bear_collection !current_bloons;
-  update_bullets !bullet_collection;
 
   if !Constants.state = Active then (
     bloons_spawner current_wave;
     move_balloons !current_bloons !turn_points;
+    fire_all_shots !bear_collection !current_bloons;
+    update_bullets !bullet_collection;
     current_bloons := Balloons.remove_out_of_bounds !current_bloons)
 
 (******************************************************************************)

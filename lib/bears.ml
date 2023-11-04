@@ -15,8 +15,8 @@ type bear = {
   img : string;
   is_placed : bool;
   attack_speed : int;
-  counter : int;
-  projectile_speed : float
+  mutable counter : int;
+  projectile_speed : float;
 }
 
 let bear_collection : bear list ref = ref []
@@ -36,7 +36,7 @@ let draw_dart_bear_img x y =
 let make_dart_bear pos =
   {
     bear_type = Dart;
-    range = 120.;
+    range = 250.;
     cost = 200;
     radius = 20.;
     rate = Vector2.create 0. 0.;
@@ -45,9 +45,9 @@ let make_dart_bear pos =
     position = pos;
     img = "YO";
     is_placed = true;
-    attack_speed  = 10;
-    counter = 50;
-    projectile_speed = 10.
+    attack_speed = 10;
+    counter = 0;
+    projectile_speed = 10.;
   }
 
 let draw_dart_bear (bear : bear) =
@@ -69,9 +69,9 @@ let make_hockey_bear pos =
     position = pos;
     img = "YO";
     is_placed = true;
-    attack_speed  = 10;
+    attack_speed = 10;
     counter = 50;
-    projectile_speed = 10.
+    projectile_speed = 10.;
   }
 
 let make_pumpkin_bear pos =
@@ -86,9 +86,9 @@ let make_pumpkin_bear pos =
     position = pos;
     img = "YO";
     is_placed = true;
-    attack_speed  = 10;
+    attack_speed = 10;
     counter = 50;
-    projectile_speed = 10.
+    projectile_speed = 10.;
   }
 
 let make_ezra_bear pos =
@@ -103,9 +103,9 @@ let make_ezra_bear pos =
     position = pos;
     img = "YO";
     is_placed = true;
-    attack_speed  = 10;
+    attack_speed = 10;
     counter = 50;
-    projectile_speed = 10.
+    projectile_speed = 10.;
   }
 
 let make_dragon_bear pos =
@@ -120,9 +120,9 @@ let make_dragon_bear pos =
     position = pos;
     img = "YO";
     is_placed = true;
-    attack_speed  = 10;
+    attack_speed = 10;
     counter = 50;
-    projectile_speed = 10.
+    projectile_speed = 10.;
   }
 
 (*Reference Bear Helpers!*)
@@ -183,5 +183,6 @@ let rec check_collision_bears (selected_bear : bear option)
       match selected_bear with
       | None -> true
       | Some bear ->
-          if (check_circle_collision (bear.position) (h.position) bear_radius) then true
+          if check_circle_collision bear.position h.position bear_radius then
+            true
           else check_collision_bears selected_bear t)
