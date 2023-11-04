@@ -18,8 +18,9 @@ let initialize_round (waves : (Balloons.balloon * int) list list ref) () =
 
 let test_wave screen_height =
   [
-    ( Balloons.make_redb 0
-        (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.))),
+    ( Balloons.make_balloon 0
+        (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.)))
+        Purple,
       15 );
   ]
 
@@ -27,8 +28,9 @@ let wave1 screen_height : (Balloons.balloon * int) list =
   let balloon_lst = ref [] in
   for x = 0 to 20 do
     balloon_lst :=
-      ( Balloons.make_redb x
-          (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.))),
+      ( Balloons.make_balloon x
+          (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.)))
+          Red,
         15 )
       :: !balloon_lst
   done;
@@ -38,13 +40,15 @@ let wave2 screen_height =
   let balloon_lst = ref [] in
   for x = 0 to 15 do
     balloon_lst :=
-      ( Balloons.make_redb x
-          (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.))),
+      ( Balloons.make_balloon x
+          (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.)))
+          Red,
         15 )
       :: !balloon_lst;
     balloon_lst :=
-      ( Balloons.make_blueb x
-          (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.))),
+      ( Balloons.make_balloon x
+          (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.)))
+          Blue,
         15 )
       :: !balloon_lst
   done;

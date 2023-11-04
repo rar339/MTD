@@ -36,7 +36,7 @@ let draw_bear_img x y color =
 let make_dart_bear pos =
   {
     bear_type = Dart;
-    range = 250.;
+    range = 150.;
     cost = 200;
     radius = 20.;
     rate = Vector2.create 0. 0.;
@@ -45,7 +45,7 @@ let make_dart_bear pos =
     position = pos;
     img = "YO";
     is_placed = true;
-    attack_speed = 10;
+    attack_speed = 30;
     counter = 0;
     projectile_speed = 10.;
   }

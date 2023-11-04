@@ -2,7 +2,6 @@
    are several different colors of balloons, each with their own velocities
    and associated values. *)
 open Raylib
-open Constants
 
 type balloon_colors =
   | None
@@ -66,22 +65,22 @@ let draw_balloon path_width (balloon : balloon) =
     (Rectangle.create 0. 0. 385. 500.)
     (Rectangle.create x y 80. path_width)
     (Vector2.create 0. 0.) 0.
-    (Color.create 255 255 255 255);
+    (Color.create 255 255 255 255)
 
-  (*Comment/uncomment the draw function below as needed for debugging hitbox.*)
-  draw_rectangle
-    (Constants.round_float
-       (Vector2.x balloon.position -. (!hitbox_width /. 2.)))
-    (Constants.round_float
-       (Vector2.y balloon.position -. (!hitbox_height /. 2.)))
-    (Constants.round_float !hitbox_width)
-    (Constants.round_float !hitbox_height)
-    Color.gold;
-  (*Comment/uncomment the draw function below as needed for debugging hitbox.*)
-  draw_circle
-    (round_float (x +. !hitbox_y_offset +. (!hitbox_width /. 2.)))
-    (round_float (y +. !hitbox_y_offset +. (!hitbox_height /. 2.)))
-    5.0 Color.green
+(*Comment/uncomment the draw function below as needed for debugging hitbox.*)
+(* draw_rectangle
+   (Constants.round_float
+      (Vector2.x balloon.position -. (!hitbox_width /. 2.)))
+   (Constants.round_float
+      (Vector2.y balloon.position -. (!hitbox_height /. 2.)))
+   (Constants.round_float !hitbox_width)
+   (Constants.round_float !hitbox_height)
+   Color.gold; *)
+(*Comment/uncomment the draw function below as needed for debugging hitbox.*)
+(* draw_circle
+   (round_float (x +. !hitbox_y_offset +. (!hitbox_width /. 2.)))
+   (round_float (y +. !hitbox_y_offset +. (!hitbox_height /. 2.)))
+   5.0 Color.green *)
 
 (* Draws balloons in a balloon list. *)
 let rec draw_balloons path_width (balloon_list : balloon list) =
@@ -91,43 +90,56 @@ let rec draw_balloons path_width (balloon_list : balloon list) =
       draw_balloon path_width h;
       draw_balloons path_width t
 
-(* Creates a red balloon. *)
-let make_redb i position =
+let determine_image = function
+  | None ->
+      let balloon_image = Raylib.load_image "./img/red.png" in
+      Raylib.load_texture_from_image balloon_image
+  | Red ->
+      let balloon_image = Raylib.load_image "./img/red.png" in
+      Raylib.load_texture_from_image balloon_image
+  | Blue ->
+      let balloon_image = Raylib.load_image "./img/blue.png" in
+      Raylib.load_texture_from_image balloon_image
+  | Green ->
+      let balloon_image = Raylib.load_image "./img/green.png" in
+      Raylib.load_texture_from_image balloon_image
+  | Yellow ->
+      let balloon_image = Raylib.load_image "./img/yellow.png" in
+      Raylib.load_texture_from_image balloon_image
+  | Orange ->
+      let balloon_image = Raylib.load_image "./img/orange.png" in
+      Raylib.load_texture_from_image balloon_image
+  | Purple ->
+      let balloon_image = Raylib.load_image "./img/purple.png" in
+      Raylib.load_texture_from_image balloon_image
+  | _ ->
+      let balloon_image = Raylib.load_image "./img/blue.png" in
+      Raylib.load_texture_from_image balloon_image
+
+let determine_next = function
+  | None -> None
+  | Red -> None
+  | Blue -> Red
+  | Green -> Blue
+  | Yellow -> Green
+  | Orange -> Yellow
+  | Purple -> Orange
+  | _ -> Purple
+
+(* Creates a balloon given the position and color. *)
+let make_balloon i position color =
   let x = Vector2.x position in
   let y = Vector2.y position in
   {
-    color = Red;
+    color;
     velocity = Raylib.Vector2.create 5.0 0.0;
     position =
       Vector2.create
         (x +. !hitbox_y_offset +. (!hitbox_width /. 2.))
         (y +. !hitbox_y_offset +. (!hitbox_height /. 2.));
-    next_down = None;
+    next_down = determine_next color;
     is_lead = false;
-    img =
-      (let balloon_image = Raylib.load_image "./img/red.png" in
-       Raylib.load_texture_from_image balloon_image);
-    current_turn = 0;
-    collision = false;
-    order = i;
-  }
-
-(* Creates a blue balloon *)
-let make_blueb i position =
-  let x = Vector2.x position in
-  let y = Vector2.y position in
-  {
-    color = Blue;
-    velocity = Raylib.Vector2.create 15.0 0.0;
-    position =
-      Vector2.create
-        (x +. !hitbox_y_offset +. (!hitbox_width /. 2.))
-        (y +. !hitbox_y_offset +. (!hitbox_height /. 2.));
-    next_down = Red;
-    is_lead = false;
-    img =
-      (let balloon_image = Raylib.load_image "./img/blue.png" in
-       Raylib.load_texture_from_image balloon_image);
+    img = determine_image color;
     current_turn = 0;
     collision = false;
     order = i;
@@ -145,9 +157,29 @@ let check_balloon_exit (balloon : balloon) =
     true)
   else false
 
+let lower_layer balloon =
+  match balloon.color with
+  | Red -> ()
+  | _ ->
+      balloon.color <- balloon.next_down;
+      balloon.img <- determine_image balloon.color;
+      balloon.next_down <- determine_next balloon.color;
+      balloon.collision <- false
+
+(*Determines whether the bloon should be removed or shed a layer. *)
+let rec update_state balloon_list =
+  match balloon_list with
+  | [] -> ()
+  | balloon :: t ->
+      if balloon.collision then (
+        lower_layer balloon;
+        update_state t)
+      else update_state t
+
 (* Removes a balloon if it has crossed the finish line and reduces a player's
    lives by calling lower_lives. *)
 let rec remove_balloons (balloon_lst : balloon list) =
+  update_state balloon_lst;
   match balloon_lst with
   | [] -> []
   | balloon :: t ->
