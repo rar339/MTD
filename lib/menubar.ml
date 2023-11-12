@@ -44,56 +44,24 @@ let place_bear () =
 
 let check_click () =
   if is_mouse_button_pressed Left then
-    if
-      determine_dart_bear_clicked (get_mouse_position ()) !screen_width
-        !screen_height
-    then selected_bear := Some (Bears.make_dart_bear (get_mouse_position ()))
-    else if
-      determine_hockey_bear_clicked (get_mouse_position ()) !screen_width
-        !screen_height
-    then selected_bear := Some (Bears.make_hockey_bear (get_mouse_position ()))
-    else if
-      (determine_pumpkin_bear_clicked (get_mouse_position ()))
-        !screen_width !screen_height
-    then selected_bear := Some (Bears.make_pumpkin_bear (get_mouse_position ()))
-    else if
-      (determine_ezra_bear_clicked (get_mouse_position ()))
-        !screen_width !screen_height
-    then selected_bear := Some (Bears.make_ezra_bear (get_mouse_position ()))
-    else if
-      (determine_dragon_bear_clicked (get_mouse_position ()))
-        !screen_width !screen_height
-    then selected_bear := Some (Bears.make_dragon_bear (get_mouse_position ()))
+    match determine_bear_clicked (get_mouse_position ()) !menu_bears with
+    | None -> ()
+    | Some Dart ->
+        selected_bear := Some (Bears.make_dart_bear (get_mouse_position ()))
+    | Some Hockey ->
+        selected_bear := Some (Bears.make_hockey_bear (get_mouse_position ()))
+    | Some Pumpkin ->
+        selected_bear := Some (Bears.make_pumpkin_bear (get_mouse_position ()))
+    | Some Ezra ->
+        selected_bear := Some (Bears.make_ezra_bear (get_mouse_position ()))
+    | Some Dragon ->
+        selected_bear := Some (Bears.make_dragon_bear (get_mouse_position ()))
 
 let draw_menu rect =
   draw_rectangle_rec rect (Color.create 183 201 226 255);
   draw_rectangle_lines_ex rect 3. Color.black;
   (* Draw the menu bears *)
-  Bears.draw_bear_img
-    (5.45 *. !screen_width /. 7.)
-    (1. *. !screen_height /. 4.)
-    Color.red;
-
-  Bears.draw_bear_img
-    (5.75 *. !screen_width /. 7.)
-    (1. *. !screen_height /. 4.)
-    Color.blue;
-
-  Bears.draw_bear_img
-    (6.05 *. !screen_width /. 7.)
-    (1. *. !screen_height /. 4.)
-    Color.orange;
-
-  Bears.draw_bear_img
-    (6.35 *. !screen_width /. 7.)
-    (1. *. !screen_height /. 4.)
-    Color.purple;
-
-  Bears.draw_bear_img
-    (6.65 *. !screen_width /. 7.)
-    (1. *. !screen_height /. 4.)
-    Color.green;
-  ()
+  Bears.draw_bears !menu_bears
 
 let lives_box screen_width screen_height =
   Rectangle.create

@@ -3,15 +3,18 @@ open Raylib
 
 type bear_types = Dart | Hockey | Pumpkin | Ezra | Dragon
 
+(*Width and height are temporary, shouldn't be needed if all images are the same
+   size.*)
 type bear = {
   bear_type : bear_types;
   mutable range : float;
   cost : int;
-  mutable rate : Raylib.Vector2.t;
   upgrades : int list;
   is_bomb : bool;
   mutable position : Raylib.Vector2.t;
-  img : string;
+  texture : Raylib.Texture2D.t;
+  image_width : float;
+  image_height : float;
   is_placed : bool;
   attack_speed : int;
   mutable counter : int;
@@ -20,20 +23,26 @@ type bear = {
 
 let bear_collection : bear list ref = ref []
 let bear_radius = 30.
-let reference_img_radius = bear_radius
 let get_x bear = Vector2.x bear.position
 let get_y bear = Vector2.y bear.position
 
+(*The bears displayed on the menu.*)
+let menu_bears : bear list ref = ref []
+
 let make_dart_bear pos =
+  let image = load_image "./img/redbear.png" in
+  let image_width = float_of_int (Image.width image) in
+  let image_height = float_of_int (Image.height image) in
   {
     bear_type = Dart;
     range = 150.;
     cost = 200;
-    rate = Vector2.create 0. 0.;
     upgrades = [];
     is_bomb = false;
     position = pos;
-    img = "YO";
+    texture = load_texture_from_image image;
+    image_width;
+    image_height;
     is_placed = true;
     attack_speed = 30;
     counter = 0;
@@ -42,15 +51,19 @@ let make_dart_bear pos =
 
 (******************************************************************************)
 let make_hockey_bear pos =
+  let image = load_image "./img/bluebear.png" in
+  let image_width = float_of_int (Image.width image) in
+  let image_height = float_of_int (Image.height image) in
   {
     bear_type = Hockey;
     range = 80.;
     cost = 200;
-    rate = Vector2.create 0. 0.;
     upgrades = [];
     is_bomb = false;
     position = pos;
-    img = "YO";
+    texture = load_texture_from_image image;
+    image_width;
+    image_height;
     is_placed = true;
     attack_speed = 10;
     counter = 50;
@@ -58,15 +71,19 @@ let make_hockey_bear pos =
   }
 
 let make_pumpkin_bear pos =
+  let image = load_image "./img/blackbear.png" in
+  let image_width = float_of_int (Image.width image) in
+  let image_height = float_of_int (Image.height image) in
   {
     bear_type = Pumpkin;
     range = 80.;
     cost = 350;
-    rate = Vector2.create 0. 0.;
     upgrades = [];
     is_bomb = false;
     position = pos;
-    img = "YO";
+    texture = load_texture_from_image image;
+    image_width;
+    image_height;
     is_placed = true;
     attack_speed = 10;
     counter = 50;
@@ -74,15 +91,19 @@ let make_pumpkin_bear pos =
   }
 
 let make_ezra_bear pos =
+  let image = load_image "./img/purplebear.png" in
+  let image_width = float_of_int (Image.width image) in
+  let image_height = float_of_int (Image.height image) in
   {
     bear_type = Ezra;
     range = 80.;
     cost = 400;
-    rate = Vector2.create 0. 0.;
     upgrades = [];
     is_bomb = false;
     position = pos;
-    img = "YO";
+    texture = load_texture_from_image image;
+    image_width;
+    image_height;
     is_placed = true;
     attack_speed = 10;
     counter = 50;
@@ -90,141 +111,70 @@ let make_ezra_bear pos =
   }
 
 let make_dragon_bear pos =
+  let image = load_image "./img/greenbear.png" in
+  let image_width = float_of_int (Image.width image) in
+  let image_height = float_of_int (Image.height image) in
   {
     bear_type = Dragon;
     range = 120.;
     cost = 1000;
-    rate = Vector2.create 0. 0.;
     upgrades = [];
     is_bomb = false;
     position = pos;
-    img = "YO";
+    texture = load_texture_from_image image;
+    image_width;
+    image_height;
     is_placed = true;
     attack_speed = 10;
     counter = 50;
     projectile_speed = 10.;
   }
 
-(*Reference Bear Helpers!*)
-let determine_dart_bear_clicked (click_pos : Vector2.t) (screen_w : float)
-    (screen_h : float) =
-  if
-    Vector2.x click_pos <= (5.45 *. screen_w /. 7.) +. 35.
-    && Vector2.x click_pos >= (5.45 *. screen_w /. 7.) -. 35.
-    && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 35.
-    && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 35.
-  then true
-  else false
+let generate_menu_bears screen_width screen_height =
+  [
+    make_dart_bear
+      (Vector2.create (5.45 *. screen_width /. 7.) (1. *. screen_height /. 4.));
+    make_hockey_bear
+      (Vector2.create (5.75 *. screen_width /. 7.) (1. *. screen_height /. 4.));
+    make_pumpkin_bear
+      (Vector2.create (6.05 *. screen_width /. 7.) (1. *. screen_height /. 4.));
+    make_ezra_bear
+      (Vector2.create (6.35 *. screen_width /. 7.) (1. *. screen_height /. 4.));
+    make_dragon_bear
+      (Vector2.create (6.65 *. screen_width /. 7.) (1. *. screen_height /. 4.));
+  ]
 
-let determine_hockey_bear_clicked (click_pos : Vector2.t) (screen_w : float)
-    (screen_h : float) =
-  if
-    Vector2.x click_pos <= (5.75 *. screen_w /. 7.) +. 35.
-    && Vector2.x click_pos >= (5.75 *. screen_w /. 7.) -. 35.
-    && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 35.
-    && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 35.
-  then true
-  else false
-
-let determine_pumpkin_bear_clicked (click_pos : Vector2.t) (screen_w : float)
-    (screen_h : float) =
-  if
-    Vector2.x click_pos <= (6.05 *. screen_w /. 7.) +. 35.
-    && Vector2.x click_pos >= (6.05 *. screen_w /. 7.) -. 35.
-    && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 35.
-    && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 35.
-  then (
-    print_endline "hello";
-    true)
-  else false
-
-let determine_ezra_bear_clicked (click_pos : Vector2.t) (screen_w : float)
-    (screen_h : float) =
-  if
-    Vector2.x click_pos <= (6.35 *. screen_w /. 7.) +. 35.
-    && Vector2.x click_pos >= (6.35 *. screen_w /. 7.) -. 35.
-    && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 35.
-    && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 35.
-  then true
-  else false
-
-let determine_dragon_bear_clicked (click_pos : Vector2.t) (screen_w : float)
-    (screen_h : float) =
-  if
-    Vector2.x click_pos <= (6.65 *. screen_w /. 7.) +. 35.
-    && Vector2.x click_pos >= (6.65 *. screen_w /. 7.) -. 35.
-    && Vector2.y click_pos <= (1. *. screen_h /. 4.) +. 35.
-    && Vector2.y click_pos >= (1. *. screen_h /. 4.) -. 35.
-  then true
-  else false
+(*Returns the type of the bear clicked, if any.*)
+let rec determine_bear_clicked click_pos bear_list =
+  match bear_list with
+  | [] -> None
+  | bear :: rest ->
+      if check_collision_point_circle click_pos bear.position bear_radius then
+        Some bear.bear_type
+      else determine_bear_clicked click_pos rest
 
 (* draw_bear functions *)
-let draw_dart_bear (bear : bear) =
-  draw_circle
-    (int_of_float (Vector2.x bear.position))
-    (int_of_float (Vector2.y bear.position))
-    bear_radius Color.red
-
-let draw_hockey_bear (bear : bear) =
-  draw_circle
-    (int_of_float (Vector2.x bear.position))
-    (int_of_float (Vector2.y bear.position))
-    bear_radius Color.blue
-
-let draw_pumpkin_bear (bear : bear) =
-  draw_circle
-    (int_of_float (Vector2.x bear.position))
-    (int_of_float (Vector2.y bear.position))
-    bear_radius Color.orange
-
-let draw_ezra_bear (bear : bear) =
-  draw_circle
-    (int_of_float (Vector2.x bear.position))
-    (int_of_float (Vector2.y bear.position))
-    bear_radius Color.purple
-
-let draw_dragon_bear (bear : bear) =
-  draw_circle
-    (int_of_float (Vector2.x bear.position))
-    (int_of_float (Vector2.y bear.position))
-    bear_radius Color.green
+let draw_bear (bear : bear) =
+  let x = Vector2.x bear.position -. bear_radius in
+  let y = Vector2.y bear.position -. bear_radius in
+  draw_texture_pro bear.texture
+    (*Source rect should be the size of the bears img file.*)
+    (Rectangle.create 0. 0. bear.image_width bear.image_height)
+    (*Dest rect*)
+    (Rectangle.create x y (bear_radius *. 2.) (bear_radius *. 2.))
+    (Vector2.create 0. 0.) 0.
+    (Color.create 255 255 255 255)
 
 (*Draws the placed bears in the game*)
 let rec draw_bears (bears : bear list) =
   match bears with
   | [] -> ()
   | bear :: rest ->
-      (match bear with
-      | { bear_type = Dart; _ } -> draw_dart_bear bear
-      | { bear_type = Hockey; _ } -> draw_hockey_bear bear
-      | { bear_type = Pumpkin; _ } -> draw_pumpkin_bear bear
-      | { bear_type = Ezra; _ } -> draw_ezra_bear bear
-      | { bear_type = Dragon; _ } -> draw_dragon_bear bear);
+      draw_bear bear;
       draw_bears rest
 
-let draw_bear_img x y color =
-  draw_circle (int_of_float x) (int_of_float y) reference_img_radius color;
-  draw_ring_lines (Vector2.create x y)
-    (reference_img_radius /. 1.2)
-    reference_img_radius 0. 0. 10 Color.black
-
-(*TODO: the draw_bear_img calls should be different depending on which bear
-   we're drawing (likely a new parameter).*)
 let draw_selected_bear (bear : bear option) =
-  match bear with
-  | None -> ()
-  | Some bear -> (
-      match bear with
-      | { bear_type = Dart; _ } ->
-          draw_bear_img (get_x bear) (get_y bear) Color.red
-      | { bear_type = Hockey; _ } ->
-          draw_bear_img (get_x bear) (get_y bear) Color.blue
-      | { bear_type = Pumpkin; _ } ->
-          draw_bear_img (get_x bear) (get_y bear) Color.orange
-      | { bear_type = Ezra; _ } ->
-          draw_bear_img (get_x bear) (get_y bear) Color.purple
-      | { bear_type = Dragon; _ } ->
-          draw_bear_img (get_x bear) (get_y bear) Color.green)
+  match bear with None -> () | Some bear -> draw_bear bear
 
 let check_circle_collision circ_one circ_two radius =
   Vector2.distance circ_one circ_two < 2. *. radius

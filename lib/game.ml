@@ -40,6 +40,8 @@ let setup () =
   background_height := Image.height game_image;
   (*The expression in setup_hitbox corresponds to the path_width*)
   Balloons.setup_hitbox (2. *. !screen_height /. 28.);
+  (*Adds the bears that will be displayed to menu_bears.*)
+  Bears.menu_bears := generate_menu_bears !screen_width !screen_height;
 
   (* Setup heart and cash images *)
 
