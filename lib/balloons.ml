@@ -173,6 +173,7 @@ let rec hit_update damage balloon =
   if damage = 0 || balloon.remove then ()
   else (
     lower_layer balloon;
+    Constants.cash := !Constants.cash + 1;
     hit_update (damage - 1) balloon)
 
 (* Removes a balloon if it has crossed the finish line and reduces a player's
