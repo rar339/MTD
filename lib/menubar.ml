@@ -23,6 +23,15 @@ let rec check_valid_placement (mouse_pos : Vector2.t)
       (not (check_collision_circle_rec mouse_pos 15.0 rect))
       && check_valid_placement mouse_pos t
 
+(*Checks if a GUI button was pressed, in which case we should not necessarily
+   deselect the selected bear.*)
+let rec check_button_press click_pos rect_lst =
+  match rect_lst with
+  | [] -> false
+  | rect :: rest ->
+      check_collision_point_rec click_pos rect
+      || check_button_press click_pos rest
+
 let nevermind (mouse_pos : Vector2.t) (menu : Rectangle.t) =
   check_collision_point_rec mouse_pos menu
 
@@ -73,7 +82,25 @@ let update_bear_selections placed_bears pos bears =
 (*True corresponds to placed bears (in bear_collection) and false corresponds to
    menu bears (menu_bears).*)
 let check_click () =
-  if is_mouse_button_pressed Left then (
+  let rect_width = Rectangle.width (Option.get !Constants.selection_rect) in
+  let rect_height = Rectangle.height (Option.get !Constants.selection_rect) in
+  let rect_x = Rectangle.x (Option.get !Constants.selection_rect) in
+  let rect_y = Rectangle.y (Option.get !Constants.selection_rect) in
+  if
+    check_button_press (get_mouse_position ())
+      [
+        Rectangle.create
+          (rect_x +. (rect_width /. 4.))
+          (rect_y +. (rect_height /. 1.15))
+          (rect_width /. 2.) (rect_height /. 10.);
+        Rectangle.create
+          (149. *. !screen_width /. 200.)
+          (8. *. !screen_height /. 9.)
+          (2. *. !screen_width /. 9.)
+          (!screen_height /. 19.);
+      ]
+  then ()
+  else if is_mouse_button_pressed Left then (
     update_bear_selections true (get_mouse_position ()) !bear_collection;
     update_bear_selections false (get_mouse_position ()) !menu_bears)
 
@@ -154,16 +181,6 @@ let mem_option bear_opt bear_lst =
   | None -> false
   | _ -> List.mem (Option.get bear_opt) bear_lst
 
-(*Displays the selection GUI for placed bears.*)
-let display_selection selection =
-  match selection with
-  | None -> ()
-  | Some ({ bear_type = Dart; _ } as bear) -> print_int bear.attack_speed
-  | Some ({ bear_type = Hockey; _ } as bear) -> print_int bear.attack_speed
-  | Some ({ bear_type = Pumpkin; _ } as bear) -> print_int bear.attack_speed
-  | Some ({ bear_type = Ezra; _ } as bear) -> print_int bear.attack_speed
-  | Some ({ bear_type = Dragon; _ } as bear) -> print_int bear.attack_speed
-
 (*Draws the range of the bear if it is hovered over or currently selected.*)
 let draw_hover_highlight () =
   if mem_option !hover_display !bear_collection && !hover_display <> None then
@@ -186,6 +203,50 @@ let display_hover_info (hover : bear option) =
     | Some ({ bear_type = Pumpkin; _ } as bear) -> print_int bear.attack_speed
     | Some ({ bear_type = Ezra; _ } as bear) -> print_int bear.attack_speed
     | Some ({ bear_type = Dragon; _ } as bear) -> print_int bear.attack_speed
+
+let draw_info_background () =
+  draw_rectangle_rec (Option.get !Constants.selection_rect) Color.gold;
+  draw_rectangle_lines_ex (Option.get !Constants.selection_rect) 3. Color.black
+
+let draw_info_title beartype rect_x rect_y rect_width =
+  draw_text
+    (Bears.string_of_beartype beartype ^ " Bear")
+    (Constants.round_float (rect_x +. (rect_width /. 3.)))
+    (Constants.round_float (rect_y *. 1.05))
+    30 Color.white
+
+(*0.70 Corresponds to the sell rate of towers.*)
+let draw_sell_button bear rect_x rect_y rect_width rect_height =
+  let sell_price = Constants.round_float (float_of_int bear.cost *. 0.70) in
+  if
+    Raygui.(
+      button
+        (Rectangle.create
+           (rect_x +. (rect_width /. 4.))
+           (rect_y +. (rect_height /. 1.15))
+           (rect_width /. 2.) (rect_height /. 10.))
+        ("Sell: " ^ string_of_int sell_price))
+  then (
+    bear.sold <- true;
+    select_display := None;
+    Constants.cash := !Constants.cash + sell_price)
+
+(*Displays the selection GUI for placed bears.*)
+let display_selection selection =
+  let rect_width = Rectangle.width (Option.get !Constants.selection_rect) in
+  let rect_height = Rectangle.height (Option.get !Constants.selection_rect) in
+  let rect_x = Rectangle.x (Option.get !Constants.selection_rect) in
+  let rect_y = Rectangle.y (Option.get !Constants.selection_rect) in
+  match selection with
+  | None -> ()
+  | Some ({ bear_type = Dart; _ } as bear) ->
+      draw_info_background ();
+      draw_info_title Dart rect_x rect_y rect_width;
+      draw_sell_button bear rect_x rect_y rect_width rect_height
+  | Some ({ bear_type = Hockey; _ } as bear) -> print_int bear.attack_speed
+  | Some ({ bear_type = Pumpkin; _ } as bear) -> print_int bear.attack_speed
+  | Some ({ bear_type = Ezra; _ } as bear) -> print_int bear.attack_speed
+  | Some ({ bear_type = Dragon; _ } as bear) -> print_int bear.attack_speed
 
 (*check_click takes care of updating what should currently be displayed.
    Important: Always draw the select_display before the hover_display.*)

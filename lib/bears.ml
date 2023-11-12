@@ -19,6 +19,7 @@ type bear = {
   attack_speed : int;
   mutable counter : int;
   projectile_speed : float;
+  mutable sold : bool;
 }
 
 let bear_collection : bear list ref = ref []
@@ -28,6 +29,14 @@ let get_y bear = Vector2.y bear.position
 
 (*The bears displayed on the menu.*)
 let menu_bears : bear list ref = ref []
+
+let string_of_beartype bear_type =
+  match bear_type with
+  | Dart -> "Dart"
+  | Hockey -> "Hockey"
+  | Pumpkin -> "Pumpkin"
+  | Ezra -> "Ezra"
+  | Dragon -> "Dragon"
 
 let make_dart_bear pos =
   let image = load_image "./img/redbear.png" in
@@ -47,6 +56,7 @@ let make_dart_bear pos =
     attack_speed = 30;
     counter = 0;
     projectile_speed = 10.;
+    sold = false;
   }
 
 (******************************************************************************)
@@ -68,6 +78,7 @@ let make_hockey_bear pos =
     attack_speed = 10;
     counter = 50;
     projectile_speed = 10.;
+    sold = false;
   }
 
 let make_pumpkin_bear pos =
@@ -88,6 +99,7 @@ let make_pumpkin_bear pos =
     attack_speed = 10;
     counter = 50;
     projectile_speed = 10.;
+    sold = false;
   }
 
 let make_ezra_bear pos =
@@ -108,6 +120,7 @@ let make_ezra_bear pos =
     attack_speed = 10;
     counter = 50;
     projectile_speed = 10.;
+    sold = false;
   }
 
 let make_dragon_bear pos =
@@ -128,6 +141,7 @@ let make_dragon_bear pos =
     attack_speed = 10;
     counter = 50;
     projectile_speed = 10.;
+    sold = false;
   }
 
 let generate_menu_bears screen_width screen_height =
@@ -193,3 +207,9 @@ let rec check_collision_bears (selected_bear : bear option)
           if check_circle_collision bear.position h.position bear_radius then
             true
           else check_collision_bears selected_bear t)
+
+let rec remove_bears bear_lst =
+  match bear_lst with
+  | [] -> []
+  | bear :: rest ->
+      if bear.sold then remove_bears rest else bear :: remove_bears rest

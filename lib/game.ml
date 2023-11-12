@@ -53,6 +53,14 @@ let setup () =
          (!screen_height /. 35.)
          (7. *. floor (!screen_width /. 28.))
          (38. *. !screen_height /. 40.));
+  (*Make the selection info GUI rectangle*)
+  Constants.selection_rect :=
+    Some
+      (Rectangle.create
+         (29.5 *. floor (!screen_width /. 40.))
+         (!screen_height /. 3.2)
+         (7. *. floor (!screen_width /. 28.))
+         (22. *. !screen_height /. 40.));
 
   Constants.heart_img :=
     Some Raylib.(load_texture_from_image (load_image "./img/heart.png"));
@@ -100,6 +108,7 @@ let update_game () =
   Menubar.check_click ();
   Menubar.check_hover ();
   Menubar.place_bear ();
+  bear_collection := Bears.remove_bears !bear_collection;
 
   Bears.update_selected_bear !selected_bear (get_mouse_position ());
 
@@ -121,9 +130,9 @@ let draw_game () =
   (*Draw the background & reference grid*)
   Gamebackground.draw_background background;
 
-  (* Gamebackground.draw_ref_grid
-     (int_of_float !screen_width)
-     (int_of_float !screen_height); *)
+  Gamebackground.draw_ref_grid
+    (int_of_float !screen_width)
+    (int_of_float !screen_height);
 
   (*This line shows ref rectangles! Comment out if you want them invisible*)
   (* Gamebounds.draw_rectangles !path_rectangles; *)

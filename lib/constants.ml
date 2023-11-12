@@ -31,6 +31,7 @@ let selected_bear : Bears.bear option ref = ref None
 let menu_rect : Raylib.Rectangle.t option ref = ref None
 let heart_img : Raylib.Texture2D.t option ref = ref None
 let cash_img : Raylib.Texture2D.t option ref = ref None
+let selection_rect : Raylib.Rectangle.t option ref = ref None
 
 (* Utility Functions *)
 let round_float x = int_of_float (Float.round x)
