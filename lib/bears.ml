@@ -21,17 +21,9 @@ type bear = {
 
 let bear_collection : bear list ref = ref []
 let bear_radius = 30.
-let reference_img_radius = bear_radius /. 2.
+let reference_img_radius = bear_radius
 let get_x bear = Vector2.x bear.position
 let get_y bear = Vector2.y bear.position
-
-(* Bear-Drawers *)
-
-let draw_bear_img x y color =
-  draw_circle (int_of_float x) (int_of_float y) reference_img_radius color;
-  draw_ring_lines (Vector2.create x y)
-    (reference_img_radius /. 1.2)
-    reference_img_radius 0. 0. 10 Color.black
 
 let make_dart_bear pos =
   {
@@ -225,6 +217,14 @@ let rec draw_bears (bears : bear list) =
           draw_dragon_bear bear;
           draw_bears rest)
 
+let draw_bear_img x y color =
+  draw_circle (int_of_float x) (int_of_float y) reference_img_radius color;
+  draw_ring_lines (Vector2.create x y)
+    (reference_img_radius /. 1.2)
+    reference_img_radius 0. 0. 10 Color.black
+
+(*TODO: the draw_bear_img calls should be different depending on which bear
+   we're drawing (likely a new parameter).*)
 let draw_selected_bear (bear : bear option) =
   match bear with
   | None -> ()

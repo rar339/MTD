@@ -91,7 +91,7 @@ let fire_dart (bear : Bears.bear) (balloon : Balloons.balloon) =
       color = Color.black;
       image = None;
       radius = bullet_radius;
-      pierce = 99;
+      pierce = 1;
       damage = 1;
       hits = [];
     }
