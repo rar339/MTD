@@ -98,6 +98,7 @@ let update_state () =
 let update_game () =
   update_state ();
   Menubar.check_click ();
+  Menubar.check_hover ();
   Menubar.place_bear ();
 
   Bears.update_selected_bear !selected_bear (get_mouse_position ());
@@ -149,22 +150,8 @@ let draw_game () =
 
   (*Draws the range of the selected bear: grey if it is in a valid location,
      red otherwise.*)
-  if !selected then
-    if
-      Menubar.check_valid_placement (get_mouse_position ()) !path_rectangles
-      && Bears.check_collision_bears !selected_bear !Bears.bear_collection
-         == false
-    then
-      draw_circle
-        (Constants.round_float (Vector2.x (Option.get !selected_bear).position))
-        (Constants.round_float (Vector2.y (Option.get !selected_bear).position))
-        (Option.get !selected_bear).range (Color.create 0 0 0 100)
-    else
-      draw_circle
-        (Constants.round_float (Vector2.x (Option.get !selected_bear).position))
-        (Constants.round_float (Vector2.y (Option.get !selected_bear).position))
-        (Option.get !selected_bear).range (Color.create 100 0 0 100);
-
+  if !selected then Menubar.draw_range !selected_bear;
+  Menubar.draw_hover_highlight ();
   (*Draw PLACED bears!*)
   Bears.draw_bears !Bears.bear_collection;
 
@@ -178,6 +165,11 @@ let draw_game () =
      are drawn as the correct size.*)
   if !Constants.state = Active then
     Balloons.draw_balloons (2. *. !screen_height /. 28.) !current_bloons;
+
+  Menubar.draw_hover_highlight ();
+
+  (*Draw the information panel based on what was last clicked and/or hovered over.*)
+  Menubar.display_bear_info !Menubar.select_display !Menubar.hover_display;
 
   if !showInstructions then (
     draw_rectangle 0 0

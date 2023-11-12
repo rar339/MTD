@@ -3,6 +3,12 @@ open Bears
 open Constants
 open Gamebounds
 
+(*Hover display is the information about the bears in the menu. This is always
+   drawn on top of whatever is currently shown. Select display represents the menu
+   type of a placed bear that is selected.*)
+let hover_display : bear option ref = ref None
+let select_display : bear option ref = ref None
+
 (* Checks for valid placement of bear, contingent on position and cash.
    If a player no longer wants to place a bear, they can move the selected
    choice back to the menu to discard their choice.
@@ -42,26 +48,41 @@ let place_bear () =
     Constants.cash := !Constants.cash - (Option.get !selected_bear).cost;
     selected_bear := None)
 
-let check_click () =
-  if is_mouse_button_pressed Left then
-    match determine_bear_clicked (get_mouse_position ()) !menu_bears with
-    | None -> ()
-    | Some Dart ->
+let update_bear_selections placed_bears pos bears =
+  let bear = determine_bear_clicked pos bears in
+  if placed_bears then select_display := bear;
+
+  match bear with
+  | None -> ()
+  | Some { bear_type = Dart; _ } ->
+      if not placed_bears then
         selected_bear := Some (Bears.make_dart_bear (get_mouse_position ()))
-    | Some Hockey ->
+  | Some { bear_type = Hockey; _ } ->
+      if not placed_bears then
         selected_bear := Some (Bears.make_hockey_bear (get_mouse_position ()))
-    | Some Pumpkin ->
+  | Some { bear_type = Pumpkin; _ } ->
+      if not placed_bears then
         selected_bear := Some (Bears.make_pumpkin_bear (get_mouse_position ()))
-    | Some Ezra ->
+  | Some { bear_type = Ezra; _ } ->
+      if not placed_bears then
         selected_bear := Some (Bears.make_ezra_bear (get_mouse_position ()))
-    | Some Dragon ->
+  | Some { bear_type = Dragon; _ } ->
+      if not placed_bears then
         selected_bear := Some (Bears.make_dragon_bear (get_mouse_position ()))
 
-let draw_menu rect =
-  draw_rectangle_rec rect (Color.create 183 201 226 255);
-  draw_rectangle_lines_ex rect 3. Color.black;
-  (* Draw the menu bears *)
-  Bears.draw_bears !menu_bears
+(*True corresponds to placed bears (in bear_collection) and false corresponds to
+   menu bears (menu_bears).*)
+let check_click () =
+  if is_mouse_button_pressed Left then (
+    update_bear_selections true (get_mouse_position ()) !bear_collection;
+    update_bear_selections false (get_mouse_position ()) !menu_bears)
+
+(*Updates the hover_display to be the current bear hovered over. Could be a menu
+   bear OR a placed bear.*)
+let check_hover () =
+  hover_display :=
+    determine_bear_clicked (get_mouse_position ())
+      (!menu_bears @ !bear_collection)
 
 let lives_box screen_width screen_height =
   Rectangle.create
@@ -102,3 +123,72 @@ let lives_and_cash_count screen_width screen_height =
     (int_of_float (182. *. screen_width /. 200.))
     (int_of_float (0.62 *. screen_height /. 9.))
     25 Color.white
+
+let draw_menu rect =
+  draw_rectangle_rec rect (Color.create 183 201 226 255);
+  draw_rectangle_lines_ex rect 3. Color.black;
+  (* Draw the menu bears *)
+  Bears.draw_bears !menu_bears
+
+(*Selection GUI****************************************************************)
+(*Draws the range of the selected bear: grey if it is in a valid location,
+      red otherwise.
+  Precondition: bear is not a Nonse option.*)
+let draw_range bear =
+  if
+    check_valid_placement (get_mouse_position ()) !path_rectangles
+    && Bears.check_collision_bears bear !Bears.bear_collection == false
+  then
+    draw_circle
+      (Constants.round_float (Vector2.x (Option.get bear).position))
+      (Constants.round_float (Vector2.y (Option.get bear).position))
+      (Option.get bear).range (Color.create 0 0 0 100)
+  else
+    draw_circle
+      (Constants.round_float (Vector2.x (Option.get bear).position))
+      (Constants.round_float (Vector2.y (Option.get bear).position))
+      (Option.get bear).range (Color.create 100 0 0 100)
+
+let mem_option bear_opt bear_lst =
+  match bear_opt with
+  | None -> false
+  | _ -> List.mem (Option.get bear_opt) bear_lst
+
+(*Displays the selection GUI for placed bears.*)
+let display_selection selection =
+  match selection with
+  | None -> ()
+  | Some ({ bear_type = Dart; _ } as bear) -> print_int bear.attack_speed
+  | Some ({ bear_type = Hockey; _ } as bear) -> print_int bear.attack_speed
+  | Some ({ bear_type = Pumpkin; _ } as bear) -> print_int bear.attack_speed
+  | Some ({ bear_type = Ezra; _ } as bear) -> print_int bear.attack_speed
+  | Some ({ bear_type = Dragon; _ } as bear) -> print_int bear.attack_speed
+
+(*Draws the range of the bear if it is hovered over or currently selected.*)
+let draw_hover_highlight () =
+  if mem_option !hover_display !bear_collection && !hover_display <> None then
+    draw_circle
+      (Constants.round_float (Vector2.x (Option.get !hover_display).position))
+      (Constants.round_float (Vector2.y (Option.get !hover_display).position))
+      (Option.get !hover_display).range (Color.create 0 0 0 50);
+  if !select_display <> None then
+    draw_circle
+      (Constants.round_float (Vector2.x (Option.get !select_display).position))
+      (Constants.round_float (Vector2.y (Option.get !select_display).position))
+      (Option.get !select_display).range (Color.create 0 0 0 50)
+
+let display_hover_info (hover : bear option) =
+  if mem_option hover !menu_bears then
+    match hover with
+    | None -> ()
+    | Some ({ bear_type = Dart; _ } as bear) -> print_int bear.attack_speed
+    | Some ({ bear_type = Hockey; _ } as bear) -> print_int bear.attack_speed
+    | Some ({ bear_type = Pumpkin; _ } as bear) -> print_int bear.attack_speed
+    | Some ({ bear_type = Ezra; _ } as bear) -> print_int bear.attack_speed
+    | Some ({ bear_type = Dragon; _ } as bear) -> print_int bear.attack_speed
+
+(*check_click takes care of updating what should currently be displayed.
+   Important: Always draw the select_display before the hover_display.*)
+let display_bear_info selection hover =
+  display_selection selection;
+  display_hover_info hover

@@ -144,21 +144,21 @@ let generate_menu_bears screen_width screen_height =
       (Vector2.create (6.65 *. screen_width /. 7.) (1. *. screen_height /. 4.));
   ]
 
-(*Returns the type of the bear clicked, if any.*)
+(*Returns the bear clicked, if any.*)
 let rec determine_bear_clicked click_pos bear_list =
   match bear_list with
   | [] -> None
   | bear :: rest ->
       if check_collision_point_circle click_pos bear.position bear_radius then
-        Some bear.bear_type
+        Some bear
       else determine_bear_clicked click_pos rest
 
-(* draw_bear functions *)
+(* draw_bear function *)
 let draw_bear (bear : bear) =
   let x = Vector2.x bear.position -. bear_radius in
   let y = Vector2.y bear.position -. bear_radius in
   draw_texture_pro bear.texture
-    (*Source rect should be the size of the bears img file.*)
+    (*Source rect should be the size of the bear's img file.*)
     (Rectangle.create 0. 0. bear.image_width bear.image_height)
     (*Dest rect*)
     (Rectangle.create x y (bear_radius *. 2.) (bear_radius *. 2.))
