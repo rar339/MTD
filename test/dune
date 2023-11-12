@@ -1,2 +1,3 @@
 (test
- (name mtd))
+ (name mtd)
+ (libraries ounit2 MTD))

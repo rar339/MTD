@@ -22,6 +22,10 @@ let test_wave screen_height =
         (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.)))
         Purple false,
       15 );
+    ( Balloons.make_balloon 0
+        (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.)))
+        Purple false,
+      15 );
   ]
 
 let wave1 screen_height : (Balloons.balloon * int) list =
