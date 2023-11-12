@@ -5,13 +5,20 @@ open Balloons
 
 let bullet_radius = 10.
 
+(*-Pierce is how many balloons a bullet can pierce through.
+  -Damage is how many layers of a bullet will go through.
+  -Hits is the list of balloons that a bullet has already collided with, used so
+  a bullet cannot hit the same balloon twice.*)
 type bullet = {
+  projectile : bear_types;
   mutable position : Vector2.t;
   velocity : Vector2.t;
   color : Color.t;
   image : Texture2D.t option;
   radius : float;
   mutable pierce : int;
+  damage : int;
+  mutable hits : Balloons.balloon list;
 }
 
 let bullet_collection : bullet list ref = ref []
@@ -71,16 +78,20 @@ let rec find_target (bear : Bears.bear) (balloons : Balloons.balloon list) :
       if is_balloon_in_range bear first then Some first
       else find_target bear rest
 
+(*Fires a dart.*)
 let fire_dart (bear : Bears.bear) (balloon : Balloons.balloon) =
   let velocity = projectile_moving_calc bear balloon in
   bullet_collection :=
     {
+      projectile = Dart;
       position = bear.position;
       velocity;
       color = Color.black;
       image = None;
       radius = bullet_radius;
       pierce = 1;
+      damage = 1;
+      hits = [];
     }
     :: !bullet_collection
 
@@ -118,18 +129,29 @@ let rec update_bullets bullets =
       update_bullet first;
       update_bullets rest
 
-(*Set a projectile to be removed when it collides with a balloon.*)
-let rec update_bullet_collision bullet balloon_list =
+let rec dart_collisions bullet balloon_list =
   match balloon_list with
   | [] -> ()
   | balloon :: t ->
       if
-        check_collision_circle_rec bullet.position bullet_radius
-          (get_hitbox balloon)
+        (not (List.mem balloon bullet.hits))
+        && check_collision_circle_rec bullet.position bullet_radius
+             (get_hitbox balloon)
       then (
         bullet.pierce <- bullet.pierce - 1;
-        balloon.collision <- true)
-      else update_bullet_collision bullet t
+        bullet.hits <- balloon :: bullet.hits;
+        Balloons.hit_update bullet.damage balloon)
+      else dart_collisions bullet t
+
+(*Updates bullets and balloons if a collision has occurred. Compares
+   given bullet with each balloon in balloon_list.*)
+let update_bullet_collision bullet balloon_list =
+  match bullet with
+  | { projectile = Dart; _ } -> dart_collisions bullet balloon_list
+  | { projectile = Hockey; _ } -> ()
+  | { projectile = Pumpkin; _ } -> ()
+  | { projectile = Dragon; _ } -> ()
+  | { projectile = Ezra; _ } -> ()
 
 let rec update_collisions bullet_list balloon_list =
   match bullet_list with

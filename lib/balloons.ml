@@ -32,7 +32,7 @@ type balloon = {
   mutable is_lead : bool;
   mutable img : Raylib.Texture2D.t;
   mutable current_turn : int;
-  mutable collision : bool;
+  mutable remove : bool;
   order : int;
 }
 
@@ -141,15 +141,15 @@ let make_balloon i position color is_lead =
     is_lead;
     img = determine_image color;
     current_turn = 0;
-    collision = false;
+    remove = false;
     order = i;
   }
 
-(* Lowers player lives when a balloon crosses the finish line based on the
+(*Lowers player lives when a balloon crosses the finish line based on the
    value of that balloon. *)
 let lower_lives balloon = Constants.(lives := !lives - balloon_value balloon)
 
-(* Checks if a balloon has reached the finish line. *)
+(*Checks if a balloon has reached the finish line. *)
 let check_balloon_exit (balloon : balloon) =
   let y = Vector2.y balloon.position in
   if y < Constants.end_line then (
@@ -157,31 +157,29 @@ let check_balloon_exit (balloon : balloon) =
     true)
   else false
 
+(*Modifies the given balloon to be one layer color 'lower'. If the balloon
+   is red, sets balloon.remove to true.*)
 let lower_layer balloon =
   match balloon.color with
-  | Red -> ()
+  | Red -> balloon.remove <- true
   | _ ->
       balloon.color <- balloon.next_down;
       balloon.img <- determine_image balloon.color;
-      balloon.next_down <- determine_next balloon.color;
-      balloon.collision <- false
+      balloon.next_down <- determine_next balloon.color
 
-(*Determines whether the bloon should be removed or shed a layer. *)
-let rec update_state balloon_list =
-  match balloon_list with
-  | [] -> ()
-  | balloon :: t ->
-      if balloon.collision then (
-        lower_layer balloon;
-        update_state t)
-      else update_state t
+(*Modifies the given balloon to be the correct layer color based on the damage
+   of the projectile.*)
+let rec hit_update damage balloon =
+  if damage = 0 || balloon.remove then ()
+  else (
+    lower_layer balloon;
+    hit_update (damage - 1) balloon)
 
 (* Removes a balloon if it has crossed the finish line and reduces a player's
    lives by calling lower_lives. *)
 let rec remove_balloons (balloon_lst : balloon list) =
-  update_state balloon_lst;
   match balloon_lst with
   | [] -> []
   | balloon :: t ->
-      if check_balloon_exit balloon || balloon.collision then remove_balloons t
+      if check_balloon_exit balloon || balloon.remove then remove_balloons t
       else balloon :: remove_balloons t
