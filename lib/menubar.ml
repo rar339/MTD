@@ -5,14 +5,17 @@ open Gamebounds
 
 (* Checks for valid placement of bear, contingent on position and cash.
    If a player no longer wants to place a bear, they can move the selected
-   choice back to the menu to discard their choice. *)
+   choice back to the menu to discard their choice.
+
+   The radius of the circle in check_collision_circle_rec will determine how much
+   the bears can overhang on path.*)
 let rec check_valid_placement (mouse_pos : Vector2.t)
     (rectangle_bounds : Rectangle.t list) =
   match rectangle_bounds with
   | [] -> true
-  | h :: t ->
-      if check_collision_point_rec mouse_pos h == true then false
-      else check_valid_placement mouse_pos t
+  | rect :: t ->
+      (not (check_collision_circle_rec mouse_pos 15.0 rect))
+      && check_valid_placement mouse_pos t
 
 let nevermind (mouse_pos : Vector2.t) (menu : Rectangle.t) =
   check_collision_point_rec mouse_pos menu

@@ -8,7 +8,6 @@ type bear = {
   mutable range : float;
   cost : int;
   mutable rate : Raylib.Vector2.t;
-  radius : float;
   upgrades : int list;
   is_bomb : bool;
   mutable position : Raylib.Vector2.t;
@@ -30,7 +29,6 @@ let make_dart_bear pos =
     bear_type = Dart;
     range = 150.;
     cost = 200;
-    radius = 20.;
     rate = Vector2.create 0. 0.;
     upgrades = [];
     is_bomb = false;
@@ -48,7 +46,6 @@ let make_hockey_bear pos =
     bear_type = Hockey;
     range = 80.;
     cost = 200;
-    radius = 20.;
     rate = Vector2.create 0. 0.;
     upgrades = [];
     is_bomb = false;
@@ -65,7 +62,6 @@ let make_pumpkin_bear pos =
     bear_type = Pumpkin;
     range = 80.;
     cost = 350;
-    radius = 20.;
     rate = Vector2.create 0. 0.;
     upgrades = [];
     is_bomb = false;
@@ -82,7 +78,6 @@ let make_ezra_bear pos =
     bear_type = Ezra;
     range = 80.;
     cost = 400;
-    radius = 20.;
     rate = Vector2.create 0. 0.;
     upgrades = [];
     is_bomb = false;
@@ -99,7 +94,6 @@ let make_dragon_bear pos =
     bear_type = Dragon;
     range = 120.;
     cost = 1000;
-    radius = 20.;
     rate = Vector2.create 0. 0.;
     upgrades = [];
     is_bomb = false;
@@ -199,23 +193,14 @@ let draw_dragon_bear (bear : bear) =
 let rec draw_bears (bears : bear list) =
   match bears with
   | [] -> ()
-  | bear :: rest -> (
-      match bear with
-      | { bear_type = Dart; _ } ->
-          draw_dart_bear bear;
-          draw_bears rest
-      | { bear_type = Hockey; _ } ->
-          draw_hockey_bear bear;
-          draw_bears rest
-      | { bear_type = Pumpkin; _ } ->
-          draw_pumpkin_bear bear;
-          draw_bears rest
-      | { bear_type = Ezra; _ } ->
-          draw_ezra_bear bear;
-          draw_bears rest
-      | { bear_type = Dragon; _ } ->
-          draw_dragon_bear bear;
-          draw_bears rest)
+  | bear :: rest ->
+      (match bear with
+      | { bear_type = Dart; _ } -> draw_dart_bear bear
+      | { bear_type = Hockey; _ } -> draw_hockey_bear bear
+      | { bear_type = Pumpkin; _ } -> draw_pumpkin_bear bear
+      | { bear_type = Ezra; _ } -> draw_ezra_bear bear
+      | { bear_type = Dragon; _ } -> draw_dragon_bear bear);
+      draw_bears rest
 
 let draw_bear_img x y color =
   draw_circle (int_of_float x) (int_of_float y) reference_img_radius color;
@@ -242,7 +227,7 @@ let draw_selected_bear (bear : bear option) =
           draw_bear_img (get_x bear) (get_y bear) Color.green)
 
 let check_circle_collision circ_one circ_two radius =
-  if Vector2.distance circ_one circ_two < 2. *. radius then true else false
+  Vector2.distance circ_one circ_two < 2. *. radius
 
 let update_selected_bear (bear : bear option) (new_pos : Vector2.t) =
   match bear with None -> () | Some bear -> bear.position <- new_pos
