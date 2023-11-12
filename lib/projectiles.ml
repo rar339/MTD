@@ -8,9 +8,11 @@ let bullet_radius = 10.
 (*-Pierce is how many balloons a bullet can pierce through.
   -Damage is how many layers of a bullet will go through.
   -Hits is the list of balloons that a bullet has already collided with, used so
-  a bullet cannot hit the same balloon twice.*)
+  a bullet cannot hit the same balloon twice.
+  -Origin is the position the bullet was fired from, so that we can delete bullets
+  once they leave the bear's range.*)
 type bullet = {
-  projectile : bear_types;
+  origin : bear;
   mutable position : Vector2.t;
   velocity : Vector2.t;
   color : Color.t;
@@ -83,13 +85,13 @@ let fire_dart (bear : Bears.bear) (balloon : Balloons.balloon) =
   let velocity = projectile_moving_calc bear balloon in
   bullet_collection :=
     {
-      projectile = Dart;
+      origin = bear;
       position = bear.position;
       velocity;
       color = Color.black;
       image = None;
       radius = bullet_radius;
-      pierce = 1;
+      pierce = 99;
       damage = 1;
       hits = [];
     }
@@ -146,12 +148,12 @@ let rec dart_collisions bullet balloon_list =
 (*Updates bullets and balloons if a collision has occurred. Compares
    given bullet with each balloon in balloon_list.*)
 let update_bullet_collision bullet balloon_list =
-  match bullet with
-  | { projectile = Dart; _ } -> dart_collisions bullet balloon_list
-  | { projectile = Hockey; _ } -> ()
-  | { projectile = Pumpkin; _ } -> ()
-  | { projectile = Dragon; _ } -> ()
-  | { projectile = Ezra; _ } -> ()
+  match bullet.origin.bear_type with
+  | Dart -> dart_collisions bullet balloon_list
+  | Hockey -> ()
+  | Pumpkin -> ()
+  | Dragon -> ()
+  | Ezra -> ()
 
 let rec update_collisions bullet_list balloon_list =
   match bullet_list with
@@ -160,11 +162,19 @@ let rec update_collisions bullet_list balloon_list =
       update_bullet_collision bullet balloon_list;
       update_collisions t balloon_list
 
-(*Delete bullets that have gone off the screen.*)
-let check_bullet_bounds bullet =
+let check_screen_bounds bullet =
   let x = Vector2.x bullet.position in
   let y = Vector2.y bullet.position in
   x > !screen_width +. 10. || x < -10.0 || y > !screen_width +. 10. || y < -10.0
+
+(*Check if a bullet is within it's tower's range.*)
+let check_tower_bounds bullet =
+  Vector2.distance bullet.origin.position bullet.position > bullet.origin.range
+
+(*Delete bullets that have left the bounds of the screen or their tower's
+   range. TRUE if it is out of bounds and should be deleted.*)
+let check_bullet_bounds bullet =
+  check_screen_bounds bullet || check_tower_bounds bullet
 
 (*Remove bullets whether they are out of bounds or have collided.*)
 let rec remove_bullets bullet_list =
