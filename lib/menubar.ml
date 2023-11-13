@@ -87,10 +87,6 @@ let update_bear_selections placed_bears pos bears =
    menu bears (menu_bears).*)
 (* Refactored code to make such that when not clicking menu, it disappears *)
 let check_click () =
-  (* let rect_width = Rectangle.width (Option.get !Constants.selection_rect) in
-     let rect_height = Rectangle.height (Option.get !Constants.selection_rect) in
-     let rect_x = Rectangle.x (Option.get !Constants.selection_rect) in
-     let rect_y = Rectangle.y (Option.get !Constants.selection_rect) in *)
   let final_rect =
     match !selection_rect with
     | Some r -> r
@@ -99,21 +95,12 @@ let check_click () =
   if
     check_button_press (get_mouse_position ())
       [
-        final_rect
-        (* Rectangle.create
-           (29.5 *. floor (!screen_width /. 40.))
-           (!screen_height /. 3.2)
-           (7. *. floor (!screen_width /. 28.))
-           (22. *. !screen_height /. 40.); *)
-        (* Rectangle.create
-             (rect_x +. (rect_width /. 4.))
-             (rect_y +. (rect_height /. 1.15))
-             (rect_width /. 2.) (rect_height /. 10.);
-           Rectangle.create
-             (149. *. !screen_width /. 200.)
-             (8. *. !screen_height /. 9.)
-             (2. *. !screen_width /. 9.)
-             (!screen_height /. 19.); *);
+        final_rect;
+        Rectangle.create
+          (149. *. !screen_width /. 200.)
+          (8. *. !screen_height /. 9.)
+          (2. *. !screen_width /. 9.)
+          (!screen_height /. 19.);
       ]
   then ()
   else if is_mouse_button_pressed Left then (
@@ -266,10 +253,8 @@ let draw_range_upgrade_button bear rect_x rect_y rect_width rect_height =
     && List.length bear.upgrades < 2
   then (
     bear.upgrades <- 1 :: bear.upgrades;
-    bear.cost <-
-      bear.cost + Constants.round_float (float_of_int upgrade_price *. 0.7);
+    bear.cost <- bear.cost + Constants.round_float (float_of_int upgrade_price);
     bear.range <- bear.range +. (bear.range *. 0.2);
-    select_display := Some bear;
     Constants.cash := !Constants.cash - upgrade_price)
 
 (* Upgrade damage button *)
@@ -289,10 +274,8 @@ let draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height =
     && List.length bear.upgrades < 2
   then (
     bear.upgrades <- 1 :: bear.upgrades;
-    bear.cost <-
-      bear.cost + Constants.round_float (float_of_int upgrade_price *. 0.7);
+    bear.cost <- bear.cost + Constants.round_float (float_of_int upgrade_price);
     bear.damage <- bear.damage + 1;
-    select_display := Some bear;
     Constants.cash := !Constants.cash - upgrade_price)
 
 (*Displays the selection GUI for placed bears.*)
@@ -312,7 +295,7 @@ let display_selection selection =
   | Some ({ bear_type = Hockey; _ } as bear) -> print_int bear.attack_speed
   | Some ({ bear_type = Pumpkin; _ } as bear) -> print_int bear.attack_speed
   | Some ({ bear_type = Ezra; _ } as bear) -> print_int bear.attack_speed
-  | Some ({ bear_type = Dragon; _ } as bear) -> print_int bear.attack_speed   
+  | Some ({ bear_type = Dragon; _ } as bear) -> print_int bear.attack_speed
 
 (**check_click takes care of updating what should currently be displayed.
    Important: Always draw the select_display before the hover_display.*)
