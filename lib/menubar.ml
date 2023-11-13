@@ -177,7 +177,7 @@ let draw_menu rect =
 (*Selection GUI****************************************************************)
 (*Draws the range of the selected bear: grey if it is in a valid location,
       red otherwise.
-  Precondition: bear is not a Nonse option.*)
+  Precondition: bear is not a None option.*)
 let draw_range bear =
   if
     check_valid_placement (get_mouse_position ()) !path_rectangles
@@ -215,11 +215,12 @@ let display_hover_info (hover : bear option) =
   if mem_option hover !menu_bears then
     match hover with
     | None -> ()
-    | Some ({ bear_type = Dart; _ } as bear) -> print_int bear.attack_speed
-    | Some ({ bear_type = Hockey; _ } as bear) -> print_int bear.attack_speed
-    | Some ({ bear_type = Pumpkin; _ } as bear) -> print_int bear.attack_speed
-    | Some ({ bear_type = Ezra; _ } as bear) -> print_int bear.attack_speed
-    | Some ({ bear_type = Dragon; _ } as bear) -> print_int bear.attack_speed
+    | Some ({ bear_type = Dart; _ } as bear) -> bear.position <- bear.position
+    | Some ({ bear_type = Hockey; _ } as bear) -> bear.position <- bear.position
+    | Some ({ bear_type = Pumpkin; _ } as bear) ->
+        bear.position <- bear.position
+    | Some ({ bear_type = Ezra; _ } as bear) -> bear.position <- bear.position
+    | Some ({ bear_type = Dragon; _ } as bear) -> bear.position <- bear.position
 
 let draw_info_background () =
   draw_rectangle_rec (Option.get !Constants.selection_rect) Color.gold;
@@ -311,9 +312,9 @@ let display_selection selection =
   | Some ({ bear_type = Hockey; _ } as bear) -> print_int bear.attack_speed
   | Some ({ bear_type = Pumpkin; _ } as bear) -> print_int bear.attack_speed
   | Some ({ bear_type = Ezra; _ } as bear) -> print_int bear.attack_speed
-  | Some ({ bear_type = Dragon; _ } as bear) -> print_int bear.attack_speed
+  | Some ({ bear_type = Dragon; _ } as bear) -> print_int bear.attack_speed   
 
-(*check_click takes care of updating what should currently be displayed.
+(**check_click takes care of updating what should currently be displayed.
    Important: Always draw the select_display before the hover_display.*)
 let display_bear_info selection hover =
   display_selection selection;
