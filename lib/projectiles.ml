@@ -92,7 +92,7 @@ let fire_dart (bear : Bears.bear) (balloon : Balloons.balloon) =
       image = None;
       radius = bullet_radius;
       pierce = 1;
-      damage = 1;
+      damage = bear.damage;
       hits = [];
     }
     :: !bullet_collection
