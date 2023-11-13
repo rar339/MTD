@@ -8,18 +8,22 @@ type bear_types = Dart | Hockey | Pumpkin | Ezra | Dragon
 type bear = {
   bear_type : bear_types;
   mutable range : float;
-  cost : int;
-  upgrades : int list;
+  (* Made both cost and upgrades mutable *)
+  (* When upgrading bear sell price increases *)
+  mutable cost : int;
+  mutable upgrades : int list;
   is_bomb : bool;
   mutable position : Raylib.Vector2.t;
   texture : Raylib.Texture2D.t;
   image_width : float;
   image_height : float;
   is_placed : bool;
-  attack_speed : int;
+  mutable attack_speed : int;
   mutable counter : int;
   projectile_speed : float;
   mutable sold : bool;
+  (* Add functionality to damage (Could be doing this wrong though, so let me know) *)
+  mutable damage : int;
 }
 
 let bear_collection : bear list ref = ref []
@@ -57,6 +61,7 @@ let make_dart_bear pos =
     counter = 0;
     projectile_speed = 10.;
     sold = false;
+    damage = 1;
   }
 
 (******************************************************************************)
@@ -79,6 +84,7 @@ let make_hockey_bear pos =
     counter = 50;
     projectile_speed = 10.;
     sold = false;
+    damage = 1;
   }
 
 let make_pumpkin_bear pos =
@@ -100,6 +106,7 @@ let make_pumpkin_bear pos =
     counter = 50;
     projectile_speed = 10.;
     sold = false;
+    damage = 1;
   }
 
 let make_ezra_bear pos =
@@ -121,6 +128,7 @@ let make_ezra_bear pos =
     counter = 50;
     projectile_speed = 10.;
     sold = false;
+    damage = 1;
   }
 
 let make_dragon_bear pos =
@@ -142,6 +150,7 @@ let make_dragon_bear pos =
     counter = 50;
     projectile_speed = 10.;
     sold = false;
+    damage = 1;
   }
 
 let generate_menu_bears screen_width screen_height =

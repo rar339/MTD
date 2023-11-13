@@ -36,14 +36,17 @@ let nevermind (mouse_pos : Vector2.t) (menu : Rectangle.t) =
   check_collision_point_rec mouse_pos menu
 
 let place_bear () =
+  (* When first selecting a bear *)
   if !selected = false && !selected_bear <> None then selected := true
+    (* After selecting a bear from the menu but wanting to return it *)
   else if
     nevermind (get_mouse_position ()) (Option.get !Constants.menu_rect)
     && !selected = true
     && is_mouse_button_pressed Left
   then (
     selected := false;
-    selected_bear := None)
+    selected_bear := None
+    (* After selecting a bear from the menu and placing it *))
   else if
     !selected = true
     && is_mouse_button_pressed Left
@@ -56,6 +59,7 @@ let place_bear () =
     Bears.bear_collection := Option.get !selected_bear :: !Bears.bear_collection;
     Constants.cash := !Constants.cash - (Option.get !selected_bear).cost;
     selected_bear := None)
+  else if !selected = true then selected := true
 
 let update_bear_selections placed_bears pos bears =
   let bear = determine_bear_clicked pos bears in
@@ -81,23 +85,35 @@ let update_bear_selections placed_bears pos bears =
 
 (*True corresponds to placed bears (in bear_collection) and false corresponds to
    menu bears (menu_bears).*)
+(* Refactored code to make such that when not clicking menu, it disappears *)
 let check_click () =
-  let rect_width = Rectangle.width (Option.get !Constants.selection_rect) in
-  let rect_height = Rectangle.height (Option.get !Constants.selection_rect) in
-  let rect_x = Rectangle.x (Option.get !Constants.selection_rect) in
-  let rect_y = Rectangle.y (Option.get !Constants.selection_rect) in
+  (* let rect_width = Rectangle.width (Option.get !Constants.selection_rect) in
+     let rect_height = Rectangle.height (Option.get !Constants.selection_rect) in
+     let rect_x = Rectangle.x (Option.get !Constants.selection_rect) in
+     let rect_y = Rectangle.y (Option.get !Constants.selection_rect) in *)
+  let final_rect =
+    match !selection_rect with
+    | Some r -> r
+    | None -> Rectangle.create 0. 0. 0. 0.
+  in
   if
     check_button_press (get_mouse_position ())
       [
-        Rectangle.create
-          (rect_x +. (rect_width /. 4.))
-          (rect_y +. (rect_height /. 1.15))
-          (rect_width /. 2.) (rect_height /. 10.);
-        Rectangle.create
-          (149. *. !screen_width /. 200.)
-          (8. *. !screen_height /. 9.)
-          (2. *. !screen_width /. 9.)
-          (!screen_height /. 19.);
+        final_rect
+        (* Rectangle.create
+           (29.5 *. floor (!screen_width /. 40.))
+           (!screen_height /. 3.2)
+           (7. *. floor (!screen_width /. 28.))
+           (22. *. !screen_height /. 40.); *)
+        (* Rectangle.create
+             (rect_x +. (rect_width /. 4.))
+             (rect_y +. (rect_height /. 1.15))
+             (rect_width /. 2.) (rect_height /. 10.);
+           Rectangle.create
+             (149. *. !screen_width /. 200.)
+             (8. *. !screen_height /. 9.)
+             (2. *. !screen_width /. 9.)
+             (!screen_height /. 19.); *);
       ]
   then ()
   else if is_mouse_button_pressed Left then (
@@ -152,6 +168,7 @@ let lives_and_cash_count screen_width screen_height =
     25 Color.white
 
 let draw_menu rect =
+  (* Draws overall white menu *)
   draw_rectangle_rec rect (Color.create 183 201 226 255);
   draw_rectangle_lines_ex rect 3. Color.black;
   (* Draw the menu bears *)
@@ -232,6 +249,52 @@ let draw_sell_button bear rect_x rect_y rect_width rect_height =
     select_display := None;
     Constants.cash := !Constants.cash + sell_price)
 
+(* Upgrade range button *)
+let draw_range_upgrade_button bear rect_x rect_y rect_width rect_height =
+  let upgrade_price = Constants.round_float (float_of_int bear.cost *. 0.50) in
+  if
+    Raygui.(
+      button
+        (Rectangle.create
+           (rect_x +. (rect_width /. 4.))
+           (rect_y +. (rect_height /. 2.0))
+           (rect_width /. 2.) (rect_height /. 5.))
+        (if List.length bear.upgrades < 2 then
+           "Larger Range \n        Cost: " ^ string_of_int upgrade_price
+         else "Cannot Upgrade "))
+    && !Constants.cash >= upgrade_price
+    && List.length bear.upgrades < 2
+  then (
+    bear.upgrades <- 1 :: bear.upgrades;
+    bear.cost <-
+      bear.cost + Constants.round_float (float_of_int upgrade_price *. 0.7);
+    bear.range <- bear.range +. (bear.range *. 0.2);
+    select_display := Some bear;
+    Constants.cash := !Constants.cash - upgrade_price)
+
+(* Upgrade damage button *)
+let draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height =
+  let upgrade_price = Constants.round_float (float_of_int bear.cost *. 0.75) in
+  if
+    Raygui.(
+      button
+        (Rectangle.create
+           (rect_x +. (rect_width /. 4.))
+           (rect_y +. (rect_height /. 4.0))
+           (rect_width /. 2.) (rect_height /. 5.))
+        (if List.length bear.upgrades < 2 then
+           "Piercing Ballons \n        Cost: " ^ string_of_int upgrade_price
+         else "Cannot Upgrade "))
+    && !Constants.cash >= upgrade_price
+    && List.length bear.upgrades < 2
+  then (
+    bear.upgrades <- 1 :: bear.upgrades;
+    bear.cost <-
+      bear.cost + Constants.round_float (float_of_int upgrade_price *. 0.7);
+    bear.damage <- bear.damage + 1;
+    select_display := Some bear;
+    Constants.cash := !Constants.cash - upgrade_price)
+
 (*Displays the selection GUI for placed bears.*)
 let display_selection selection =
   let rect_width = Rectangle.width (Option.get !Constants.selection_rect) in
@@ -243,11 +306,13 @@ let display_selection selection =
   | Some ({ bear_type = Dart; _ } as bear) ->
       draw_info_background ();
       draw_info_title Dart rect_x rect_y rect_width;
-      draw_sell_button bear rect_x rect_y rect_width rect_height
-  | Some ({ bear_type = Hockey; _ } as bear) -> bear.position <- bear.position
-  | Some ({ bear_type = Pumpkin; _ } as bear) -> bear.position <- bear.position
-  | Some ({ bear_type = Ezra; _ } as bear) -> bear.position <- bear.position
-  | Some ({ bear_type = Dragon; _ } as bear) -> bear.position <- bear.position
+      draw_sell_button bear rect_x rect_y rect_width rect_height;
+      draw_range_upgrade_button bear rect_x rect_y rect_width rect_height;
+      draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height
+  | Some ({ bear_type = Hockey; _ } as bear) -> print_int bear.attack_speed
+  | Some ({ bear_type = Pumpkin; _ } as bear) -> print_int bear.attack_speed
+  | Some ({ bear_type = Ezra; _ } as bear) -> print_int bear.attack_speed
+  | Some ({ bear_type = Dragon; _ } as bear) -> print_int bear.attack_speed   
 
 (**check_click takes care of updating what should currently be displayed.
    Important: Always draw the select_display before the hover_display.*)
