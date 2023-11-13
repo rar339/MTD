@@ -19,7 +19,7 @@ let play_button screen_width screen_height =
            (screen_height /. 19.))
         ("Start Round " ^ string_of_int !Constants.round))
   then (
-    initialize_round waves ();
+    initialize_round waves;
     Constants.state := Active)
 (******************************************************************************)
 
