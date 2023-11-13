@@ -246,13 +246,13 @@ let draw_range_upgrade_button bear rect_x rect_y rect_width rect_height =
            (rect_x +. (rect_width /. 4.))
            (rect_y +. (rect_height /. 2.0))
            (rect_width /. 2.) (rect_height /. 5.))
-        (if List.length bear.upgrades < 2 then
+        (if bear.upgrades < 2 then
            "Larger Range \n        Cost: " ^ string_of_int upgrade_price
          else "Cannot Upgrade "))
     && !Constants.cash >= upgrade_price
-    && List.length bear.upgrades < 2
+    && bear.upgrades < 2
   then (
-    bear.upgrades <- 1 :: bear.upgrades;
+    bear.upgrades <- 1 + bear.upgrades;
     bear.cost <- bear.cost + Constants.round_float (float_of_int upgrade_price);
     bear.range <- bear.range +. (bear.range *. 0.2);
     Constants.cash := !Constants.cash - upgrade_price)
@@ -267,15 +267,36 @@ let draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height =
            (rect_x +. (rect_width /. 4.))
            (rect_y +. (rect_height /. 4.0))
            (rect_width /. 2.) (rect_height /. 5.))
-        (if List.length bear.upgrades < 2 then
+        (if bear.upgrades < 2 then
            "Piercing Ballons \n        Cost: " ^ string_of_int upgrade_price
          else "Cannot Upgrade "))
     && !Constants.cash >= upgrade_price
-    && List.length bear.upgrades < 2
+    && bear.upgrades < 2
   then (
-    bear.upgrades <- 1 :: bear.upgrades;
+    bear.upgrades <- 1 + bear.upgrades;
     bear.cost <- bear.cost + Constants.round_float (float_of_int upgrade_price);
     bear.damage <- bear.damage + 1;
+    Constants.cash := !Constants.cash - upgrade_price)
+
+(* Upgrade attack speed button *)
+let draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height =
+  let upgrade_price = Constants.round_float (float_of_int bear.cost *. 0.50) in
+  if
+    Raygui.(
+      button
+        (Rectangle.create
+           (rect_x +. (rect_width /. 4.))
+           (rect_y +. (rect_height /. 4.0))
+           (rect_width /. 2.) (rect_height /. 5.))
+        (if bear.upgrades < 2 then
+           "Faster Speed \n        Cost: " ^ string_of_int upgrade_price
+         else "Cannot Upgrade "))
+    && !Constants.cash >= upgrade_price
+    && bear.upgrades < 2
+  then (
+    bear.upgrades <- 1 + bear.upgrades;
+    bear.cost <- bear.cost + Constants.round_float (float_of_int upgrade_price);
+    bear.attack_speed <- bear.attack_speed - 10;
     Constants.cash := !Constants.cash - upgrade_price)
 
 (*Displays the selection GUI for placed bears.*)
@@ -292,7 +313,12 @@ let display_selection selection =
       draw_sell_button bear rect_x rect_y rect_width rect_height;
       draw_range_upgrade_button bear rect_x rect_y rect_width rect_height;
       draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height
-  | Some ({ bear_type = Hockey; _ } as bear) -> print_int bear.attack_speed
+  | Some ({ bear_type = Hockey; _ } as bear) ->
+      draw_info_background ();
+      draw_info_title Hockey rect_x rect_y rect_width;
+      draw_sell_button bear rect_x rect_y rect_width rect_height;
+      draw_range_upgrade_button bear rect_x rect_y rect_width rect_height;
+      draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
   | Some ({ bear_type = Pumpkin; _ } as bear) -> print_int bear.attack_speed
   | Some ({ bear_type = Ezra; _ } as bear) -> print_int bear.attack_speed
   | Some ({ bear_type = Dragon; _ } as bear) -> print_int bear.attack_speed

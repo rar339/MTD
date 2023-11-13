@@ -8,10 +8,8 @@ type bear_types = Dart | Hockey | Pumpkin | Ezra | Dragon
 type bear = {
   bear_type : bear_types;
   mutable range : float;
-  (* Made both cost and upgrades mutable *)
-  (* When upgrading bear sell price increases *)
   mutable cost : int;
-  mutable upgrades : int list;
+  mutable upgrades : int;
   is_bomb : bool;
   mutable position : Raylib.Vector2.t;
   texture : Raylib.Texture2D.t;
@@ -22,7 +20,6 @@ type bear = {
   mutable counter : int;
   projectile_speed : float;
   mutable sold : bool;
-  (* Add functionality to damage (Could be doing this wrong though, so let me know) *)
   mutable damage : int;
 }
 
@@ -50,7 +47,7 @@ let make_dart_bear pos =
     bear_type = Dart;
     range = 150.;
     cost = 200;
-    upgrades = [];
+    upgrades = 0;
     is_bomb = false;
     position = pos;
     texture = load_texture_from_image image;
@@ -71,18 +68,18 @@ let make_hockey_bear pos =
   let image_height = float_of_int (Image.height image) in
   {
     bear_type = Hockey;
-    range = 80.;
+    range = 90.;
     cost = 200;
-    upgrades = [];
+    upgrades = 0;
     is_bomb = false;
     position = pos;
     texture = load_texture_from_image image;
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 10;
+    attack_speed = 50;
     counter = 50;
-    projectile_speed = 10.;
+    projectile_speed = 60.;
     sold = false;
     damage = 1;
   }
@@ -95,7 +92,7 @@ let make_pumpkin_bear pos =
     bear_type = Pumpkin;
     range = 80.;
     cost = 350;
-    upgrades = [];
+    upgrades = 0;
     is_bomb = false;
     position = pos;
     texture = load_texture_from_image image;
@@ -117,7 +114,7 @@ let make_ezra_bear pos =
     bear_type = Ezra;
     range = 80.;
     cost = 400;
-    upgrades = [];
+    upgrades = 0;
     is_bomb = false;
     position = pos;
     texture = load_texture_from_image image;
@@ -139,7 +136,7 @@ let make_dragon_bear pos =
     bear_type = Dragon;
     range = 120.;
     cost = 1000;
-    upgrades = [];
+    upgrades = 0;
     is_bomb = false;
     position = pos;
     texture = load_texture_from_image image;

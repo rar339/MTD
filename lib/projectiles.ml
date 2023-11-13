@@ -97,10 +97,38 @@ let fire_dart (bear : Bears.bear) (balloon : Balloons.balloon) =
     }
     :: !bullet_collection
 
+(* Creates dart that will shoot on eight sides of bear *)
+let create_dart_nail (bear : Bears.bear) (v1 : float) (v2 : float) =
+  let velocity = Vector2.create v1 v2 in
+  {
+    origin = bear;
+    position = bear.position;
+    velocity;
+    color = Color.black;
+    image = None;
+    radius = bullet_radius;
+    pierce = 1;
+    damage = bear.damage;
+    hits = [];
+  }
+
+(*Fires a dart in a nail shooter way.*)
+let fire_dart_nail (bear : Bears.bear) =
+  bullet_collection :=
+    create_dart_nail bear (-7.5) 7.5
+    :: create_dart_nail bear (-7.5) 0.0
+    :: create_dart_nail bear (-7.5) (-7.5)
+    :: create_dart_nail bear 7.5 7.5
+    :: create_dart_nail bear 7.5 0.0
+    :: create_dart_nail bear 7.5 (-7.5)
+    :: create_dart_nail bear 0.0 7.5
+    :: create_dart_nail bear 0.0 (-7.5)
+    :: !bullet_collection
+
 let init_projectile (bear : Bears.bear) (balloon : Balloons.balloon) =
   match bear with
   | { bear_type = Dart; _ } -> fire_dart bear balloon
-  | { bear_type = Hockey; _ } -> ()
+  | { bear_type = Hockey; _ } -> fire_dart_nail bear
   | { bear_type = Pumpkin; _ } -> ()
   | { bear_type = Dragon; _ } -> ()
   | { bear_type = Ezra; _ } -> ()
@@ -150,7 +178,7 @@ let rec dart_collisions bullet balloon_list =
 let update_bullet_collision bullet balloon_list =
   match bullet.origin.bear_type with
   | Dart -> dart_collisions bullet balloon_list
-  | Hockey -> ()
+  | Hockey -> dart_collisions bullet balloon_list
   | Pumpkin -> ()
   | Dragon -> ()
   | Ezra -> ()
