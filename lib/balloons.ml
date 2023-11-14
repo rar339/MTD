@@ -85,33 +85,28 @@ let draw_balloon path_width (balloon : balloon) =
    (round_float (y +. !hitbox_y_offset +. (!hitbox_height /. 2.)))
    5.0 Color.green *)
 
+(* Draws pop image when called *)
+let draw_pop balloon =
+  draw_texture_pro (Option.get !pop_img)
+    (Rectangle.create 0. 0. 146. 120.)
+    (Rectangle.create
+       (Vector2.x balloon.position -. 32.5)
+       (Vector2.y balloon.position -. 50.0)
+       80. 80.)
+    (Vector2.create 0. 0.) 0.
+    (Color.create 255 255 255 255);
+
+  if balloon.color = Red then balloon.remove <- true;
+  balloon.popped <- false
+
 (* Draws balloons in a balloon list. *)
 let rec draw_balloons path_width (balloon_list : balloon list) =
   match balloon_list with
   | [] -> ()
   | h :: t ->
       draw_balloon path_width h;
+      if h.popped then draw_pop h;
       draw_balloons path_width t
-
-(* If balloon is popped, then pop image is displayed.
-   NOT MOST EFFICIENT SOLUTION AS OF RIGHT NOW. WOULD RATHER NOT ITERATE 
-   THROUGH EVERY BALLOON*)
-let rec check_popped = function
-  | [] -> ()
-  | h :: t -> 
-    if h.popped then(
-    draw_texture_pro (Option.get !pop_img)
-      (Rectangle.create 0. 0. 146. 120.)
-      (Rectangle.create
-         (Vector2.x h.position -. 30.)
-         (Vector2.y h.position -. 50.0)
-         80. 80.)
-      (Vector2.create 0. 0.) 0.
-      (Color.create 255 255 255 255);
-
-    if h.color = Red then h.remove <- true);
-    h.popped <- false;
-    check_popped t
 
 let determine_image = function
   | None ->
@@ -206,8 +201,7 @@ let check_balloon_exit (balloon : balloon) =
    is red, sets balloon.remove to true.*)
 let lower_layer balloon =
   match balloon.color with
-  | Red ->
-      balloon.popped <- true;
+  | Red -> balloon.popped <- true
   | _ ->
       balloon.popped <- true;
       balloon.color <- balloon.next_down;
