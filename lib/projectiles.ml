@@ -3,7 +3,7 @@ open Constants
 open Bears
 open Balloons
 
-let bullet_radius = 10.
+let bullet_radius = 7.5
 
 (*-Pierce is how many balloons a bullet can pierce through.
   -Damage is how many layers of a bullet will go through.
