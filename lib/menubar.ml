@@ -337,7 +337,12 @@ let display_selection selection =
       draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
   | Some ({ bear_type = Pumpkin; _ } as bear) -> print_int bear.attack_speed
   | Some ({ bear_type = Ezra; _ } as bear) -> print_int bear.attack_speed
-  | Some ({ bear_type = Dragon; _ } as bear) -> print_int bear.attack_speed
+  | Some ({ bear_type = Dragon; _ } as bear) ->
+      draw_info_background ();
+      draw_info_title Dragon rect_x rect_y rect_width;
+      draw_sell_button bear rect_x rect_y rect_width rect_height;
+      draw_range_upgrade_button bear rect_x rect_y rect_width rect_height;
+      draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
 
 (**check_click takes care of updating what should currently be displayed.
    Important: Always draw the select_display before the hover_display.*)

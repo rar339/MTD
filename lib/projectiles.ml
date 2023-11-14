@@ -21,6 +21,7 @@ type bullet = {
   mutable pierce : int;
   damage : int;
   mutable hits : Balloons.balloon list;
+  mutable fire : bool;
 }
 
 let bullet_collection : bullet list ref = ref []
@@ -83,17 +84,22 @@ let rec find_target (bear : Bears.bear) (balloons : Balloons.balloon list) :
 (*Fires a dart.*)
 let fire_dart (bear : Bears.bear) (balloon : Balloons.balloon) =
   let velocity = projectile_moving_calc bear balloon in
+  let is_fire = match bear.bear_type with Dragon -> true | _ -> false in
+  let new_color =
+    match bear.bear_type with Dragon -> Color.red | _ -> Color.black
+  in
   bullet_collection :=
     {
       origin = bear;
       position = bear.position;
       velocity;
-      color = Color.black;
+      color = new_color;
       image = None;
       radius = bullet_radius;
       pierce = 1;
       damage = bear.damage;
       hits = [];
+      fire = is_fire;
     }
     :: !bullet_collection
 
@@ -110,6 +116,7 @@ let create_dart_nail (bear : Bears.bear) (v1 : float) (v2 : float) =
     pierce = 1;
     damage = bear.damage;
     hits = [];
+    fire = false;
   }
 
 (*Fires a dart in a nail shooter way.*)
@@ -130,7 +137,7 @@ let init_projectile (bear : Bears.bear) (balloon : Balloons.balloon) =
   | { bear_type = Dart; _ } -> fire_dart bear balloon
   | { bear_type = Hockey; _ } -> fire_dart_nail bear
   | { bear_type = Pumpkin; _ } -> ()
-  | { bear_type = Dragon; _ } -> ()
+  | { bear_type = Dragon; _ } -> fire_dart bear balloon
   | { bear_type = Ezra; _ } -> ()
 
 let rec fire_all_shots (bears : Bears.bear list)
@@ -159,7 +166,7 @@ let rec update_bullets bullets =
       update_bullet first;
       update_bullets rest
 
-let rec dart_collisions bullet balloon_list =
+let rec dart_collisions (bear : bear_types) bullet balloon_list =
   match balloon_list with
   | [] -> ()
   | balloon :: t ->
@@ -170,17 +177,17 @@ let rec dart_collisions bullet balloon_list =
       then (
         bullet.pierce <- bullet.pierce - 1;
         bullet.hits <- balloon :: bullet.hits;
-        Balloons.hit_update bullet.damage balloon)
-      else dart_collisions bullet t
+        Balloons.hit_update bear bullet.damage balloon)
+      else dart_collisions bear bullet t
 
 (*Updates bullets and balloons if a collision has occurred. Compares
    given bullet with each balloon in balloon_list.*)
 let update_bullet_collision bullet balloon_list =
   match bullet.origin.bear_type with
-  | Dart -> dart_collisions bullet balloon_list
-  | Hockey -> dart_collisions bullet balloon_list
+  | Dart -> dart_collisions Dart bullet balloon_list
+  | Hockey -> dart_collisions Hockey bullet balloon_list
   | Pumpkin -> ()
-  | Dragon -> ()
+  | Dragon -> dart_collisions Dragon bullet balloon_list
   | Ezra -> ()
 
 let rec update_collisions bullet_list balloon_list =
@@ -213,10 +220,28 @@ let rec remove_bullets bullet_list =
       else bullet :: remove_bullets t
 
 let draw_bullet bullet =
-  draw_circle
-    (round_float (Vector2.x bullet.position))
-    (round_float (Vector2.y bullet.position))
-    bullet.radius bullet.color
+  match bullet.fire with
+  | false ->
+      draw_circle
+        (round_float (Vector2.x bullet.position))
+        (round_float (Vector2.y bullet.position))
+        bullet.radius bullet.color
+  | true ->
+      draw_circle
+        (round_float (Vector2.x bullet.position))
+        (round_float (Vector2.y bullet.position))
+        bullet.radius bullet.color
+
+(* Can import image but greatly reduces performance *)
+(* let bullet_image = Raylib.load_image "./img/fireball.png" in
+   let bull_img = Raylib.load_texture_from_image bullet_image in
+   let x = Vector2.x bullet.position in
+   let y = Vector2.y bullet.position in
+   draw_texture_pro bull_img
+     (Rectangle.create 0. 0. 355. 348.)
+     (Rectangle.create (x -. 10.) (y -. 10.) 60. 60.)
+     (Vector2.create 0. 0.) 180.
+     (Color.create 255 255 255 255) *)
 
 let rec draw_bullets bullets =
   match bullets with
