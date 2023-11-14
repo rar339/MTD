@@ -26,6 +26,9 @@ type bullet = {
 
 let bullet_collection : bullet list ref = ref []
 
+let vector_angle (velocity : Vector2.t) =
+  Vector2.angle velocity (Vector2.create 1. 0.)
+
 (******************************************************************************)
 let calculate_new_vel (bear : Bears.bear) (balloon_pos : Vector2.t) =
   let angle = Vector2.angle bear.position balloon_pos in
@@ -232,7 +235,7 @@ let draw_bullet bullet =
   match bullet.fire with
   | false ->
       draw_texture_ex (Option.get bullet.image) bullet.position
-        (180. *. (180. /. Float.pi) *.atan ((Vector2.y bullet.velocity) /.(  Vector2.x bullet.velocity)))
+        ((180. /. Float.pi) *. vector_angle bullet.velocity)
         1.
         (Color.create 255 255 255 255)
   (* draw_circle
@@ -240,10 +243,10 @@ let draw_bullet bullet =
      (round_float (Vector2.y bullet.position))
      bullet.radius bullet.color *)
   | true ->
-      draw_texture_ex (Option.get bullet.image) bullet.position
-        (180. *. (180. /. Float.pi) *. atan (Vector2.y bullet.velocity /. (  Vector2.x bullet.velocity)))
-        1.
-        (Color.create 255 255 255 255)
+    draw_texture_ex (Option.get bullet.image) bullet.position
+    ((180. /. Float.pi) *.vector_angle bullet.velocity)
+    1.
+    (Color.create 255 255 255 255)
 (* draw_circle
    (round_float (Vector2.x bullet.position))
    (round_float (Vector2.y bullet.position))
