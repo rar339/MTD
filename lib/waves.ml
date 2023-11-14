@@ -1,13 +1,19 @@
-(* This file builds waves of balloons for the player pop with bears. *)
-(*A list of all the waves in our game.*)
+(** This module builds the waves of balloons for each round.*)
+
+(**A list of all the waves in our game. Generated in Game.setup().
+    Waves are reprsented as a list of tuples of type balloon * int. The ints
+    correspond to how many frames before that balloon is spawned (added to 
+    current_balloons)*)
 let waves : (Balloons.balloon * int) list list ref = ref []
 
-(*The current wave of baloons, when this is the empty list, the wave is over*)
+(**The current wave of baloons, when this is the empty list, the wave is over.*)
 let current_wave = ref []
 
-(*The current list of balloons that are actually on the screen.*)
-let current_bloons : Balloons.balloon list ref = ref []
+(**The current list of balloons that are actually on the screen.*)
+let current_balloons : Balloons.balloon list ref = ref []
 
+(**"Pops" the next wave from the head of a given list of waves. Used in Game to
+   set the current_wave for the next round. *)
 let initialize_round (waves : (Balloons.balloon * int) list list ref) =
   match !waves with
   | [] -> ()

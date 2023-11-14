@@ -90,13 +90,13 @@ let bloons_spawner current_wave =
   match !current_wave with
   | [] -> ()
   | (bloon, counter) :: t when counter = 0 ->
-      current_bloons := bloon :: !current_bloons;
+      current_balloons := bloon :: !current_balloons;
       current_wave := t
   | (bloon, counter) :: t -> current_wave := (bloon, counter - 1) :: t
 
 (* If there are no balloons on the screen, the round is over. *)
 let update_state () =
-  if !current_bloons = [] && !current_wave = [] && !Constants.state = Active
+  if !current_balloons = [] && !current_wave = [] && !Constants.state = Active
   then (
     Projectiles.bullet_collection := [];
     Constants.state := Inactive;
@@ -115,12 +115,12 @@ let update_game () =
 
   if !Constants.state = Active then (
     bloons_spawner current_wave;
-    move_balloons !current_bloons !turn_points;
-    fire_all_shots !bear_collection (List.rev !current_bloons);
+    move_balloons !current_balloons !turn_points;
+    fire_all_shots !bear_collection (List.rev !current_balloons);
     update_bullets !bullet_collection;
-    update_collisions !bullet_collection !current_bloons;
+    update_collisions !bullet_collection !current_balloons;
     bullet_collection := Projectiles.remove_bullets !bullet_collection;
-    current_bloons := Balloons.remove_balloons !current_bloons)
+    current_balloons := Balloons.remove_balloons !current_balloons)
 
 (******************************************************************************)
 let draw_game () =
@@ -174,7 +174,7 @@ let draw_game () =
   (*Draw the balloons, the number passed in is the path's width, so that balloons
      are drawn as the correct size.*)
   if !Constants.state = Active then
-    Balloons.draw_balloons (2. *. !screen_height /. 28.) !current_bloons;
+    Balloons.draw_balloons (2. *. !screen_height /. 28.) !current_balloons;
 
   Menubar.draw_hover_highlight ();
 

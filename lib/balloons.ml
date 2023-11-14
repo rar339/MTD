@@ -127,13 +127,34 @@ let determine_next = function
   | Purple -> Orange
   | Lead -> Purple
 
+  (* Determines the velocity associated with a color of a balloon. *)
+let determine_velocity = function
+  | Red -> 5.0
+  | Blue -> 8.0
+  | Green -> 10.0
+  | Yellow -> 10.0
+  | Orange -> 12.0
+  | Purple -> 12.0
+  | Lead -> 5.0
+  | _ -> 0.0
+
+  (* Changes the velocity of a balloon while preserving its direction. *)
+let change_velocity velocity next_down =
+  if Vector2.x velocity = 0.0 then
+    if Vector2.y velocity >= 0.0 then
+      Vector2.create 0.0 (determine_velocity next_down)
+    else Vector2.create 0.0 (-1.0 *. determine_velocity next_down)
+  else if Vector2.x velocity >= 0.0 then
+    Vector2.create (determine_velocity next_down) 0.0
+  else Vector2.create (-1.0 *. determine_velocity next_down) 0.0
+
 (* Creates a balloon given the position and color. *)
 let make_balloon i position color is_lead =
   let x = Vector2.x position in
   let y = Vector2.y position in
   {
     color;
-    velocity = Raylib.Vector2.create 5.0 0.0;
+    velocity = Raylib.Vector2.create (determine_velocity color) 0.0;
     position =
       Vector2.create
         (x +. !hitbox_y_offset +. (!hitbox_width /. 2.))
@@ -165,6 +186,7 @@ let lower_layer balloon =
   | Red -> balloon.remove <- true
   | _ ->
       balloon.color <- balloon.next_down;
+      balloon.velocity <- change_velocity balloon.velocity balloon.next_down;
       balloon.img <- determine_image balloon.color;
       balloon.next_down <- determine_next balloon.color
 

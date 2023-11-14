@@ -1,15 +1,18 @@
+(**This module contains functions for drawing and updating the menubar.*)
+
 open Raylib
 open Bears
 open Constants
 open Gamebounds
 
-(*Hover display is the information about the bears in the menu. This is always
-   drawn on top of whatever is currently shown. Select display represents the menu
-   type of a placed bear that is selected.*)
+(**This value represents the bear that is currently hovered over, if any.*)
 let hover_display : bear option ref = ref None
+
+(**Select display represents the menu
+   type of a placed bear that is selected.*)
 let select_display : bear option ref = ref None
 
-(* Checks for valid placement of bear, contingent on position and cash.
+(** Checks for valid placement of bear, contingent on position and cash.
    If a player no longer wants to place a bear, they can move the selected
    choice back to the menu to discard their choice.
 
@@ -23,7 +26,7 @@ let rec check_valid_placement (mouse_pos : Vector2.t)
       (not (check_collision_circle_rec mouse_pos 15.0 rect))
       && check_valid_placement mouse_pos t
 
-(*Checks if a GUI button was pressed, in which case we should not necessarily
+(**Checks if a GUI button was pressed, in which case we should not necessarily
    deselect the selected bear.*)
 let rec check_button_press click_pos rect_lst =
   match rect_lst with
@@ -32,9 +35,12 @@ let rec check_button_press click_pos rect_lst =
       check_collision_point_rec click_pos rect
       || check_button_press click_pos rest
 
+(**Checks if the user has clicked the menu. This allows them to put a bear they
+    have picked up back into the menu.*)
 let nevermind (mouse_pos : Vector2.t) (menu : Rectangle.t) =
   check_collision_point_rec mouse_pos menu
 
+(**Handles picking up and placing bears.*)
 let place_bear () =
   (* When first selecting a bear *)
   if !selected = false && !selected_bear <> None then selected := true
@@ -61,10 +67,13 @@ let place_bear () =
     selected_bear := None)
   else if !selected = true then selected := true
 
+(**Checks if the current mouse position corresponds to a bear in the given list.
+  placed_bear represents whether or not he passed in list is a lsit of placed 
+  bears or menu bears.
+  Parameters: [placed_bears] [position] [bear_list]*)
 let update_bear_selections placed_bears pos bears =
   let bear = determine_bear_clicked pos bears in
   if placed_bears then select_display := bear;
-
   match bear with
   | None -> ()
   | Some { bear_type = Dart; _ } ->
@@ -83,9 +92,9 @@ let update_bear_selections placed_bears pos bears =
       if not placed_bears then
         selected_bear := Some (Bears.make_dragon_bear (get_mouse_position ()))
 
-(*True corresponds to placed bears (in bear_collection) and false corresponds to
-   menu bears (menu_bears).*)
-(* Refactored code to make such that when not clicking menu, it disappears *)
+(**Check_click is called in Game.update_game() to update whether or not a bear
+    has been selected. If a user clicked a button, we do not deselect their 
+    current selection.*)
 let check_click () =
   let final_rect =
     match !selection_rect with
@@ -107,7 +116,7 @@ let check_click () =
     update_bear_selections true (get_mouse_position ()) !bear_collection;
     update_bear_selections false (get_mouse_position ()) !menu_bears)
 
-(*Updates the hover_display to be the current bear hovered over. Could be a menu
+(***Updates the hover_display to be the current bear hovered over. Could be a menu
    bear OR a placed bear.*)
 let check_hover () =
   hover_display :=
@@ -154,6 +163,7 @@ let lives_and_cash_count screen_width screen_height =
     (int_of_float (0.62 *. screen_height /. 9.))
     25 Color.white
 
+(**Draws the menubar rectangle and bear icons.*)
 let draw_menu rect =
   (* Draws overall white menu *)
   draw_rectangle_rec rect (Color.create 183 201 226 255);
@@ -162,7 +172,8 @@ let draw_menu rect =
   Bears.draw_bears !menu_bears
 
 (*Selection GUI****************************************************************)
-(*Draws the range of the selected bear: grey if it is in a valid location,
+
+(**Draws the range of the selected bear: grey if it is in a valid location,
       red otherwise.
   Precondition: bear is not a None option.*)
 let draw_range bear =
@@ -185,7 +196,7 @@ let mem_option bear_opt bear_lst =
   | None -> false
   | _ -> List.mem (Option.get bear_opt) bear_lst
 
-(*Draws the range of the bear if it is hovered over or currently selected.*)
+(**Draws the range of the bear if it is hovered over or currently selected.*)
 let draw_hover_highlight () =
   if mem_option !hover_display !bear_collection && !hover_display <> None then
     draw_circle
@@ -198,6 +209,8 @@ let draw_hover_highlight () =
       (Constants.round_float (Vector2.y (Option.get !select_display).position))
       (Option.get !select_display).range (Color.create 0 0 0 50)
 
+(**Draws the information about a menu bear that is hovered over, if any. This
+    should simply drawn ontop of the current selection, if a bear is selected.*)
 let display_hover_info (hover : bear option) =
   if mem_option hover !menu_bears then
     match hover with
@@ -209,10 +222,12 @@ let display_hover_info (hover : bear option) =
     | Some ({ bear_type = Ezra; _ } as bear) -> bear.position <- bear.position
     | Some ({ bear_type = Dragon; _ } as bear) -> bear.position <- bear.position
 
+(**Draws the rectangle for the selection GUI.*)
 let draw_info_background () =
   draw_rectangle_rec (Option.get !Constants.selection_rect) Color.gold;
   draw_rectangle_lines_ex (Option.get !Constants.selection_rect) 3. Color.black
 
+(**Draws the title for the selection GUI based on the bear type.*)
 let draw_info_title beartype rect_x rect_y rect_width =
   draw_text
     (Bears.string_of_beartype beartype ^ " Bear")
@@ -220,7 +235,8 @@ let draw_info_title beartype rect_x rect_y rect_width =
     (Constants.round_float (rect_y *. 1.05))
     30 Color.white
 
-(*0.70 Corresponds to the sell rate of towers.*)
+(**Draw the sell button in the selection GUI, the sell rate is 0.70 of the original
+    cost.*)
 let draw_sell_button bear rect_x rect_y rect_width rect_height =
   let sell_price = Constants.round_float (float_of_int bear.cost *. 0.70) in
   if
@@ -236,7 +252,7 @@ let draw_sell_button bear rect_x rect_y rect_width rect_height =
     select_display := None;
     Constants.cash := !Constants.cash + sell_price)
 
-(* Upgrade range button *)
+(** Upgrade range button *)
 let draw_range_upgrade_button bear rect_x rect_y rect_width rect_height =
   let upgrade_price = Constants.round_float (float_of_int bear.cost *. 0.50) in
   if
@@ -257,7 +273,7 @@ let draw_range_upgrade_button bear rect_x rect_y rect_width rect_height =
     bear.range <- bear.range +. (bear.range *. 0.2);
     Constants.cash := !Constants.cash - upgrade_price)
 
-(* Upgrade damage button *)
+(** Upgrade damage button *)
 let draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height =
   let upgrade_price = Constants.round_float (float_of_int bear.cost *. 0.75) in
   if
@@ -278,7 +294,7 @@ let draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height =
     bear.damage <- bear.damage + 1;
     Constants.cash := !Constants.cash - upgrade_price)
 
-(* Upgrade attack speed button *)
+(** Upgrade attack speed button *)
 let draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height =
   let upgrade_price = Constants.round_float (float_of_int bear.cost *. 0.50) in
   if
@@ -299,7 +315,7 @@ let draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height =
     bear.attack_speed <- bear.attack_speed - 10;
     Constants.cash := !Constants.cash - upgrade_price)
 
-(*Displays the selection GUI for placed bears.*)
+(**Displays the selection GUI for placed bears, if a bear is selected.*)
 let display_selection selection =
   let rect_width = Rectangle.width (Option.get !Constants.selection_rect) in
   let rect_height = Rectangle.height (Option.get !Constants.selection_rect) in
