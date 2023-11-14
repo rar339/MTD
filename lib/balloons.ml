@@ -127,7 +127,7 @@ let determine_next = function
   | Purple -> Orange
   | Lead -> Purple
 
-  (* Determines the velocity associated with a color of a balloon. *)
+(** Determines the velocity associated with a color of a balloon. *)
 let determine_velocity = function
   | Red -> 5.0
   | Blue -> 8.0
@@ -138,7 +138,7 @@ let determine_velocity = function
   | Lead -> 5.0
   | _ -> 0.0
 
-  (* Changes the velocity of a balloon while preserving its direction. *)
+(** Changes the velocity of a balloon while preserving its direction. *)
 let change_velocity velocity next_down =
   if Vector2.x velocity = 0.0 then
     if Vector2.y velocity >= 0.0 then
