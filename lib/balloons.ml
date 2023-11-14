@@ -2,6 +2,7 @@
    are several different colors of balloons, each with their own velocities
    and associated values. *)
 open Raylib
+open Bears
 
 type balloon_colors =
   | None
@@ -22,7 +23,7 @@ let balloon_value = function
   | Yellow -> 4
   | Orange -> 5
   | Purple -> 6
-  | _ -> 7
+  | Lead -> 7
 
 type balloon = {
   mutable color : balloon_colors;
@@ -112,8 +113,8 @@ let determine_image = function
   | Purple ->
       let balloon_image = Raylib.load_image "./img/purple.png" in
       Raylib.load_texture_from_image balloon_image
-  | _ ->
-      let balloon_image = Raylib.load_image "./img/blue.png" in
+  | Lead ->
+      let balloon_image = Raylib.load_image "./img/lead.png" in
       Raylib.load_texture_from_image balloon_image
 
 let determine_next = function
@@ -124,7 +125,7 @@ let determine_next = function
   | Yellow -> Green
   | Orange -> Yellow
   | Purple -> Orange
-  | _ -> Purple
+  | Lead -> Purple
 
 (* Creates a balloon given the position and color. *)
 let make_balloon i position color is_lead =
@@ -157,7 +158,7 @@ let check_balloon_exit (balloon : balloon) =
     true)
   else false
 
-(*Modifies the given balloon to be one layer color 'lower'. If the balloon
+(** Modifies the given balloon to be one layer color 'lower'. If the balloon
    is red, sets balloon.remove to true.*)
 let lower_layer balloon =
   match balloon.color with
@@ -167,14 +168,25 @@ let lower_layer balloon =
       balloon.img <- determine_image balloon.color;
       balloon.next_down <- determine_next balloon.color
 
-(*Modifies the given balloon to be the correct layer color based on the damage
-   of the projectile.*)
-let rec hit_update damage balloon =
+(** Modifies lead balloon such that if hit by dragon, no longer a lead ballooon *)
+let remove_lead balloon = balloon.is_lead <- false
+
+(** Modifies the given balloon to be the correct layer color based on the damage
+   of the projectile. If lead ballon hit and not dragon, do not modify balloon.*)
+let rec hit_update (bear : bear_types) damage balloon =
   if damage = 0 || balloon.remove then ()
+  else if balloon.is_lead then
+    match bear with
+    | Dragon ->
+        remove_lead balloon;
+        lower_layer balloon;
+        Constants.cash := !Constants.cash + 1;
+        hit_update bear (damage - 1) balloon
+    | _ -> hit_update bear (damage - 1) balloon
   else (
     lower_layer balloon;
     Constants.cash := !Constants.cash + 1;
-    hit_update (damage - 1) balloon)
+    hit_update bear (damage - 1) balloon)
 
 (* Removes a balloon if it has crossed the finish line and reduces a player's
    lives by calling lower_lives. *)

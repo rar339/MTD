@@ -130,7 +130,7 @@ let init_projectile (bear : Bears.bear) (balloon : Balloons.balloon) =
   | { bear_type = Dart; _ } -> fire_dart bear balloon
   | { bear_type = Hockey; _ } -> fire_dart_nail bear
   | { bear_type = Pumpkin; _ } -> ()
-  | { bear_type = Dragon; _ } -> ()
+  | { bear_type = Dragon; _ } -> fire_dart bear balloon
   | { bear_type = Ezra; _ } -> ()
 
 let rec fire_all_shots (bears : Bears.bear list)
@@ -159,7 +159,7 @@ let rec update_bullets bullets =
       update_bullet first;
       update_bullets rest
 
-let rec dart_collisions bullet balloon_list =
+let rec dart_collisions (bear : bear_types) bullet balloon_list =
   match balloon_list with
   | [] -> ()
   | balloon :: t ->
@@ -170,17 +170,17 @@ let rec dart_collisions bullet balloon_list =
       then (
         bullet.pierce <- bullet.pierce - 1;
         bullet.hits <- balloon :: bullet.hits;
-        Balloons.hit_update bullet.damage balloon)
-      else dart_collisions bullet t
+        Balloons.hit_update bear bullet.damage balloon)
+      else dart_collisions bear bullet t
 
 (*Updates bullets and balloons if a collision has occurred. Compares
    given bullet with each balloon in balloon_list.*)
 let update_bullet_collision bullet balloon_list =
   match bullet.origin.bear_type with
-  | Dart -> dart_collisions bullet balloon_list
-  | Hockey -> dart_collisions bullet balloon_list
+  | Dart -> dart_collisions Dart bullet balloon_list
+  | Hockey -> dart_collisions Hockey bullet balloon_list
   | Pumpkin -> ()
-  | Dragon -> ()
+  | Dragon -> dart_collisions Dragon bullet balloon_list
   | Ezra -> ()
 
 let rec update_collisions bullet_list balloon_list =

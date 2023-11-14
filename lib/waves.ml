@@ -56,3 +56,21 @@ let wave2 screen_height =
       :: !balloon_lst
   done;
   !balloon_lst
+
+let wave3 screen_height =
+  let balloon_lst = ref [] in
+  for x = 0 to 15 do
+    balloon_lst :=
+      ( Balloons.make_balloon x
+          (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.)))
+          Red false,
+        15 )
+      :: !balloon_lst;
+    balloon_lst :=
+      ( Balloons.make_balloon x
+          (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.)))
+          Lead true,
+        15 )
+      :: !balloon_lst
+  done;
+  !balloon_lst

@@ -79,6 +79,7 @@ let setup () =
       Waves.test_wave screen_height;
       Waves.wave1 screen_height;
       Waves.wave2 screen_height;
+      Waves.wave3 screen_height;
     ]
 (*Load initial wave, likely temporarily: just for testing*)
 
