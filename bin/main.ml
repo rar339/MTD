@@ -162,6 +162,7 @@ let update_and_draw tuple =
   if !Constants.state <> Home then
     let open MTD in
     (* clear_background Color.lightgray; *)
+    
     Game.loop ()
   else draw_home tuple
 
