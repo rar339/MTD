@@ -178,7 +178,6 @@ let draw_game () =
      are drawn as the correct size.*)
   if !Constants.state = Active then
     Balloons.draw_balloons (2. *. !screen_height /. 28.) !current_balloons;
-    Balloons.check_popped !current_balloons;
     
   Menubar.draw_hover_highlight ();
 
