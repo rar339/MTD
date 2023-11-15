@@ -21,6 +21,7 @@ type bear = {
   projectile_speed : float;
   mutable sold : bool;
   mutable damage : int;
+  mutable pops_lead : bool;
 }
 
 let bear_collection : bear list ref = ref []
@@ -56,9 +57,10 @@ let make_dart_bear pos =
     is_placed = true;
     attack_speed = 30;
     counter = 0;
-    projectile_speed = 10.;
+    projectile_speed = 12.1;
     sold = false;
-    damage = 1;
+    damage = 10;
+    pops_lead = false;
   }
 
 (******************************************************************************)
@@ -82,6 +84,7 @@ let make_hockey_bear pos =
     projectile_speed = 60.;
     sold = false;
     damage = 1;
+    pops_lead = false;
   }
 
 let make_pumpkin_bear pos =
@@ -104,6 +107,7 @@ let make_pumpkin_bear pos =
     projectile_speed = 10.;
     sold = false;
     damage = 1;
+    pops_lead = false;
   }
 
 let make_ezra_bear pos =
@@ -126,6 +130,7 @@ let make_ezra_bear pos =
     projectile_speed = 10.;
     sold = false;
     damage = 1;
+    pops_lead = false;
   }
 
 let make_dragon_bear pos =
@@ -148,6 +153,7 @@ let make_dragon_bear pos =
     projectile_speed = 10.;
     sold = false;
     damage = 1;
+    pops_lead = true;
   }
 
 let generate_menu_bears screen_width screen_height =

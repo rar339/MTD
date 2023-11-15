@@ -23,62 +23,31 @@ let initialize_round (waves : (balloon * int) list list ref) =
       current_wave := h;
       waves := t
 
-let test_wave screen_height =
+let test_wave () =
   [
-    ( Balloons.make_balloon 0
-        (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.)))
-        Purple false,
-      15 );
-    ( Balloons.make_balloon 0
-        (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.)))
-        Purple false,
-      15 );
+    (Balloons.make_balloon 0 Purple false, 15);
+    (Balloons.make_balloon 0 Purple false, 15);
   ]
 
-let wave1 screen_height : (balloon * int) list =
+let wave1 () : (balloon * int) list =
   let balloon_lst = ref [] in
   for x = 0 to 20 do
-    balloon_lst :=
-      ( make_balloon x
-          (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.)))
-          Red false,
-        15 )
-      :: !balloon_lst
+    balloon_lst := (make_balloon x Red false, 15) :: !balloon_lst
   done;
   !balloon_lst
 
-let wave2 screen_height =
+let wave2 () =
   let balloon_lst = ref [] in
   for x = 0 to 15 do
-    balloon_lst :=
-      ( make_balloon x
-          (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.)))
-          Red false,
-        15 )
-      :: !balloon_lst;
-    balloon_lst :=
-      ( make_balloon x
-          (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.)))
-          Blue false,
-        15 )
-      :: !balloon_lst
+    balloon_lst := (make_balloon x Red false, 15) :: !balloon_lst;
+    balloon_lst := (make_balloon x Blue false, 15) :: !balloon_lst
   done;
   !balloon_lst
 
-let wave3 screen_height =
+let wave3 () =
   let balloon_lst = ref [] in
   for x = 0 to 15 do
-    balloon_lst :=
-      ( make_balloon x
-          (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.)))
-          Red false,
-        15 )
-      :: !balloon_lst;
-    balloon_lst :=
-      ( make_balloon x
-          (Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.)))
-          Lead true,
-        15 )
-      :: !balloon_lst
+    balloon_lst := (make_balloon x Red false, 15) :: !balloon_lst;
+    balloon_lst := (make_balloon x Lead true, 15) :: !balloon_lst
   done;
   !balloon_lst
