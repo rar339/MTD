@@ -14,14 +14,14 @@ val current_balloons : balloon list ref
 val initialize_round : (balloon * int) list list ref -> unit
 (**Test documentation*)
 
-val test_wave : float ref -> (balloon * int) list
+val test_wave : unit -> (balloon * int) list
 (**Testa documentation*)
 
-val wave1 : float ref -> (balloon * int) list
+val wave1 : unit -> (balloon * int) list
 (**Testb documentation*)
 
-val wave2 : float ref -> (balloon * int) list
+val wave2 : unit -> (balloon * int) list
 (**Testc documentation*)
 
-val wave3 : float ref -> (Balloons.balloon * int) list
+val wave3 : unit -> (Balloons.balloon * int) list
 (**Tesd doc*)

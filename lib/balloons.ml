@@ -16,7 +16,7 @@ type balloon_colors =
   | Lead
 
 (* Maps a balloon to an integer value. *)
-let balloon_value = function
+let value_of_balloon = function
   | None -> 0
   | Red -> 1
   | Blue -> 2
@@ -26,17 +26,25 @@ let balloon_value = function
   | Purple -> 6
   | Lead -> 7
 
+let balloon_of_value = function
+  | 1 -> Red
+  | 2 -> Blue
+  | 3 -> Green
+  | 4 -> Yellow
+  | 5 -> Orange
+  | 6 -> Purple
+  | 7 -> Lead
+  | _ -> None
+
 type balloon = {
   mutable color : balloon_colors;
   mutable velocity : Raylib.Vector2.t;
   mutable position : Raylib.Vector2.t;
-  mutable next_down : balloon_colors;
   mutable is_lead : bool;
   mutable img : Raylib.Texture2D.t;
   mutable current_turn : int;
   mutable remove : bool;
-  order : int;
-  mutable popped : bool;
+  order : int; (*We likely do not need this*)
 }
 
 let hitbox_width = ref 0.0
@@ -85,19 +93,19 @@ let draw_balloon path_width (balloon : balloon) =
    (round_float (y +. !hitbox_y_offset +. (!hitbox_height /. 2.)))
    5.0 Color.green *)
 
-(* Draws pop image when called *)
-let draw_pop balloon =
-  draw_texture_pro (Option.get !pop_img)
-    (Rectangle.create 0. 0. 146. 120.)
-    (Rectangle.create
-       (Vector2.x balloon.position -. 32.5)
-       (Vector2.y balloon.position -. 50.0)
-       80. 80.)
-    (Vector2.create 0. 0.) 0.
-    (Color.create 255 255 255 255);
-
-  if balloon.color = Red then balloon.remove <- true;
-  balloon.popped <- false
+(* Draws pop image n times when called *)
+let rec draw_pop balloon n =
+  if n = 0 then ()
+  else (
+    draw_texture_pro (Option.get !pop_img)
+      (Rectangle.create 0. 0. 146. 120.)
+      (Rectangle.create
+         (Vector2.x balloon.position -. 32.5)
+         (Vector2.y balloon.position -. 50.0)
+         80. 80.)
+      (Vector2.create 0. 0.) 0.
+      (Color.create 255 255 255 255);
+    draw_pop balloon (n - 1))
 
 (* Draws balloons in a balloon list. *)
 let rec draw_balloons path_width (balloon_list : balloon list) =
@@ -105,44 +113,18 @@ let rec draw_balloons path_width (balloon_list : balloon list) =
   | [] -> ()
   | h :: t ->
       draw_balloon path_width h;
-      if h.popped then draw_pop h;
       draw_balloons path_width t
 
-let determine_image = function
-  | None ->
-      let balloon_image = Raylib.load_image "./img/red.png" in
-      Raylib.load_texture_from_image balloon_image
-  | Red ->
-      let balloon_image = Raylib.load_image "./img/red.png" in
-      Raylib.load_texture_from_image balloon_image
-  | Blue ->
-      let balloon_image = Raylib.load_image "./img/blue.png" in
-      Raylib.load_texture_from_image balloon_image
-  | Green ->
-      let balloon_image = Raylib.load_image "./img/green.png" in
-      Raylib.load_texture_from_image balloon_image
-  | Yellow ->
-      let balloon_image = Raylib.load_image "./img/yellow.png" in
-      Raylib.load_texture_from_image balloon_image
-  | Orange ->
-      let balloon_image = Raylib.load_image "./img/orange.png" in
-      Raylib.load_texture_from_image balloon_image
-  | Purple ->
-      let balloon_image = Raylib.load_image "./img/purple.png" in
-      Raylib.load_texture_from_image balloon_image
-  | Lead ->
-      let balloon_image = Raylib.load_image "./img/lead.png" in
-      Raylib.load_texture_from_image balloon_image
-
-let determine_next = function
-  | None -> None
-  | Red -> None
-  | Blue -> Red
-  | Green -> Blue
-  | Yellow -> Green
-  | Orange -> Yellow
-  | Purple -> Orange
-  | Lead -> Purple
+let determine_image balloon_type =
+  match balloon_type with
+  | None -> failwith "impossible?"
+  | Red -> Raylib.load_texture "./img/red.png"
+  | Blue -> Raylib.load_texture "./img/blue.png"
+  | Green -> Raylib.load_texture "./img/green.png"
+  | Yellow -> Raylib.load_texture "./img/yellow.png"
+  | Orange -> Raylib.load_texture "./img/orange.png"
+  | Purple -> Raylib.load_texture "./img/purple.png"
+  | Lead -> Raylib.load_texture "./img/lead.png"
 
 (** Determines the velocity associated with a color of a balloon. *)
 let determine_velocity = function
@@ -156,17 +138,25 @@ let determine_velocity = function
   | _ -> 0.0
 
 (* Changes the velocity of a balloon while preserving its direction. *)
-let change_velocity velocity next_down =
+let change_velocity balloon new_color =
+  let velocity = balloon.velocity in
   if Vector2.x velocity = 0.0 then
     if Vector2.y velocity >= 0.0 then
-      Vector2.create 0.0 (determine_velocity next_down)
-    else Vector2.create 0.0 (-1.0 *. determine_velocity next_down)
+      balloon.velocity <- Vector2.create 0.0 (determine_velocity new_color)
+    else
+      balloon.velocity <-
+        Vector2.create 0.0 (-1.0 *. determine_velocity new_color)
   else if Vector2.x velocity >= 0.0 then
-    Vector2.create (determine_velocity next_down) 0.0
-  else Vector2.create (-1.0 *. determine_velocity next_down) 0.0
+    balloon.velocity <- Vector2.create (determine_velocity new_color) 0.0
+  else
+    balloon.velocity <-
+      Vector2.create (-1.0 *. determine_velocity new_color) 0.0
 
-(* Creates a balloon given the position and color. *)
-let make_balloon i position color is_lead =
+(* Creates a balloon given the color. *)
+let make_balloon i color is_lead =
+  let position =
+    Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.))
+  in
   let x = Vector2.x position in
   let y = Vector2.y position in
   {
@@ -176,18 +166,16 @@ let make_balloon i position color is_lead =
       Vector2.create
         (x +. !hitbox_y_offset +. (!hitbox_width /. 2.))
         (y +. !hitbox_y_offset +. (!hitbox_height /. 2.));
-    next_down = determine_next color;
     is_lead;
     img = determine_image color;
     current_turn = 0;
     remove = false;
     order = i;
-    popped = false;
   }
 
 (*Lowers player lives when a balloon crosses the finish line based on the
    value of that balloon. *)
-let lower_lives balloon = Constants.(lives := !lives - balloon_value balloon)
+let lower_lives balloon = Constants.(lives := !lives - value_of_balloon balloon)
 
 (*Checks if a balloon has reached the finish line. *)
 let check_balloon_exit (balloon : balloon) =
@@ -197,37 +185,35 @@ let check_balloon_exit (balloon : balloon) =
     true)
   else false
 
-(** Modifies the given balloon to be one layer color 'lower'. If the balloon
-   is red, sets balloon.remove to true.*)
-let lower_layer balloon =
-  match balloon.color with
-  | Red -> balloon.popped <- true
-  | _ ->
-      balloon.popped <- true;
-      balloon.color <- balloon.next_down;
-      balloon.velocity <- change_velocity balloon.velocity balloon.next_down;
-      balloon.img <- determine_image balloon.color;
-      balloon.next_down <- determine_next balloon.color
+let set_balloon_color balloon new_color =
+  balloon.color <- new_color;
+  balloon.img <- determine_image new_color;
+  change_velocity balloon new_color;
+  if new_color <> Lead then balloon.is_lead <- false
 
-(** Modifies lead balloon such that if hit by dragon, no longer a lead ballooon *)
-let remove_lead balloon = balloon.is_lead <- false
+(**Updates a balloons color, etc. after a collision with a projectile.*)
+let update_balloon_status bear balloon =
+  if (balloon.is_lead && bear.pops_lead) || not balloon.is_lead then
+    let new_value = value_of_balloon balloon.color - bear.damage in
+    match balloon_of_value new_value with
+    (*If none, the balloon should be removed.*)
+    | None ->
+        balloon.remove <- true;
+        Constants.cash := !Constants.cash + value_of_balloon balloon.color;
+        begin_drawing ();
+        draw_pop balloon (value_of_balloon balloon.color);
+        end_drawing ()
+    | color ->
+        set_balloon_color balloon color;
+        Constants.cash := !Constants.cash + new_value;
+        begin_drawing ();
+        draw_pop balloon bear.damage;
+        end_drawing ()
 
 (** Modifies the given balloon to be the correct layer color based on the damage
-   of the projectile. If lead ballon hit and not dragon, do not modify balloon.*)
-let rec hit_update (bear : bear_types) damage balloon =
-  if damage = 0 || balloon.remove then ()
-  else if balloon.is_lead then
-    match bear with
-    | Dragon ->
-        remove_lead balloon;
-        lower_layer balloon;
-        Constants.cash := !Constants.cash + 1;
-        hit_update bear (damage - 1) balloon
-    | _ -> hit_update bear (damage - 1) balloon
-  else (
-    lower_layer balloon;
-    Constants.cash := !Constants.cash + 1;
-    hit_update bear (damage - 1) balloon)
+   of the bear. If lead ballon hit and not able to pop lead, do not modify balloon.*)
+let hit_update (bear : bear) (balloon : balloon) =
+  if balloon.remove then () else update_balloon_status bear balloon
 
 (* Removes a balloon if it has crossed the finish line and reduces a player's
    lives by calling lower_lives. *)

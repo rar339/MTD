@@ -19,7 +19,6 @@ type bullet = {
   image : Texture2D.t option;
   radius : float;
   mutable pierce : int;
-  damage : int;
   mutable hits : Balloons.balloon list;
   mutable fire : bool;
 }
@@ -109,14 +108,13 @@ let fire_dart (bear : Bears.bear) (balloon : Balloons.balloon) =
       image = determine_projectile_img bear;
       radius = bullet_radius;
       pierce = 1;
-      damage = bear.damage;
       hits = [];
       fire = is_fire;
     }
     :: !bullet_collection
 
 (* Creates dart that will shoot on eight sides of bear *)
-let create_dart_nail (bear : Bears.bear) (v1 : float) (v2 : float) =
+let create_dart_nail (bear : bear) (v1 : float) (v2 : float) =
   let velocity = Vector2.create v1 v2 in
   {
     origin = bear;
@@ -126,7 +124,6 @@ let create_dart_nail (bear : Bears.bear) (v1 : float) (v2 : float) =
     image = None;
     radius = bullet_radius;
     pierce = 1;
-    damage = bear.damage;
     hits = [];
     fire = false;
   }
@@ -178,7 +175,7 @@ let rec update_bullets bullets =
       update_bullet first;
       update_bullets rest
 
-let rec dart_collisions (bear : bear_types) bullet balloon_list =
+let rec dart_collisions (bear : bear) bullet balloon_list =
   match balloon_list with
   | [] -> ()
   | balloon :: t ->
@@ -187,20 +184,23 @@ let rec dart_collisions (bear : bear_types) bullet balloon_list =
         && check_collision_circle_rec bullet.position bullet_radius
              (get_hitbox balloon)
       then (
+        (*What to do when a collision occurs.*)
         bullet.pierce <- bullet.pierce - 1;
         bullet.hits <- balloon :: bullet.hits;
-        Balloons.hit_update bear bullet.damage balloon)
+        Balloons.hit_update bear balloon)
       else dart_collisions bear bullet t
 
 (*Updates bullets and balloons if a collision has occurred. Compares
    given bullet with each balloon in balloon_list.*)
 let update_bullet_collision bullet balloon_list =
-  match bullet.origin.bear_type with
-  | Dart -> dart_collisions Dart bullet balloon_list
-  | Hockey -> dart_collisions Hockey bullet balloon_list
-  | Pumpkin -> ()
-  | Dragon -> dart_collisions Dragon bullet balloon_list
-  | Ezra -> ()
+  match bullet.origin with
+  | { bear_type = Dart; _ } as bear -> dart_collisions bear bullet balloon_list
+  | { bear_type = Hockey; _ } as bear ->
+      dart_collisions bear bullet balloon_list
+  | { bear_type = Pumpkin; _ } as bear -> bear.attack_speed <- bear.attack_speed
+  | { bear_type = Dragon; _ } as bear ->
+      dart_collisions bear bullet balloon_list
+  | { bear_type = Ezra; _ } as bear -> bear.attack_speed <- bear.attack_speed
 
 let rec update_collisions bullet_list balloon_list =
   match bullet_list with
@@ -235,7 +235,7 @@ let draw_bullet bullet =
   match bullet.fire with
   | false ->
       draw_texture_ex (Option.get bullet.image) bullet.position
-        ((180. /. Float.pi) *. vector_angle bullet.velocity)
+        (180. /. Float.pi *. vector_angle bullet.velocity)
         1.
         (Color.create 255 255 255 255)
   (* draw_circle
@@ -243,10 +243,10 @@ let draw_bullet bullet =
      (round_float (Vector2.y bullet.position))
      bullet.radius bullet.color *)
   | true ->
-    draw_texture_ex (Option.get bullet.image) bullet.position
-    ((180. /. Float.pi) *.vector_angle bullet.velocity)
-    1.
-    (Color.create 255 255 255 255)
+      draw_texture_ex (Option.get bullet.image) bullet.position
+        (180. /. Float.pi *. vector_angle bullet.velocity)
+        1.
+        (Color.create 255 255 255 255)
 (* draw_circle
    (round_float (Vector2.x bullet.position))
    (round_float (Vector2.y bullet.position))

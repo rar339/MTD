@@ -68,7 +68,7 @@ let setup () =
   Constants.cash_img :=
     Some Raylib.(load_texture_from_image (load_image "./img/dollar.png"));
 
-  Constants.pop_img := 
+  Constants.pop_img :=
     Some (Raylib.load_texture_from_image (Raylib.load_image "./img/pop.png"));
 
   path_rectangles := generate_rectangles screen_width screen_height;
@@ -78,12 +78,7 @@ let setup () =
 
   (*Load all the waves for the game.*)
   waves :=
-    [
-      Waves.test_wave screen_height;
-      Waves.wave1 screen_height;
-      Waves.wave2 screen_height;
-      Waves.wave3 screen_height;
-    ]
+    [ Waves.test_wave (); Waves.wave1 (); Waves.wave2 (); Waves.wave3 () ]
 (*Load initial wave, likely temporarily: just for testing*)
 
 (******************************************************************************)
@@ -178,7 +173,7 @@ let draw_game () =
      are drawn as the correct size.*)
   if !Constants.state = Active then
     Balloons.draw_balloons (2. *. !screen_height /. 28.) !current_balloons;
-    
+
   Menubar.draw_hover_highlight ();
 
   (*Draw the information panel based on what was last clicked and/or hovered over.*)
