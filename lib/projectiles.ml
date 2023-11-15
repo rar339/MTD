@@ -3,7 +3,7 @@ open Constants
 open Bears
 open Balloons
 
-let bullet_radius = 10.
+let bullet_radius = 7.5
 
 (*-Pierce is how many balloons a bullet can pierce through.
   -Damage is how many layers of a bullet will go through.
@@ -25,6 +25,9 @@ type bullet = {
 }
 
 let bullet_collection : bullet list ref = ref []
+
+let vector_angle (velocity : Vector2.t) =
+  Vector2.angle velocity (Vector2.create 1. 0.)
 
 (******************************************************************************)
 let calculate_new_vel (bear : Bears.bear) (balloon_pos : Vector2.t) =
@@ -68,6 +71,15 @@ let projectile_moving_calc (bear : Bears.bear) (balloon : Balloons.balloon) =
 
 (******************************************************************************)
 
+let determine_projectile_img (bear : Bears.bear) =
+  match bear.bear_type with
+  | Dart ->
+      Some (Raylib.load_texture_from_image (Raylib.load_image "img/dart.png"))
+  | Dragon ->
+      Some
+        (Raylib.load_texture_from_image (Raylib.load_image "img/fireball.png"))
+  | _ -> None
+
 let is_balloon_in_range (bear : Bears.bear) (balloon : Balloons.balloon) : bool
     =
   Vector2.distance bear.position balloon.position <= bear.range
@@ -94,7 +106,7 @@ let fire_dart (bear : Bears.bear) (balloon : Balloons.balloon) =
       position = bear.position;
       velocity;
       color = new_color;
-      image = None;
+      image = determine_projectile_img bear;
       radius = bullet_radius;
       pierce = 1;
       damage = bear.damage;
@@ -222,15 +234,23 @@ let rec remove_bullets bullet_list =
 let draw_bullet bullet =
   match bullet.fire with
   | false ->
-      draw_circle
-        (round_float (Vector2.x bullet.position))
-        (round_float (Vector2.y bullet.position))
-        bullet.radius bullet.color
+      draw_texture_ex (Option.get bullet.image) bullet.position
+        ((180. /. Float.pi) *. vector_angle bullet.velocity)
+        1.
+        (Color.create 255 255 255 255)
+  (* draw_circle
+     (round_float (Vector2.x bullet.position))
+     (round_float (Vector2.y bullet.position))
+     bullet.radius bullet.color *)
   | true ->
-      draw_circle
-        (round_float (Vector2.x bullet.position))
-        (round_float (Vector2.y bullet.position))
-        bullet.radius bullet.color
+    draw_texture_ex (Option.get bullet.image) bullet.position
+    ((180. /. Float.pi) *.vector_angle bullet.velocity)
+    1.
+    (Color.create 255 255 255 255)
+(* draw_circle
+   (round_float (Vector2.x bullet.position))
+   (round_float (Vector2.y bullet.position))
+   bullet.radius bullet.color *)
 
 (* Can import image but greatly reduces performance *)
 (* let bullet_image = Raylib.load_image "./img/fireball.png" in

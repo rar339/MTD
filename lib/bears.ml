@@ -90,10 +90,10 @@ let make_pumpkin_bear pos =
   let image_height = float_of_int (Image.height image) in
   {
     bear_type = Pumpkin;
-    range = 80.;
+    range = 120.;
     cost = 350;
     upgrades = 0;
-    is_bomb = false;
+    is_bomb = true;
     position = pos;
     texture = load_texture_from_image image;
     image_width;

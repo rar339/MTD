@@ -3,6 +3,7 @@
    and associated values. *)
 open Raylib
 open Bears
+open Constants
 
 type balloon_colors =
   | None
@@ -35,6 +36,7 @@ type balloon = {
   mutable current_turn : int;
   mutable remove : bool;
   order : int;
+  mutable popped : bool;
 }
 
 let hitbox_width = ref 0.0
@@ -83,12 +85,27 @@ let draw_balloon path_width (balloon : balloon) =
    (round_float (y +. !hitbox_y_offset +. (!hitbox_height /. 2.)))
    5.0 Color.green *)
 
+(* Draws pop image when called *)
+let draw_pop balloon =
+  draw_texture_pro (Option.get !pop_img)
+    (Rectangle.create 0. 0. 146. 120.)
+    (Rectangle.create
+       (Vector2.x balloon.position -. 32.5)
+       (Vector2.y balloon.position -. 50.0)
+       80. 80.)
+    (Vector2.create 0. 0.) 0.
+    (Color.create 255 255 255 255);
+
+  if balloon.color = Red then balloon.remove <- true;
+  balloon.popped <- false
+
 (* Draws balloons in a balloon list. *)
 let rec draw_balloons path_width (balloon_list : balloon list) =
   match balloon_list with
   | [] -> ()
   | h :: t ->
       draw_balloon path_width h;
+      if h.popped then draw_pop h;
       draw_balloons path_width t
 
 let determine_image = function
@@ -138,7 +155,7 @@ let determine_velocity = function
   | Lead -> 5.0
   | _ -> 0.0
 
-(** Changes the velocity of a balloon while preserving its direction. *)
+(* Changes the velocity of a balloon while preserving its direction. *)
 let change_velocity velocity next_down =
   if Vector2.x velocity = 0.0 then
     if Vector2.y velocity >= 0.0 then
@@ -165,6 +182,7 @@ let make_balloon i position color is_lead =
     current_turn = 0;
     remove = false;
     order = i;
+    popped = false;
   }
 
 (*Lowers player lives when a balloon crosses the finish line based on the
@@ -183,8 +201,9 @@ let check_balloon_exit (balloon : balloon) =
    is red, sets balloon.remove to true.*)
 let lower_layer balloon =
   match balloon.color with
-  | Red -> balloon.remove <- true
+  | Red -> balloon.popped <- true
   | _ ->
+      balloon.popped <- true;
       balloon.color <- balloon.next_down;
       balloon.velocity <- change_velocity balloon.velocity balloon.next_down;
       balloon.img <- determine_image balloon.color;

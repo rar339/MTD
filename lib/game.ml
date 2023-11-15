@@ -68,6 +68,9 @@ let setup () =
   Constants.cash_img :=
     Some Raylib.(load_texture_from_image (load_image "./img/dollar.png"));
 
+  Constants.pop_img := 
+    Some (Raylib.load_texture_from_image (Raylib.load_image "./img/pop.png"));
+
   path_rectangles := generate_rectangles screen_width screen_height;
 
   (*Turn points on the path*)
@@ -175,7 +178,7 @@ let draw_game () =
      are drawn as the correct size.*)
   if !Constants.state = Active then
     Balloons.draw_balloons (2. *. !screen_height /. 28.) !current_balloons;
-
+    
   Menubar.draw_hover_highlight ();
 
   (*Draw the information panel based on what was last clicked and/or hovered over.*)
