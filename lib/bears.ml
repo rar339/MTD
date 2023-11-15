@@ -59,7 +59,7 @@ let make_dart_bear pos =
     counter = 0;
     projectile_speed = 12.1;
     sold = false;
-    damage = 10;
+    damage = 1;
     pops_lead = false;
   }
 

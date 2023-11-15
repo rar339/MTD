@@ -37,3 +37,8 @@ let selection_rect : Raylib.Rectangle.t option ref = ref None
 
 (* Utility Functions *)
 let round_float x = int_of_float (Float.round x)
+
+let list_from_yojson (dimensions_list : Yojson.Basic.t) =
+  match dimensions_list with
+  | `List dims -> List.map Yojson.Basic.Util.to_float dims
+  | _ -> failwith "impossible"

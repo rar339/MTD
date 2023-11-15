@@ -1,11 +1,10 @@
 open Raylib
 open Constants
 
-(*Points are represetned as pairs of ints.*)
-let start_point = (0, 0)
-
-(*start_point should be changed to be somewhere off the screen*)
+(**turn_points are represented by the type (int * int * int) array. This maps 
+    to (x,y,turn number).*)
 let turn_points : (int * int * int) list ref = ref []
+
 let draw_turnpoint x_pos y_pos = draw_circle x_pos y_pos 1.0 Color.red
 
 let rec draw_turnpoints (turn_points : (int * int * int) list) =
@@ -48,9 +47,9 @@ let turn_balloon rate i =
   | 11 -> Vector2.create 0.0 (-.rate)
   | _ -> failwith "impossible"
 
-(*Moves the balloon, taking into consideration if a turn is reached. If a turn
-   is reached, changes the velocity but does not update position.*)
-let move_balloon (balloon : Balloons.balloon) turn_pts =
+(**Moves the balloon, taking into consideration if a turn is reached. If a turn
+   is reached, changes the velocity and then moves the balloon.*)
+let rec move_balloon (balloon : Balloons.balloon) turn_pts =
   let x = Vector2.x balloon.position in
   let y = Vector2.y balloon.position in
   let x_rate = Vector2.x balloon.velocity in
@@ -59,7 +58,8 @@ let move_balloon (balloon : Balloons.balloon) turn_pts =
   | None -> balloon.position <- Vector2.create (x +. x_rate) (y +. y_rate)
   | Some i ->
       balloon.velocity <-
-        turn_balloon (if x_rate = 0.0 then y_rate else x_rate) i
+        turn_balloon (if x_rate = 0.0 then y_rate else x_rate) i;
+      move_balloon balloon turn_pts
 
 let rec move_balloons (balloon_list : Balloons.balloon list) turn_pts =
   match balloon_list with
@@ -68,39 +68,33 @@ let rec move_balloons (balloon_list : Balloons.balloon list) turn_pts =
       move_balloon h turn_pts;
       move_balloons t turn_pts
 
-let generate_turn_points screen_width screen_height =
-  [
-    ( 22 * round_float (!screen_width /. 39.),
-      3 * round_float (!screen_height /. 28.),
-      1 );
-    ( 22 * round_float (!screen_width /. 40.),
-      8 * round_float (!screen_height /. 27.),
-      2 );
-    ( 4 * round_float (!screen_width /. 48.),
-      8 * round_float (!screen_height /. 28.),
-      3 );
-    ( 4 * round_float (!screen_width /. 48.),
-      26 * round_float (!screen_height /. 27.),
-      4 );
-    ( 25 * round_float (!screen_width /. 40.),
-      26 * round_float (!screen_height /. 28.),
-      5 );
-    ( 25 * round_float (!screen_width /. 40.),
-      21 * round_float (!screen_height /. 28.5),
-      6 );
-    ( 9 * round_float (!screen_width /. 42.),
-      21 * round_float (!screen_height /. 28.5),
-      7 );
-    ( 9 * round_float (!screen_width /. 42.),
-      13 * round_float (!screen_height /. 29.),
-      8 );
-    ( 14 * round_float (!screen_width /. 40.),
-      13 * round_float (!screen_height /. 29.),
-      9 );
-    ( 14 * round_float (!screen_width /. 40.),
-      16 * round_float (!screen_height /. 28.),
-      10 );
-    ( 27 * round_float (!screen_width /. 39.),
-      16 * round_float (!screen_height /. 28.),
-      11 );
-  ]
+let create_turn_point x1 x2 y1 y2 n =
+  ( round_float (x1 *. (!screen_width /. x2)),
+    round_float (y1 *. (!screen_height /. y2)),
+    round_float n )
+
+let list_from_yojson (dimensions_list : Yojson.Basic.t) =
+  match dimensions_list with
+  | `List dims -> List.map Yojson.Basic.Util.to_float dims
+  | _ -> failwith "impossible"
+
+let produce_point (dim : float list) =
+  create_turn_point (List.nth dim 0) (List.nth dim 1) (List.nth dim 2)
+    (List.nth dim 3) (List.nth dim 4)
+
+(**Takes in a list of lists.*)
+let rec extract_points (rects : Yojson.Basic.t list) =
+  match rects with
+  | [] -> []
+  | rect :: t ->
+      let dimensions = list_from_yojson rect in
+      produce_point dimensions :: extract_points t
+
+(**Parses the point locations from points.json. The json structure for a
+      json containing just one point is as follows:
+          \{ "points" : [(x1,x2,y1,y2,n)] *)
+let point_json_parse () =
+  let json = Yojson.Basic.from_file "./data/points.json" in
+  let open Yojson.Basic.Util in
+  let point_list = json |> member "points" |> to_list in
+  extract_points point_list
