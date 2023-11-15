@@ -116,7 +116,7 @@ let check_click () =
     update_bear_selections true (get_mouse_position ()) !bear_collection;
     update_bear_selections false (get_mouse_position ()) !menu_bears)
 
-(***Updates the hover_display to be the current bear hovered over. Could be a menu
+(**Updates the hover_display to be the current bear hovered over. Could be a menu
    bear OR a placed bear.*)
 let check_hover () =
   hover_display :=
