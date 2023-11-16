@@ -71,10 +71,10 @@ let setup () =
   Constants.pop_img :=
     Some (Raylib.load_texture_from_image (Raylib.load_image "./img/pop.png"));
 
-  path_rectangles := generate_rectangles screen_width screen_height;
+  path_rectangles := rect_json_parse ();
 
   (*Turn points on the path*)
-  turn_points := generate_turn_points screen_width screen_height;
+  turn_points := point_json_parse ();
 
   (*Load all the waves for the game.*)
   waves :=
@@ -129,9 +129,9 @@ let draw_game () =
   (*Draw the background & reference grid*)
   Gamebackground.draw_background background;
 
-  Gamebackground.draw_ref_grid
-    (int_of_float !screen_width)
-    (int_of_float !screen_height);
+  (* Gamebackground.draw_ref_grid
+     (int_of_float !screen_width)
+     (int_of_float !screen_height); *)
 
   (*This line shows ref rectangles! Comment out if you want them invisible*)
   (* Gamebounds.draw_rectangles !path_rectangles; *)
@@ -167,7 +167,7 @@ let draw_game () =
   draw_bullets !bullet_collection;
 
   (*Draw the turning points for reference, comment out if you want them invisible*)
-  Balloonpath.draw_turnpoints !turn_points;
+  (* Balloonpath.draw_turnpoints !turn_points; *)
 
   (*Draw the balloons, the number passed in is the path's width, so that balloons
      are drawn as the correct size.*)
