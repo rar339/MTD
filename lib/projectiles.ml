@@ -193,7 +193,8 @@ let rec dart_collisions (bear : bear) bullet balloon_list =
              (get_hitbox balloon)
       then (
         (*What to do when a collision occurs.*)
-        bullet.pierce <- bullet.pierce - 1;
+        if (bear.bear_type != Sniper) then
+        (bullet.pierce <- bullet.pierce - 1);
         bullet.hits <- balloon :: bullet.hits;
         Balloons.hit_update bear balloon)
       else dart_collisions bear bullet t
@@ -208,7 +209,7 @@ let update_bullet_collision bullet balloon_list =
   | { bear_type = Pumpkin; _ } as bear -> bear.attack_speed <- bear.attack_speed
   | { bear_type = Dragon; _ } as bear ->
       dart_collisions bear bullet balloon_list
-  | { bear_type = Sniper; _ } as bear -> bear.attack_speed <- bear.attack_speed
+  | { bear_type = Sniper; _ } as bear -> dart_collisions bear bullet balloon_list
 
 let rec update_collisions bullet_list balloon_list =
   match bullet_list with

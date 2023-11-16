@@ -125,12 +125,12 @@ let make_sniper_bear pos =
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 240;
+    attack_speed = 150;
     counter = 50;
     projectile_speed = 30.;
     sold = false;
     damage = 1;
-    pops_lead = false;
+    pops_lead = true;
   }
 
 let make_dragon_bear pos =
