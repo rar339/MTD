@@ -85,9 +85,9 @@ let update_bear_selections placed_bears pos bears =
   | Some { bear_type = Pumpkin; _ } ->
       if not placed_bears then
         selected_bear := Some (Bears.make_pumpkin_bear (get_mouse_position ()))
-  | Some { bear_type = Ezra; _ } ->
+  | Some { bear_type = Sniper; _ } ->
       if not placed_bears then
-        selected_bear := Some (Bears.make_ezra_bear (get_mouse_position ()))
+        selected_bear := Some (Bears.make_sniper_bear (get_mouse_position ()))
   | Some { bear_type = Dragon; _ } ->
       if not placed_bears then
         selected_bear := Some (Bears.make_dragon_bear (get_mouse_position ()))
@@ -219,7 +219,7 @@ let display_hover_info (hover : bear option) =
     | Some ({ bear_type = Hockey; _ } as bear) -> bear.position <- bear.position
     | Some ({ bear_type = Pumpkin; _ } as bear) ->
         bear.position <- bear.position
-    | Some ({ bear_type = Ezra; _ } as bear) -> bear.position <- bear.position
+    | Some ({ bear_type = Sniper; _ } as bear) -> bear.position <- bear.position
     | Some ({ bear_type = Dragon; _ } as bear) -> bear.position <- bear.position
 
 (**Draws the rectangle for the selection GUI.*)
@@ -229,10 +229,9 @@ let draw_info_background () =
 
 (**Draws the title for the selection GUI based on the bear type.*)
 let draw_info_title beartype rect_x rect_y rect_width =
-  draw_text_ex
-    (Option.get !game_font)
+  draw_text_ex (Option.get !game_font)
     (Bears.string_of_beartype beartype ^ " Bear")
-    (Vector2.create (rect_x +. 0.9 *. (rect_width /. 3.)) (rect_y *. 1.05))
+    (Vector2.create (rect_x +. (0.9 *. (rect_width /. 3.))) (rect_y *. 1.05))
     45. 2. Color.black
 
 (**Draw the sell button in the selection GUI, the sell rate is 0.70 of the original
@@ -252,12 +251,8 @@ let draw_sell_button bear rect_x rect_y rect_width rect_height =
     select_display := None;
     Constants.cash := !Constants.cash + sell_price)
 
-
-
-
 (** Upgrade range button *)
 let draw_range_upgrade_button bear rect_x rect_y rect_width rect_height =
-
   let upgrade_price = Constants.round_float (float_of_int bear.cost *. 0.50) in
   if
     Raygui.(
@@ -340,7 +335,12 @@ let display_selection selection =
       draw_range_upgrade_button bear rect_x rect_y rect_width rect_height;
       draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
   | Some ({ bear_type = Pumpkin; _ } as bear) -> print_int bear.attack_speed
-  | Some ({ bear_type = Ezra; _ } as bear) -> print_int bear.attack_speed
+  | Some ({ bear_type = Sniper; _ } as bear) ->
+      draw_info_background ();
+      draw_info_title Sniper rect_x rect_y rect_width;
+      draw_sell_button bear rect_x rect_y rect_width rect_height;
+      draw_range_upgrade_button bear rect_x rect_y rect_width rect_height;
+      draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height
   | Some ({ bear_type = Dragon; _ } as bear) ->
       draw_info_background ();
       draw_info_title Dragon rect_x rect_y rect_width;

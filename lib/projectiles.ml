@@ -77,9 +77,14 @@ let determine_projectile_img (bear : Bears.bear) =
   | Dragon ->
       Some
         (Raylib.load_texture_from_image (Raylib.load_image "img/fireball.png"))
-  | Hockey -> 
+  | Hockey ->
       Some
-        (Raylib.load_texture_from_image (Raylib.load_image "img/hockeypuck.png"))
+        (Raylib.load_texture_from_image
+           (Raylib.load_image "img/hockeypuck.png"))
+  | Sniper -> 
+    Some 
+      (Raylib.load_texture_from_image
+      (Raylib.load_image "img/hockeypuck.png"))
   | _ -> None
 
 let is_balloon_in_range (bear : Bears.bear) (balloon : Balloons.balloon) : bool
@@ -124,7 +129,7 @@ let create_dart_nail (bear : bear) (v1 : float) (v2 : float) =
     position = bear.position;
     velocity;
     color = Color.black;
-    image = determine_projectile_img bear ;
+    image = determine_projectile_img bear;
     radius = bullet_radius;
     pierce = 1;
     hits = [];
@@ -150,7 +155,7 @@ let init_projectile (bear : Bears.bear) (balloon : Balloons.balloon) =
   | { bear_type = Hockey; _ } -> fire_dart_nail bear
   | { bear_type = Pumpkin; _ } -> ()
   | { bear_type = Dragon; _ } -> fire_dart bear balloon
-  | { bear_type = Ezra; _ } -> ()
+  | { bear_type = Sniper; _ } -> fire_dart bear balloon
 
 let rec fire_all_shots (bears : Bears.bear list)
     (balloons : Balloons.balloon list) =
@@ -203,7 +208,7 @@ let update_bullet_collision bullet balloon_list =
   | { bear_type = Pumpkin; _ } as bear -> bear.attack_speed <- bear.attack_speed
   | { bear_type = Dragon; _ } as bear ->
       dart_collisions bear bullet balloon_list
-  | { bear_type = Ezra; _ } as bear -> bear.attack_speed <- bear.attack_speed
+  | { bear_type = Sniper; _ } as bear -> bear.attack_speed <- bear.attack_speed
 
 let rec update_collisions bullet_list balloon_list =
   match bullet_list with

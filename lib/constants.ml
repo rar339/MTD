@@ -5,7 +5,7 @@ type gamestate = Home | Inactive | Active | Lose
 (* The number of lives a player has in the game. When a balloon leaves through
    the finish life, the player loses lives associated with the balloon's
    value. *)
-let lives = ref 10
+let lives = ref 100
 
 (* The player's spending money for bears and their upgrades. Cash is
    spent with every purchase and accrued with every layer of balloon popped

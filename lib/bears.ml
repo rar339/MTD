@@ -1,7 +1,7 @@
 open Raylib
 (* open Constants *)
 
-type bear_types = Dart | Hockey | Pumpkin | Ezra | Dragon
+type bear_types = Dart | Hockey | Pumpkin | Sniper | Dragon
 
 (*Width and height are temporary, shouldn't be needed if all images are the same
    size.*)
@@ -37,7 +37,7 @@ let string_of_beartype bear_type =
   | Dart -> "Dart"
   | Hockey -> "Hockey"
   | Pumpkin -> "Pumpkin"
-  | Ezra -> "Ezra"
+  | Sniper -> "Sniper"
   | Dragon -> "Dragon"
 
 let make_dart_bear pos =
@@ -110,13 +110,13 @@ let make_pumpkin_bear pos =
     pops_lead = false;
   }
 
-let make_ezra_bear pos =
+let make_sniper_bear pos =
   let image = load_image "./img/purplebear.png" in
   let image_width = float_of_int (Image.width image) in
   let image_height = float_of_int (Image.height image) in
   {
-    bear_type = Ezra;
-    range = 80.;
+    bear_type = Sniper;
+    range = 700.;
     cost = 400;
     upgrades = 0;
     is_bomb = false;
@@ -125,9 +125,9 @@ let make_ezra_bear pos =
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 10;
+    attack_speed = 240;
     counter = 50;
-    projectile_speed = 10.;
+    projectile_speed = 30.;
     sold = false;
     damage = 1;
     pops_lead = false;
@@ -164,7 +164,7 @@ let generate_menu_bears screen_width screen_height =
       (Vector2.create (5.75 *. screen_width /. 7.) (1. *. screen_height /. 4.));
     make_pumpkin_bear
       (Vector2.create (6.05 *. screen_width /. 7.) (1. *. screen_height /. 4.));
-    make_ezra_bear
+    make_sniper_bear
       (Vector2.create (6.35 *. screen_width /. 7.) (1. *. screen_height /. 4.));
     make_dragon_bear
       (Vector2.create (6.65 *. screen_width /. 7.) (1. *. screen_height /. 4.));

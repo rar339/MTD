@@ -237,6 +237,7 @@ let draw_game () =
     then (
       Constants.state := Home;
       Constants.cash := Constants.start_cash;
+      Constants.lives := Constants.start_lives;
     ))
 
     end;
