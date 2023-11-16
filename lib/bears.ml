@@ -129,7 +129,7 @@ let make_sniper_bear pos =
     counter = 50;
     projectile_speed = 30.;
     sold = false;
-    damage = 1;
+    damage = 3;
     pops_lead = true;
   }
 
