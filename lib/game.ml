@@ -118,73 +118,105 @@ let update_game () =
     update_bullets !bullet_collection;
     update_collisions !bullet_collection !current_balloons;
     bullet_collection := Projectiles.remove_bullets !bullet_collection;
-    current_balloons := Balloons.remove_balloons !current_balloons)
+    current_balloons := Balloons.remove_balloons !current_balloons;
+    if !lives <= 0 then Constants.state := Lose)
+  else if !Constants.state = Lose then Raylib.clear_background Color.white
 
 (******************************************************************************)
 let draw_game () =
   let open Raylib in
   begin_drawing ();
   clear_background Color.white;
+    (*Draw the background & reference grid*)
+    Gamebackground.draw_background background;
 
-  (*Draw the background & reference grid*)
-  Gamebackground.draw_background background;
+    (* Gamebackground.draw_ref_grid
+       (int_of_float !screen_width)
+       (int_of_float !screen_height); *)
 
-  (* Gamebackground.draw_ref_grid
-     (int_of_float !screen_width)
-     (int_of_float !screen_height); *)
+    (*This line shows ref rectangles! Comment out if you want them invisible*)
+    (* Gamebounds.draw_rectangles !path_rectangles; *)
+    Menubar.draw_menu (Option.get !Constants.menu_rect);
 
-  (*This line shows ref rectangles! Comment out if you want them invisible*)
-  (* Gamebounds.draw_rectangles !path_rectangles; *)
-  Menubar.draw_menu (Option.get !Constants.menu_rect);
+    (*** Drawing lives and cash ***)
+    Raylib.draw_rectangle_rec
+      (Menubar.lives_box !screen_width !screen_height)
+      (Color.create 150 0 0 100);
 
-  (*** Drawing lives and cash ***)
-  Raylib.draw_rectangle_rec
-    (Menubar.lives_box !screen_width !screen_height)
-    (Color.create 150 0 0 100);
+    Raylib.draw_rectangle_rec
+      (Menubar.cash !screen_width !screen_height)
+      (Color.create 0 150 0 100);
 
-  Raylib.draw_rectangle_rec
-    (Menubar.cash !screen_width !screen_height)
-    (Color.create 0 150 0 100);
+    Menubar.draw_heart !Constants.heart_img !screen_width !screen_height;
+    Menubar.draw_cash !Constants.cash_img !screen_width !screen_height;
+    Menubar.lives_and_cash_count !screen_width !screen_height;
 
-  Menubar.draw_heart !Constants.heart_img !screen_width !screen_height;
-  Menubar.draw_cash !Constants.cash_img !screen_width !screen_height;
-  Menubar.lives_and_cash_count !screen_width !screen_height;
+    (* Drawing round button *)
+    if !Constants.state <> Active then play_button !screen_width !screen_height;
 
-  (* Drawing round button *)
-  if !Constants.state <> Active then play_button !screen_width !screen_height;
+    (*Draw the SELECTED bear to PLACE*)
+    Bears.draw_selected_bear !selected_bear;
 
-  (*Draw the SELECTED bear to PLACE*)
-  Bears.draw_selected_bear !selected_bear;
+    (*Draws the range of the selected bear: grey if it is in a valid location,
+       red otherwise.*)
+    if !selected then Menubar.draw_range !selected_bear;
+    Menubar.draw_hover_highlight ();
+    (*Draw PLACED bears!*)
+    Bears.draw_bears !Bears.bear_collection;
 
-  (*Draws the range of the selected bear: grey if it is in a valid location,
-     red otherwise.*)
-  if !selected then Menubar.draw_range !selected_bear;
-  Menubar.draw_hover_highlight ();
-  (*Draw PLACED bears!*)
-  Bears.draw_bears !Bears.bear_collection;
+    (*Draw bullets*)
+    draw_bullets !bullet_collection;
 
-  (*Draw bullets*)
-  draw_bullets !bullet_collection;
+    (*Draw the turning points for reference, comment out if you want them invisible*)
+    (* Balloonpath.draw_turnpoints !turn_points; *)
 
-  (*Draw the turning points for reference, comment out if you want them invisible*)
-  (* Balloonpath.draw_turnpoints !turn_points; *)
+    (*Draw the balloons, the number passed in is the path's width, so that balloons
+       are drawn as the correct size.*)
+    if !Constants.state = Active then
+      Balloons.draw_balloons (2. *. !screen_height /. 28.) !current_balloons;
 
-  (*Draw the balloons, the number passed in is the path's width, so that balloons
-     are drawn as the correct size.*)
-  if !Constants.state = Active then
-    Balloons.draw_balloons (2. *. !screen_height /. 28.) !current_balloons;
+    Menubar.draw_hover_highlight ();
 
-  Menubar.draw_hover_highlight ();
+    (*Draw the information panel based on what was last clicked and/or hovered over.*)
+    Menubar.display_bear_info !Menubar.select_display !Menubar.hover_display;
 
-  (*Draw the information panel based on what was last clicked and/or hovered over.*)
-  Menubar.display_bear_info !Menubar.select_display !Menubar.hover_display;
+    if !showInstructions then (
+      draw_rectangle 0 0
+        (int_of_float !screen_width)
+        (int_of_float !screen_height)
+        (Color.create 0 0 0 200);
+      if
+        let x_pos = 1. *. !screen_width /. 5. in
+        let y_pos = 1. *. !screen_height /. 5. in
+        let show_window =
+          Raygui.window_box
+            (Rectangle.create x_pos y_pos
+               (3. *. !screen_width /. 5.)
+               (3. *. !screen_height /. 5.))
+            ""
+        in
 
-  if !showInstructions then (
-    draw_rectangle 0 0
-      (int_of_float !screen_width)
-      (int_of_float !screen_height)
-      (Color.create 0 0 0 200);
-    if
+        draw_text_ex (Option.get !game_font)
+          "\t\t\t\t\t\t\t\t\t\t\t\t\t\tWelcome to McGraw Tower Defense!\n\n\
+           \t\t\t\t\t\tDefend Cornell and McGraw Tower from waves of \n\
+           \t\t\t\t\t\t\toncoming balloons. You earn cash for every \n\
+           \t\t\t\t\t\t\tlayer of balloon that you pop and at the end \n\
+           \t\t\t\t\t\t\tof each round. Use it strategically to buy and \n\
+           \t\t\t\t\t\t\tupgrade bears. \n\n\
+          \         \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tGood luck!"
+          (Vector2.create (x_pos +. 10.) (y_pos +. 30.))
+          45. 2. Color.white;
+        show_window
+      then showInstructions := false)
+  else begin    
+    (*RESTART GAME********************************)
+    if !Constants.state == Lose then (
+      draw_rectangle 0 0
+    (int_of_float !screen_width)
+    (int_of_float !screen_height)
+    (Color.create 150 0 0 180);
+    if 
+
       let x_pos = 1. *. !screen_width /. 5. in
       let y_pos = 1. *. !screen_height /. 5. in
       let show_window =
@@ -195,20 +227,19 @@ let draw_game () =
           ""
       in
 
-      draw_text_ex 
-        (Option.get !game_font)
-        "\t\t\t\t\t\t\t\t\t\t\t\t\t\tWelcome to McGraw Tower Defense!\n\n\
-         \t\t\t\t\t\tDefend Cornell and McGraw Tower from waves of \n\
-         \t\t\t\t\t\t\toncoming balloons. You earn cash for every \n\
-         \t\t\t\t\t\t\tlayer of balloon that you pop and at the end \n\
-         \t\t\t\t\t\t\tof each round. Use it strategically to buy and \n\
-         \t\t\t\t\t\t\tupgrade bears. \n
-         \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tGood luck!"
+      draw_text_ex (Option.get !game_font)
+        "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tYou Lost!\n\n
+        \t\t\t\t\t\t\t\t\t\t\t\t\t\tclose this window to try again!"
+        
         (Vector2.create (x_pos +. 10.) (y_pos +. 30.))
         45. 2. Color.white;
       show_window
-    then showInstructions := false);
+    then (
+      Constants.state := Home;
+      Constants.cash := Constants.start_cash;
+    ))
 
+    end;
   end_drawing ()
 
 (*Main game loop***************************************************************)

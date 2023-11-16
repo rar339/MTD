@@ -77,6 +77,9 @@ let determine_projectile_img (bear : Bears.bear) =
   | Dragon ->
       Some
         (Raylib.load_texture_from_image (Raylib.load_image "img/fireball.png"))
+  | Hockey -> 
+      Some
+        (Raylib.load_texture_from_image (Raylib.load_image "img/hockeypuck.png"))
   | _ -> None
 
 let is_balloon_in_range (bear : Bears.bear) (balloon : Balloons.balloon) : bool
@@ -121,7 +124,7 @@ let create_dart_nail (bear : bear) (v1 : float) (v2 : float) =
     position = bear.position;
     velocity;
     color = Color.black;
-    image = None;
+    image = determine_projectile_img bear ;
     radius = bullet_radius;
     pierce = 1;
     hits = [];
