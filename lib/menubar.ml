@@ -229,11 +229,11 @@ let draw_info_background () =
 
 (**Draws the title for the selection GUI based on the bear type.*)
 let draw_info_title beartype rect_x rect_y rect_width =
-  draw_text
+  draw_text_ex
+    (Option.get !game_font)
     (Bears.string_of_beartype beartype ^ " Bear")
-    (Constants.round_float (rect_x +. (rect_width /. 3.)))
-    (Constants.round_float (rect_y *. 1.05))
-    30 Color.white
+    (Vector2.create (rect_x +. 0.9 *. (rect_width /. 3.)) (rect_y *. 1.05))
+    45. 2. Color.black
 
 (**Draw the sell button in the selection GUI, the sell rate is 0.70 of the original
     cost.*)
@@ -252,8 +252,12 @@ let draw_sell_button bear rect_x rect_y rect_width rect_height =
     select_display := None;
     Constants.cash := !Constants.cash + sell_price)
 
+
+
+
 (** Upgrade range button *)
 let draw_range_upgrade_button bear rect_x rect_y rect_width rect_height =
+
   let upgrade_price = Constants.round_float (float_of_int bear.cost *. 0.50) in
   if
     Raygui.(

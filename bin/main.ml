@@ -87,7 +87,7 @@ let setup () =
   screen_height := float_of_int (get_screen_height ());
   toggle_fullscreen ();
   Raylib.set_target_fps 60;
-
+  game_font := Some (Raylib.load_font_ex "./img/gamefont.otf" 45 None);
   (*Create the intro screen art*)
   let title_font = Raylib.load_font_ex "./img/machine-gunk.ttf" 100 None in
   let custom_font = Raylib.load_font_ex "./img/machine-gunk.ttf" 36 None in
@@ -162,7 +162,6 @@ let update_and_draw tuple =
   if !Constants.state <> Home then
     let open MTD in
     (* clear_background Color.lightgray; *)
-    
     Game.loop ()
   else draw_home tuple
 

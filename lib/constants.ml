@@ -26,6 +26,7 @@ let round = ref 1
 (*Game global attributes*)
 let count = ref 0
 let showInstructions = ref true
+let game_font : Raylib.Font.t option ref = ref None
 let selected : bool ref = ref false
 let selected_bear : Bears.bear option ref = ref None
 let menu_rect : Raylib.Rectangle.t option ref = ref None

@@ -195,17 +195,17 @@ let draw_game () =
           ""
       in
 
-      draw_text
-        "Welcome to McGraw Tower Defense!\n\n\
-         Defend Cornell and McGraw Tower from waves of \n\
-         oncoming balloons. You earn cash for every \n\
-         layer of balloon that you pop and at the end \n\
-         of each round. Use it strategically to buy and \n\
-         upgrade bears. \n\n\
-         Good luck!"
-        (int_of_float (x_pos +. 10.))
-        (int_of_float (y_pos +. 30.))
-        30 Color.white;
+      draw_text_ex 
+        (Option.get !game_font)
+        "\t\t\t\t\t\t\t\t\t\t\t\t\t\tWelcome to McGraw Tower Defense!\n\n\
+         \t\t\t\t\t\tDefend Cornell and McGraw Tower from waves of \n\
+         \t\t\t\t\t\t\toncoming balloons. You earn cash for every \n\
+         \t\t\t\t\t\t\tlayer of balloon that you pop and at the end \n\
+         \t\t\t\t\t\t\tof each round. Use it strategically to buy and \n\
+         \t\t\t\t\t\t\tupgrade bears. \n
+         \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tGood luck!"
+        (Vector2.create (x_pos +. 10.) (y_pos +. 30.))
+        45. 2. Color.white;
       show_window
     then showInstructions := false);
 
