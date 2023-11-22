@@ -78,7 +78,8 @@ let update_bear_selections placed_bears pos bears =
   | None -> ()
   | Some { bear_type = Dart; _ } ->
       if not placed_bears then
-        selected_bear := Some (Bears.make_dart_bear (get_mouse_position ()))
+        selected_bear :=
+          Some (Bears.make_dart_bear false (get_mouse_position ()))
   | Some { bear_type = Hockey; _ } ->
       if not placed_bears then
         selected_bear := Some (Bears.make_hockey_bear (get_mouse_position ()))
@@ -169,7 +170,7 @@ let draw_menu rect =
   draw_rectangle_rec rect (Color.create 183 201 226 255);
   draw_rectangle_lines_ex rect 3. Color.black;
   (* Draw the menu bears *)
-  Bears.draw_bears !menu_bears
+  Bears.draw_menu_bears !menu_bears
 
 (*Selection GUI****************************************************************)
 
@@ -209,19 +210,6 @@ let draw_hover_highlight () =
       (Constants.round_float (Vector2.y (Option.get !select_display).position))
       (Option.get !select_display).range (Color.create 0 0 0 50)
 
-(**Draws the information about a menu bear that is hovered over, if any. This
-    should simply drawn ontop of the current selection, if a bear is selected.*)
-let display_hover_info (hover : bear option) =
-  if mem_option hover !menu_bears then
-    match hover with
-    | None -> ()
-    | Some ({ bear_type = Dart; _ } as bear) -> bear.position <- bear.position
-    | Some ({ bear_type = Hockey; _ } as bear) -> bear.position <- bear.position
-    | Some ({ bear_type = Pumpkin; _ } as bear) ->
-        bear.position <- bear.position
-    | Some ({ bear_type = Sniper; _ } as bear) -> bear.position <- bear.position
-    | Some ({ bear_type = Dragon; _ } as bear) -> bear.position <- bear.position
-
 (**Draws the rectangle for the selection GUI.*)
 let draw_info_background () =
   draw_rectangle_rec (Option.get !Constants.selection_rect) Color.gold;
@@ -233,6 +221,28 @@ let draw_info_title beartype rect_x rect_y rect_width =
     (Bears.string_of_beartype beartype ^ " Bear")
     (Vector2.create (rect_x +. (0.9 *. (rect_width /. 3.))) (rect_y *. 1.05))
     45. 2. Color.black
+
+(**Draws the information about a menu bear that is hovered over, if any. This
+    should simply drawn ontop of the current selection, if a bear is selected.*)
+let display_hover_info (hover : bear option) =
+  if mem_option hover !menu_bears then
+    match hover with
+    | None -> ()
+    | Some ({ bear_type = Dart; _ } as bear) ->
+        bear.position <- bear.position;
+        draw_info_background ()
+    | Some ({ bear_type = Hockey; _ } as bear) ->
+        bear.position <- bear.position;
+        draw_info_background ()
+    | Some ({ bear_type = Pumpkin; _ } as bear) ->
+        bear.position <- bear.position;
+        draw_info_background ()
+    | Some ({ bear_type = Sniper; _ } as bear) ->
+        bear.position <- bear.position;
+        draw_info_background ()
+    | Some ({ bear_type = Dragon; _ } as bear) ->
+        bear.position <- bear.position;
+        draw_info_background ()
 
 (**Draw the sell button in the selection GUI, the sell rate is 0.70 of the original
     cost.*)

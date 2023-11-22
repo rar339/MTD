@@ -25,7 +25,7 @@ type bear = {
 }
 
 let bear_collection : bear list ref = ref []
-let bear_radius = 30.
+let bear_radius = 40.
 let get_x bear = Vector2.x bear.position
 let get_y bear = Vector2.y bear.position
 
@@ -40,8 +40,11 @@ let string_of_beartype bear_type =
   | Sniper -> "Sniper"
   | Dragon -> "Dragon"
 
-let make_dart_bear pos =
-  let image = load_image "./img/redbear.png" in
+let make_dart_bear (menu_bear : bool) pos =
+  let image =
+    if not menu_bear then load_image "./img/dartbear.png"
+    else load_image "./img/menudartbear.png"
+  in
   let image_width = float_of_int (Image.width image) in
   let image_height = float_of_int (Image.height image) in
   {
@@ -129,7 +132,7 @@ let make_sniper_bear pos =
     counter = 50;
     projectile_speed = 30.;
     sold = false;
-    damage = 3;
+    damage = 100;
     pops_lead = true;
   }
 
@@ -158,7 +161,7 @@ let make_dragon_bear pos =
 
 let generate_menu_bears screen_width screen_height =
   [
-    make_dart_bear
+    make_dart_bear true
       (Vector2.create (5.45 *. screen_width /. 7.) (1. *. screen_height /. 4.));
     make_hockey_bear
       (Vector2.create (5.75 *. screen_width /. 7.) (1. *. screen_height /. 4.));
@@ -179,8 +182,7 @@ let rec determine_bear_clicked click_pos bear_list =
         Some bear
       else determine_bear_clicked click_pos rest
 
-(* draw_bear function *)
-let draw_bear (bear : bear) =
+let draw_menu_bear (bear : bear) = 
   let x = Vector2.x bear.position -. bear_radius in
   let y = Vector2.y bear.position -. bear_radius in
   draw_texture_pro bear.texture
@@ -191,6 +193,18 @@ let draw_bear (bear : bear) =
     (Vector2.create 0. 0.) 0.
     (Color.create 255 255 255 255)
 
+(* draw_bear function *)
+let draw_bear (bear : bear) =
+  let x = Vector2.x bear.position -. bear_radius in
+  let y = Vector2.y bear.position -. bear_radius in
+  draw_texture_pro bear.texture
+    (*Source rect should be the size of the bear's img file.*)
+    (Rectangle.create 0. 0. bear.image_width bear.image_height)
+    (*Dest rect*)
+    (Rectangle.create x y (bear_radius *. 2.8) (bear_radius *. 2.))
+    (Vector2.create 0. 0.) 0.
+    (Color.create 255 255 255 255)
+
 (*Draws the placed bears in the game*)
 let rec draw_bears (bears : bear list) =
   match bears with
@@ -198,6 +212,14 @@ let rec draw_bears (bears : bear list) =
   | bear :: rest ->
       draw_bear bear;
       draw_bears rest
+
+let rec draw_menu_bears (menu_bears : bear list) = 
+  match menu_bears with
+  | [] -> ()
+  | bear :: rest -> 
+    draw_menu_bear bear;
+    draw_menu_bears rest
+
 
 let draw_selected_bear (bear : bear option) =
   match bear with None -> () | Some bear -> draw_bear bear
