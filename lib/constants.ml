@@ -30,6 +30,7 @@ let start_lives = 100
 
 
 
+
 (*Game global attributes*)
 let count = ref 0
 let showInstructions = ref true

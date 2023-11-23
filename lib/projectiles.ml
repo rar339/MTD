@@ -81,11 +81,14 @@ let determine_projectile_img (bear : Bears.bear) =
       Some
         (Raylib.load_texture_from_image
            (Raylib.load_image "img/hockeypuck.png"))
-  | Sniper -> 
-    Some 
-      (Raylib.load_texture_from_image
-      (Raylib.load_image "img/hockeypuck.png"))
-  | _ -> None
+  | Pumpkin ->
+      Some
+        (Raylib.load_texture_from_image
+           (Raylib.load_image "img/hockeypuck.png"))
+  | Sniper ->
+      Some
+        (Raylib.load_texture_from_image
+           (Raylib.load_image "img/hockeypuck.png"))
 
 let is_balloon_in_range (bear : Bears.bear) (balloon : Balloons.balloon) : bool
     =
@@ -121,6 +124,40 @@ let fire_dart (bear : Bears.bear) (balloon : Balloons.balloon) =
     }
     :: !bullet_collection
 
+let fire_pumpkin (bear : Bears.bear) (balloon : Balloons.balloon) =
+  let velocity = projectile_moving_calc bear balloon in
+  let theta = atan2 (Vector2.x velocity) (Vector2.y velocity) in
+  let magnitude = Vector2.length velocity in
+  let upper_velocity =
+    Vector2.create
+      (magnitude *. cos (theta +. 30.))
+      (magnitude *. sin (theta +. 30.))
+  in
+  bullet_collection :=
+    {
+      origin = bear;
+      position = bear.position;
+      velocity;
+      color = Color.black;
+      image = determine_projectile_img bear;
+      radius = bullet_radius;
+      pierce = 1;
+      hits = [];
+      fire = false;
+    }
+    :: {
+         origin = bear;
+         position = bear.position;
+         velocity = upper_velocity;
+         color = Color.black;
+         image = determine_projectile_img bear;
+         radius = bullet_radius;
+         pierce = 1;
+         hits = [];
+         fire = false;
+       }
+    :: !bullet_collection
+
 (* Creates dart that will shoot on eight sides of bear *)
 let create_dart_nail (bear : bear) (v1 : float) (v2 : float) =
   let velocity = Vector2.create v1 v2 in
@@ -153,7 +190,7 @@ let init_projectile (bear : Bears.bear) (balloon : Balloons.balloon) =
   match bear with
   | { bear_type = Dart; _ } -> fire_dart bear balloon
   | { bear_type = Hockey; _ } -> fire_dart_nail bear
-  | { bear_type = Pumpkin; _ } -> ()
+  | { bear_type = Pumpkin; _ } -> fire_pumpkin bear balloon
   | { bear_type = Dragon; _ } -> fire_dart bear balloon
   | { bear_type = Sniper; _ } -> fire_dart bear balloon
 
@@ -198,6 +235,7 @@ let rec dart_collisions (bear : bear) bullet balloon_list =
         Balloons.hit_update bear balloon)
       else dart_collisions bear bullet t
 
+
 (*Updates bullets and balloons if a collision has occurred. Compares
    given bullet with each balloon in balloon_list.*)
 let update_bullet_collision bullet balloon_list =
@@ -205,10 +243,12 @@ let update_bullet_collision bullet balloon_list =
   | { bear_type = Dart; _ } as bear -> dart_collisions bear bullet balloon_list
   | { bear_type = Hockey; _ } as bear ->
       dart_collisions bear bullet balloon_list
-  | { bear_type = Pumpkin; _ } as bear -> bear.attack_speed <- bear.attack_speed
+  | { bear_type = Pumpkin; _ } as bear ->
+      dart_collisions bear bullet balloon_list
   | { bear_type = Dragon; _ } as bear ->
       dart_collisions bear bullet balloon_list
-  | { bear_type = Sniper; _ } as bear -> dart_collisions bear bullet balloon_list
+  | { bear_type = Sniper; _ } as bear ->
+      dart_collisions bear bullet balloon_list
 
 let rec update_collisions bullet_list balloon_list =
   match bullet_list with

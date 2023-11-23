@@ -105,8 +105,8 @@ let make_pumpkin_bear pos =
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 10;
-    counter = 50;
+    attack_speed = 80;
+    counter = 0;
     projectile_speed = 10.;
     sold = false;
     damage = 1;
@@ -182,7 +182,7 @@ let rec determine_bear_clicked click_pos bear_list =
         Some bear
       else determine_bear_clicked click_pos rest
 
-let draw_menu_bear (bear : bear) = 
+let draw_menu_bear (bear : bear) =
   let x = Vector2.x bear.position -. bear_radius in
   let y = Vector2.y bear.position -. bear_radius in
   draw_texture_pro bear.texture
@@ -201,7 +201,9 @@ let draw_bear (bear : bear) =
     (*Source rect should be the size of the bear's img file.*)
     (Rectangle.create 0. 0. bear.image_width bear.image_height)
     (*Dest rect*)
-    (Rectangle.create x y (bear_radius *. 2.8) (bear_radius *. 2.))
+    (if bear.bear_type == Dart then
+       Rectangle.create x y (bear_radius *. 2.5) (bear_radius *. 2.)
+     else Rectangle.create x y (bear_radius *. 2.) (bear_radius *. 2.))
     (Vector2.create 0. 0.) 0.
     (Color.create 255 255 255 255)
 
@@ -213,13 +215,12 @@ let rec draw_bears (bears : bear list) =
       draw_bear bear;
       draw_bears rest
 
-let rec draw_menu_bears (menu_bears : bear list) = 
+let rec draw_menu_bears (menu_bears : bear list) =
   match menu_bears with
   | [] -> ()
-  | bear :: rest -> 
-    draw_menu_bear bear;
-    draw_menu_bears rest
-
+  | bear :: rest ->
+      draw_menu_bear bear;
+      draw_menu_bears rest
 
 let draw_selected_bear (bear : bear option) =
   match bear with None -> () | Some bear -> draw_bear bear

@@ -44,6 +44,8 @@ type balloon = {
   mutable img : Raylib.Texture2D.t;
   mutable current_turn : int;
   mutable remove : bool;
+  mutable is_slowed : bool;
+  mutable slow_counter : int;
   order : int; (*We likely do not need this*)
 }
 
@@ -169,8 +171,10 @@ let make_balloon i color is_lead =
     is_lead;
     img = determine_image color;
     current_turn = 0;
+    is_slowed = false;
     remove = false;
     order = i;
+    slow_counter = 180;
   }
 
 (*Lowers player lives when a balloon crosses the finish line based on the
@@ -191,24 +195,32 @@ let set_balloon_color balloon new_color =
   change_velocity balloon new_color;
   if new_color <> Lead then balloon.is_lead <- false
 
-(**Updates a balloons color, etc. after a collision with a projectile.*)
+
+(**Updates a balloons color, etc. after a collision with a projectile.
+    If bear is a pumpkin, slows down the balloon*)
 let update_balloon_status bear balloon =
-  if (balloon.is_lead && bear.pops_lead) || not balloon.is_lead then
-    let new_value = value_of_balloon balloon.color - bear.damage in
-    match balloon_of_value new_value with
-    (*If none, the balloon should be removed.*)
-    | None ->
-        balloon.remove <- true;
-        Constants.cash := !Constants.cash + value_of_balloon balloon.color;
-        begin_drawing ();
-        draw_pop balloon (value_of_balloon balloon.color);
-        end_drawing ()
-    | color ->
-        set_balloon_color balloon color;
-        Constants.cash := !Constants.cash + new_value;
-        begin_drawing ();
-        draw_pop balloon bear.damage;
-        end_drawing ()
+  if bear.bear_type == Pumpkin && not balloon.is_slowed then (
+    let new_velocity =
+      Vector2.multiply (Vector2.create 0.5 0.5) balloon.velocity
+    in
+    balloon.velocity <- new_velocity);
+  
+    if (balloon.is_lead && bear.pops_lead) || not balloon.is_lead then
+      let new_value = value_of_balloon balloon.color - bear.damage in
+      match balloon_of_value new_value with
+      (*If none, the balloon should be removed.*)
+      | None ->
+          balloon.remove <- true;
+          Constants.cash := !Constants.cash + value_of_balloon balloon.color;
+          begin_drawing ();
+          draw_pop balloon (value_of_balloon balloon.color);
+          end_drawing ()
+      | color ->
+          set_balloon_color balloon color;
+          Constants.cash := !Constants.cash + new_value;
+          begin_drawing ();
+          draw_pop balloon bear.damage;
+          end_drawing ()
 
 (** Modifies the given balloon to be the correct layer color based on the damage
    of the bear. If lead ballon hit and not able to pop lead, do not modify balloon.*)

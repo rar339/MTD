@@ -344,7 +344,11 @@ let display_selection selection =
       draw_sell_button bear rect_x rect_y rect_width rect_height;
       draw_range_upgrade_button bear rect_x rect_y rect_width rect_height;
       draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
-  | Some ({ bear_type = Pumpkin; _ } as bear) -> print_int bear.attack_speed
+  | Some ({ bear_type = Pumpkin; _ } as bear) -> draw_info_background ();
+  draw_info_title Pumpkin rect_x rect_y rect_width;
+  draw_sell_button bear rect_x rect_y rect_width rect_height;
+  draw_range_upgrade_button bear rect_x rect_y rect_width rect_height;
+  draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
   | Some ({ bear_type = Sniper; _ } as bear) ->
       draw_info_background ();
       draw_info_title Sniper rect_x rect_y rect_width;
