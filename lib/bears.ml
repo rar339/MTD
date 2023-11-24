@@ -119,7 +119,7 @@ let make_sniper_bear pos =
   let image_height = float_of_int (Image.height image) in
   {
     bear_type = Sniper;
-    range = 700.;
+    range = 1000.;
     cost = 400;
     upgrades = 0;
     is_bomb = false;

@@ -182,10 +182,21 @@ let draw_range bear =
     check_valid_placement (get_mouse_position ()) !path_rectangles
     && Bears.check_collision_bears bear !Bears.bear_collection == false
   then
+    if (Option.get bear).bear_type = Sniper then
+      draw_circle
+        (Constants.round_float (Vector2.x (Option.get bear).position))
+        (Constants.round_float (Vector2.y (Option.get bear).position))
+        80. (Color.create 0 0 0 100)
+    else
+      draw_circle
+        (Constants.round_float (Vector2.x (Option.get bear).position))
+        (Constants.round_float (Vector2.y (Option.get bear).position))
+        (Option.get bear).range (Color.create 0 0 0 100)
+  else if (Option.get bear).bear_type = Sniper then
     draw_circle
       (Constants.round_float (Vector2.x (Option.get bear).position))
       (Constants.round_float (Vector2.y (Option.get bear).position))
-      (Option.get bear).range (Color.create 0 0 0 100)
+      80. (Color.create 100 0 0 100)
   else
     draw_circle
       (Constants.round_float (Vector2.x (Option.get bear).position))
@@ -200,15 +211,16 @@ let mem_option bear_opt bear_lst =
 (**Draws the range of the bear if it is hovered over or currently selected.*)
 let draw_hover_highlight () =
   if mem_option !hover_display !bear_collection && !hover_display <> None then
-    draw_circle
-      (Constants.round_float (Vector2.x (Option.get !hover_display).position))
-      (Constants.round_float (Vector2.y (Option.get !hover_display).position))
-      (Option.get !hover_display).range (Color.create 0 0 0 50);
-  if !select_display <> None then
-    draw_circle
-      (Constants.round_float (Vector2.x (Option.get !select_display).position))
-      (Constants.round_float (Vector2.y (Option.get !select_display).position))
-      (Option.get !select_display).range (Color.create 0 0 0 50)
+    if (Option.get !hover_display).bear_type = Sniper then
+      draw_circle
+        (Constants.round_float (Vector2.x (Option.get !hover_display).position))
+        (Constants.round_float (Vector2.y (Option.get !hover_display).position))
+        80. (Color.create 0 0 0 50)
+    else
+      draw_circle
+        (Constants.round_float (Vector2.x (Option.get !hover_display).position))
+        (Constants.round_float (Vector2.y (Option.get !hover_display).position))
+        (Option.get !hover_display).range (Color.create 0 0 0 50)
 
 (**Draws the rectangle for the selection GUI.*)
 let draw_info_background () =
@@ -293,7 +305,7 @@ let draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height =
            (rect_y +. (rect_height /. 4.0))
            (rect_width /. 2.) (rect_height /. 5.))
         (if bear.upgrades < 2 then
-           "Piercing Ballons \n        Cost: " ^ string_of_int upgrade_price
+           "Piercing Balloons \n        Cost: " ^ string_of_int upgrade_price
          else "Cannot Upgrade "))
     && !Constants.cash >= upgrade_price
     && bear.upgrades < 2
@@ -311,7 +323,7 @@ let draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height =
       button
         (Rectangle.create
            (rect_x +. (rect_width /. 4.))
-           (rect_y +. (rect_height /. 4.0))
+           (rect_y +. (rect_height /. 2.0))
            (rect_width /. 2.) (rect_height /. 5.))
         (if bear.upgrades < 2 then
            "Faster Speed \n        Cost: " ^ string_of_int upgrade_price
@@ -321,7 +333,8 @@ let draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height =
   then (
     bear.upgrades <- 1 + bear.upgrades;
     bear.cost <- bear.cost + Constants.round_float (float_of_int upgrade_price);
-    bear.attack_speed <- bear.attack_speed - 10;
+    bear.attack_speed <-
+      bear.attack_speed - int_of_float (0.35 *. float_of_int bear.attack_speed);
     Constants.cash := !Constants.cash - upgrade_price)
 
 (**Displays the selection GUI for placed bears, if a bear is selected.*)
@@ -342,24 +355,28 @@ let display_selection selection =
       draw_info_background ();
       draw_info_title Hockey rect_x rect_y rect_width;
       draw_sell_button bear rect_x rect_y rect_width rect_height;
-      draw_range_upgrade_button bear rect_x rect_y rect_width rect_height;
+      draw_range_upgrade_button bear rect_x (rect_y -. 120.) rect_width
+        rect_height;
       draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
-  | Some ({ bear_type = Pumpkin; _ } as bear) -> draw_info_background ();
-  draw_info_title Pumpkin rect_x rect_y rect_width;
-  draw_sell_button bear rect_x rect_y rect_width rect_height;
-  draw_range_upgrade_button bear rect_x rect_y rect_width rect_height;
-  draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
+  | Some ({ bear_type = Pumpkin; _ } as bear) ->
+      draw_info_background ();
+      draw_info_title Pumpkin rect_x rect_y rect_width;
+      draw_sell_button bear rect_x rect_y rect_width rect_height;
+      draw_range_upgrade_button bear rect_x (rect_y -. 120.) rect_width
+        rect_height;
+      draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
   | Some ({ bear_type = Sniper; _ } as bear) ->
       draw_info_background ();
       draw_info_title Sniper rect_x rect_y rect_width;
       draw_sell_button bear rect_x rect_y rect_width rect_height;
-      draw_range_upgrade_button bear rect_x rect_y rect_width rect_height;
+      draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height;
       draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height
   | Some ({ bear_type = Dragon; _ } as bear) ->
       draw_info_background ();
       draw_info_title Dragon rect_x rect_y rect_width;
       draw_sell_button bear rect_x rect_y rect_width rect_height;
-      draw_range_upgrade_button bear rect_x rect_y rect_width rect_height;
+      draw_range_upgrade_button bear rect_x (rect_y -. 120.) rect_width
+        rect_height;
       draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
 
 (**check_click takes care of updating what should currently be displayed.
