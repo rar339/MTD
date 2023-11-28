@@ -116,6 +116,10 @@ let update_game () =
     move_balloons !current_balloons !turn_points;
     fire_all_shots !bear_collection (List.rev !current_balloons);
     update_bullets !bullet_collection;
+
+    (*Update all bear facing angles!*)
+    update_bears_angle !bear_collection !current_balloons;
+    (* update_bears_angle !bear_collection !current_balloons; *)
     update_collisions !bullet_collection !current_balloons;
     bullet_collection := Projectiles.remove_bullets !bullet_collection;
     current_balloons := Balloons.remove_balloons !current_balloons;

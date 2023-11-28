@@ -235,7 +235,6 @@ let rec dart_collisions (bear : bear) bullet balloon_list =
         Balloons.hit_update bear balloon)
       else dart_collisions bear bullet t
 
-
 (*Updates bullets and balloons if a collision has occurred. Compares
    given bullet with each balloon in balloon_list.*)
 let update_bullet_collision bullet balloon_list =
@@ -317,3 +316,15 @@ let rec draw_bullets bullets =
   | first :: rest ->
       draw_bullet first;
       draw_bullets rest
+
+let rec update_bears_angle bears (balloons : Balloons.balloon list) =
+  match bears with
+  | [] -> ()
+  | bear :: rest -> (
+      match find_target bear balloons with
+      | Some target ->
+          bear.facing <- 180. /. Float.pi *. Vector2.angle target.position bear.position -. 90.;
+          print_endline (string_of_float bear.facing);
+      | None -> 
+          ();
+          update_bears_angle rest balloons)
