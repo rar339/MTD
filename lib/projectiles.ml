@@ -94,13 +94,14 @@ let is_balloon_in_range (bear : Bears.bear) (balloon : Balloons.balloon) : bool
     =
   Vector2.distance bear.position balloon.position <= bear.range
 
+  
 (*Precondition: balloons must be in the order they appear on the screen.*)
 let rec find_target (bear : Bears.bear) (balloons : Balloons.balloon list) :
     Balloons.balloon option =
   match balloons with
   | [] -> None
   | first :: rest ->
-      if is_balloon_in_range bear first then Some first
+      if is_balloon_in_range bear first  then Some first
       else find_target bear rest
 
 (*Fires a dart.*)
@@ -324,7 +325,6 @@ let rec update_bears_angle bears (balloons : Balloons.balloon list) =
       match find_target bear balloons with
       | Some target ->
           bear.facing <- 180. /. Float.pi *. Vector2.angle target.position bear.position -. 90.;
-          print_endline (string_of_float bear.facing);
       | None -> 
           ();
           update_bears_angle rest balloons)

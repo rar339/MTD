@@ -204,20 +204,11 @@ let draw_bear (bear : bear) =
   let x = Vector2.x bear.position in
   let y = Vector2.y bear.position in
 
-  (* draw_texture_pro bear.texture
-    (*Source rect should be the size of the bear's img file.*)
-    (Rectangle.create 0. 0. bear.image_width bear.image_height)
-    (*Dest rect*)
-    (Rectangle.create x y (bear_radius *. 2.5) (bear_radius *. 2.5))
-    (Vector2.create (bear_radius /. 2.) (bear_radius /. 2.))
-    (180. /. Float.pi *. bear.facing)
-    (Color.create 255 255 255 255) *)
-
     draw_texture_pro bear.texture
     (*Source rect should be the size of the bear's img file.*)
     (Rectangle.create 0. 0. 2048. 2048.)
     (*Dest rect*)
-    (Rectangle.create x y (bear_radius *. 2.) (bear_radius *. 2.))
+    (Rectangle.create x y (bear_radius *. 2.5) (bear_radius *. 2.5))
     (Vector2.create bear_radius bear_radius) (bear.facing)
     (Color.create 255 255 255 255)
 
