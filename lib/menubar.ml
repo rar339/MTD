@@ -82,7 +82,8 @@ let update_bear_selections placed_bears pos bears =
           Some (Bears.make_dart_bear false (get_mouse_position ()))
   | Some { bear_type = Hockey; _ } ->
       if not placed_bears then
-        selected_bear := Some (Bears.make_hockey_bear (get_mouse_position ()))
+        selected_bear :=
+          Some (Bears.make_hockey_bear false (get_mouse_position ()))
   | Some { bear_type = Pumpkin; _ } ->
       if not placed_bears then
         selected_bear := Some (Bears.make_pumpkin_bear (get_mouse_position ()))

@@ -27,6 +27,7 @@ type bear = {
 
 let bear_collection : bear list ref = ref []
 let bear_radius = 40.
+let menu_bear_radius = 52.
 let get_x bear = Vector2.x bear.position
 let get_y bear = Vector2.y bear.position
 
@@ -43,8 +44,8 @@ let string_of_beartype bear_type =
 
 let make_dart_bear (menu_bear : bool) pos =
   let image =
-    if not menu_bear then load_image "./img/newdartbear.png"
-    else load_image "./img/menudartbear.png"
+    if not menu_bear then load_image "./img/newdart_bear.png"
+    else load_image "./img/menu_dartbear.png"
   in
   let image_width = float_of_int (Image.width image) in
   let image_height = float_of_int (Image.height image) in
@@ -69,8 +70,11 @@ let make_dart_bear (menu_bear : bool) pos =
   }
 
 (******************************************************************************)
-let make_hockey_bear pos =
-  let image = load_image "./img/bluebear.png" in
+let make_hockey_bear (menu_bear : bool) pos =
+  let image =
+    if not menu_bear then load_image "./img/hockeybear.png"
+    else load_image "./img/menu_hockeybear.png"
+  in
   let image_width = float_of_int (Image.width image) in
   let image_height = float_of_int (Image.height image) in
   {
@@ -168,15 +172,15 @@ let make_dragon_bear pos =
 let generate_menu_bears screen_width screen_height =
   [
     make_dart_bear true
-      (Vector2.create (5.45 *. screen_width /. 7.) (1. *. screen_height /. 4.));
-    make_hockey_bear
-      (Vector2.create (5.75 *. screen_width /. 7.) (1. *. screen_height /. 4.));
+      (Vector2.create (5.55 *. screen_width /. 7.) (0.8 *. screen_height /. 4.));
+    make_hockey_bear true
+      (Vector2.create (6. *. screen_width /. 7.) (0.8 *. screen_height /. 4.));
     make_pumpkin_bear
-      (Vector2.create (6.05 *. screen_width /. 7.) (1. *. screen_height /. 4.));
+      (Vector2.create (6.45 *. screen_width /. 7.) (0.8 *. screen_height /. 4.));
     make_sniper_bear
-      (Vector2.create (6.35 *. screen_width /. 7.) (1. *. screen_height /. 4.));
+      (Vector2.create (5.75 *. screen_width /. 7.) (1.2 *. screen_height /. 4.));
     make_dragon_bear
-      (Vector2.create (6.65 *. screen_width /. 7.) (1. *. screen_height /. 4.));
+      (Vector2.create (6.25 *. screen_width /. 7.) (1.2 *. screen_height /. 4.));
   ]
 
 (*Returns the bear clicked, if any.*)
@@ -189,27 +193,49 @@ let rec determine_bear_clicked click_pos bear_list =
       else determine_bear_clicked click_pos rest
 
 let draw_menu_bear (bear : bear) =
-  let x = Vector2.x bear.position -. bear_radius in
-  let y = Vector2.y bear.position -. bear_radius in
+  let x = Vector2.x bear.position in
+  let y = Vector2.y bear.position in
   draw_texture_pro bear.texture
     (*Source rect should be the size of the bear's img file.*)
-    (Rectangle.create 0. 0. bear.image_width bear.image_height)
+    (Rectangle.create 0. 0.
+       (float_of_int (Texture2D.width bear.texture))
+       (float_of_int (Texture2D.height bear.texture)))
     (*Dest rect*)
-    (Rectangle.create x y (bear_radius *. 2.) (bear_radius *. 2.))
-    (Vector2.create 0. 0.) 0.
+    (Rectangle.create x y (menu_bear_radius *. 2.) (menu_bear_radius *. 2.))
+    (Vector2.create menu_bear_radius bear_radius)
+    0.
     (Color.create 255 255 255 255)
+
+(* Helps with resizing of images to make sure all bears are similar size*)
+let dest_rect_custom (bear : bear) (x : float) (y : float) =
+  match bear.bear_type with
+  | Dart -> Rectangle.create x y (bear_radius *. 3.) (bear_radius *. 3.)
+  | Hockey -> Rectangle.create x y (bear_radius *. 3.2) (bear_radius *. 3.2)
+  | _ -> Rectangle.create x y (bear_radius *. 3.) (bear_radius *. 3.)
+
+(* Helps with placement of images to ensure its centered, the factor must be
+   1/2 of factor for dest_rect!*)
+let origin_vect_custom (bear : bear) =
+  match bear.bear_type with
+  | Dart -> Vector2.create (bear_radius *. 1.5) (bear_radius *. 1.5)
+  | Hockey -> Vector2.create (bear_radius *. 1.6) (bear_radius *. 1.6)
+  | _ -> Vector2.create (bear_radius *. 1.5) (bear_radius *. 1.5)
 
 (* draw_bear function *)
 let draw_bear (bear : bear) =
   let x = Vector2.x bear.position in
   let y = Vector2.y bear.position in
 
-    draw_texture_pro bear.texture
+  draw_texture_pro bear.texture
     (*Source rect should be the size of the bear's img file.*)
-    (Rectangle.create 0. 0. 2048. 2048.)
+    (Rectangle.create 0. 0.
+       (float_of_int (Texture2D.width bear.texture))
+       (float_of_int (Texture2D.height bear.texture)))
     (*Dest rect*)
-    (Rectangle.create x y (bear_radius *. 2.5) (bear_radius *. 2.5))
-    (Vector2.create bear_radius bear_radius) (bear.facing)
+    (dest_rect_custom bear x y)
+    (*Origin vector*)
+    (origin_vect_custom bear)
+    bear.facing
     (Color.create 255 255 255 255)
 
 (*Draws the placed bears in the game*)

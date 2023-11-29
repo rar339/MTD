@@ -58,9 +58,9 @@ let setup () =
     Some
       (Rectangle.create
          (29.5 *. floor (!screen_width /. 40.))
-         (!screen_height /. 3.2)
+         (!screen_height /. 2.6)
          (7. *. floor (!screen_width /. 28.))
-         (22. *. !screen_height /. 40.));
+         (20. *. !screen_height /. 40.));
 
   Constants.heart_img :=
     Some Raylib.(load_texture_from_image (load_image "./img/heart.png"));
@@ -191,13 +191,13 @@ let draw_game () =
       (int_of_float !screen_height)
       (Color.create 0 0 0 200);
     if
-      let x_pos = 1. *. !screen_width /. 5. in
-      let y_pos = 1. *. !screen_height /. 5. in
+      let x_pos = 1. *. !screen_width /. 9. in
+      let y_pos = 1. *. !screen_height /. 9. in
       let show_window =
         Raygui.window_box
           (Rectangle.create x_pos y_pos
-             (3. *. !screen_width /. 5.)
-             (3. *. !screen_height /. 5.))
+             (4. *. !screen_width /. 5.)
+             (4. *. !screen_height /. 5.))
           ""
       in
 
@@ -210,7 +210,7 @@ let draw_game () =
          \t\t\t\t\t\t\tupgrade bears. \n\n\
         \         \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tGood luck!"
         (Vector2.create (x_pos +. 10.) (y_pos +. 30.))
-        45. 2. Color.white;
+        60. 2. Color.white;
       show_window
     then showInstructions := false)
   else if
@@ -222,13 +222,13 @@ let draw_game () =
       (int_of_float !screen_height)
       (Color.create 150 0 0 180);
     if
-      let x_pos = 1. *. !screen_width /. 5. in
-      let y_pos = 1. *. !screen_height /. 5. in
+      let x_pos = 1. *. !screen_width /. 9. in
+      let y_pos = 1. *. !screen_height /. 9. in
       let show_window =
         Raygui.window_box
           (Rectangle.create x_pos y_pos
-             (3. *. !screen_width /. 5.)
-             (3. *. !screen_height /. 5.))
+             (4. *. !screen_width /. 5.)
+             (4. *. !screen_height /. 5.))
           ""
       in
 
