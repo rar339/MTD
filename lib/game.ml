@@ -118,7 +118,8 @@ let update_game () =
     update_bullets !bullet_collection;
 
     (*Update all bear facing angles!*)
-    update_bears_angle !bear_collection (List.rev !current_balloons);
+    update_angles !bear_collection (List.rev !current_balloons);
+
     (* update_bears_angle !bear_collection !current_balloons; *)
     update_collisions !bullet_collection !current_balloons;
     bullet_collection := Projectiles.remove_bullets !bullet_collection;
@@ -240,6 +241,7 @@ let draw_game () =
       show_window
     then (
       Constants.state := Home;
+      Bears.bear_collection := [];
       Constants.cash := Constants.start_cash;
       Constants.lives := Constants.start_lives));
   end_drawing ()
