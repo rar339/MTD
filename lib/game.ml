@@ -43,7 +43,12 @@ let setup () =
   (*Adds the bears that will be displayed to menu_bears.*)
   Bears.menu_bears := generate_menu_bears !screen_width !screen_height;
 
-  (* Setup heart and cash images *)
+  (*Set the initial state*)
+  Bears.bear_collection := [];
+  current_balloons := [];
+  current_wave := [];
+  lives := start_lives;
+  cash := start_cash;
 
   (*Make the menu rectangle*)
   Constants.menu_rect :=
@@ -62,6 +67,7 @@ let setup () =
          (7. *. floor (!screen_width /. 28.))
          (20. *. !screen_height /. 40.));
 
+  (* Setup lives and cash images *)
   Constants.heart_img :=
     Some Raylib.(load_texture_from_image (load_image "./img/heart.png"));
 
@@ -79,10 +85,10 @@ let setup () =
   (*Load all the waves for the game.*)
   waves :=
     [ Waves.test_wave (); Waves.wave1 (); Waves.wave2 (); Waves.wave3 () ]
-(*Load initial wave, likely temporarily: just for testing*)
 
 (******************************************************************************)
-(*Adds bloons that are ready to be added to the screen, to current_bloons. If
+
+(**Adds bloons that are ready to be added to the screen, to current_bloons. If
    none are ready, decreases the counter on the next balloon to be added.*)
 let bloons_spawner current_wave =
   match !current_wave with
@@ -214,9 +220,8 @@ let draw_game () =
         60. 2. Color.white;
       show_window
     then showInstructions := false)
-  else if
-    (*RESTART GAME********************************)
-    !Constants.state == Lose
+  else if (*RESTART GAME********************************)
+          !Constants.state = Lose
   then (
     draw_rectangle 0 0
       (int_of_float !screen_width)
@@ -232,7 +237,6 @@ let draw_game () =
              (4. *. !screen_height /. 5.))
           ""
       in
-
       draw_text_ex (Option.get !game_font)
         "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tYou Lost!\n\n\n\
         \        \t\t\t\t\t\t\t\t\t\t\t\t\t\tclose this window to try again!"
@@ -241,9 +245,7 @@ let draw_game () =
       show_window
     then (
       Constants.state := Home;
-      Bears.bear_collection := [];
-      Constants.cash := Constants.start_cash;
-      Constants.lives := Constants.start_lives));
+      count := 0));
   end_drawing ()
 
 (*Main game loop***************************************************************)
