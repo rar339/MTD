@@ -27,12 +27,12 @@ let rec check_valid_placement (mouse_pos : Vector2.t)
       && check_valid_placement mouse_pos t
 
 (*Checks if dragon aim is valid: its rectangle must collide with path rectanlges*)
-let rec valid_fire_rectangle fire_rect path_rects =
+let rec valid_slime_rectangle fire_rect path_rects =
   match path_rects with
   | [] -> true
   | h :: t ->
       if check_collision_recs fire_rect h then false
-      else valid_fire_rectangle fire_rect t
+      else valid_slime_rectangle fire_rect t
 
 (**Checks if a GUI button was pressed, in which case we should not necessarily
    deselect the selected bear.*)
@@ -64,11 +64,11 @@ let place_bear () =
     (*Following code is logic for a dragon bear. It has its own type of firing*))
   else if
     !selected = true && !selected_bear <> None
-    && (Option.get !selected_bear).bear_type = Dragon
+    && (Option.get !selected_bear).bear_type = Zombie
   then (
     if
-      valid_fire_rectangle
-        (Option.get (Option.get !selected_bear).fire_rectangle)
+      valid_slime_rectangle
+        (Option.get (Option.get !selected_bear).slime_rectangle)
         !path_rectangles
       == false
       && is_mouse_button_pressed Left
@@ -90,7 +90,7 @@ let place_bear () =
     && (Option.get !selected_bear).cost <= !Constants.cash
     && Bears.check_collision_bears !selected_bear !Bears.bear_collection
        == false
-    && (Option.get !selected_bear).bear_type <> Dragon
+    && (Option.get !selected_bear).bear_type <> Zombie
   then (
     selected := false;
     Bears.bear_collection := Option.get !selected_bear :: !Bears.bear_collection;
@@ -115,9 +115,9 @@ let update_bear_selections placed_bears pos bears =
       if not placed_bears then
         selected_bear :=
           Some (Bears.make_hockey_bear false (get_mouse_position ()))
-  | Some { bear_type = Pumpkin; _ } ->
+  | Some { bear_type = Zombie; _ } ->
       if not placed_bears then
-        selected_bear := Some (Bears.make_pumpkin_bear (get_mouse_position ()))
+        selected_bear := Some (Bears.make_zombie_bear (get_mouse_position ()))
   | Some { bear_type = Sniper; _ } ->
       if not placed_bears then
         selected_bear := Some (Bears.make_sniper_bear (get_mouse_position ()))
@@ -219,19 +219,19 @@ let draw_range bear =
         (Constants.round_float (Vector2.x (Option.get bear).position))
         (Constants.round_float (Vector2.y (Option.get bear).position))
         80. (Color.create 0 0 0 100)
-    else if (Option.get bear).bear_type = Dragon then
+    else if (Option.get bear).bear_type = Zombie then
       if
-        valid_fire_rectangle
-          (Option.get (Option.get bear).fire_rectangle)
+        valid_slime_rectangle
+          (Option.get (Option.get bear).slime_rectangle)
           !path_rectangles
         = false
       then
         draw_rectangle_rec
-          (Option.get (Option.get bear).fire_rectangle)
+          (Option.get (Option.get bear).slime_rectangle)
           (Color.create 0 0 0 100)
       else
         draw_rectangle_rec
-          (Option.get (Option.get bear).fire_rectangle)
+          (Option.get (Option.get bear).slime_rectangle)
           (Color.create 150 0 0 100)
     else
       draw_circle
@@ -243,9 +243,9 @@ let draw_range bear =
       (Constants.round_float (Vector2.x (Option.get bear).position))
       (Constants.round_float (Vector2.y (Option.get bear).position))
       80. (Color.create 100 0 0 100)
-  else if (Option.get bear).bear_type = Dragon then
+  else if (Option.get bear).bear_type = Zombie then
     draw_rectangle_rec
-      (Option.get (Option.get bear).fire_rectangle)
+      (Option.get (Option.get bear).slime_rectangle)
       (Color.create 150 0 0 100)
   else
     draw_circle
@@ -266,9 +266,9 @@ let draw_hover_highlight () =
         (Constants.round_float (Vector2.x (Option.get !hover_display).position))
         (Constants.round_float (Vector2.y (Option.get !hover_display).position))
         80. (Color.create 0 0 0 50)
-    else if (Option.get !hover_display).bear_type = Dragon then
+    else if (Option.get !hover_display).bear_type = Zombie then
       draw_rectangle_rec
-        (Option.get (Option.get !hover_display).fire_rectangle)
+        (Option.get (Option.get !hover_display).slime_rectangle)
         (Color.create 0 0 0 50)
     else
       draw_circle
@@ -300,7 +300,7 @@ let display_hover_info (hover : bear option) =
     | Some ({ bear_type = Hockey; _ } as bear) ->
         bear.position <- bear.position;
         draw_info_background ()
-    | Some ({ bear_type = Pumpkin; _ } as bear) ->
+    | Some ({ bear_type = Zombie; _ } as bear) ->
         bear.position <- bear.position;
         draw_info_background ()
     | Some ({ bear_type = Sniper; _ } as bear) ->
@@ -412,9 +412,9 @@ let display_selection selection =
       draw_range_upgrade_button bear rect_x (rect_y -. 120.) rect_width
         rect_height;
       draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
-  | Some ({ bear_type = Pumpkin; _ } as bear) ->
+  | Some ({ bear_type = Zombie; _ } as bear) ->
       draw_info_background ();
-      draw_info_title Pumpkin rect_x rect_y rect_width;
+      draw_info_title Zombie rect_x rect_y rect_width;
       draw_sell_button bear rect_x rect_y rect_width rect_height;
       draw_range_upgrade_button bear rect_x (rect_y -. 120.) rect_width
         rect_height;

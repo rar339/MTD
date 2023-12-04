@@ -81,7 +81,7 @@ let determine_projectile_img (bear : Bears.bear) =
       Some
         (Raylib.load_texture_from_image
            (Raylib.load_image "img/hockeypuck.png"))
-  | Pumpkin ->
+  | Zombie ->
       Some
         (Raylib.load_texture_from_image
            (Raylib.load_image "img/hockeypuck.png"))
@@ -124,7 +124,7 @@ let fire_dart (bear : Bears.bear) (balloon : Balloons.balloon) =
     }
     :: !bullet_collection
 
-let fire_pumpkin (bear : Bears.bear) (balloon : Balloons.balloon) =
+let fire_slow_goo (bear : Bears.bear) (balloon : Balloons.balloon) =
   let velocity = projectile_moving_calc bear balloon in
   let theta = atan2 (Vector2.x velocity) (Vector2.y velocity) in
   let magnitude = Vector2.length velocity in
@@ -186,12 +186,11 @@ let fire_dart_nail (bear : Bears.bear) =
     :: create_dart_nail bear 0.0 (-7.5)
     :: !bullet_collection
 
-
 let init_projectile (bear : Bears.bear) (balloon : Balloons.balloon) =
   match bear with
   | { bear_type = Dart; _ } -> fire_dart bear balloon
   | { bear_type = Hockey; _ } -> fire_dart_nail bear
-  | { bear_type = Pumpkin; _ } -> fire_pumpkin bear balloon
+  | { bear_type = Zombie; _ } -> fire_slow_goo bear balloon
   | { bear_type = Dragon; _ } -> fire_dart bear balloon
   | { bear_type = Sniper; _ } -> fire_dart bear balloon
 
@@ -243,7 +242,7 @@ let update_bullet_collision bullet balloon_list =
   | { bear_type = Dart; _ } as bear -> dart_collisions bear bullet balloon_list
   | { bear_type = Hockey; _ } as bear ->
       dart_collisions bear bullet balloon_list
-  | { bear_type = Pumpkin; _ } as bear ->
+  | { bear_type = Zombie; _ } as bear ->
       dart_collisions bear bullet balloon_list
   | { bear_type = Dragon; _ } as bear ->
       dart_collisions bear bullet balloon_list
@@ -317,17 +316,22 @@ let rec draw_bullets bullets =
   | first :: rest ->
       draw_bullet first;
       draw_bullets rest
-    
 
-let rec update_angle_bear (bear : Bears.bear) (balloons : Balloons.balloon list) = 
-  match balloons with 
+let rec update_angle_bear (bear : Bears.bear) (balloons : Balloons.balloon list)
+    =
+  match balloons with
   | [] -> ()
   | first :: rest ->
-    if is_balloon_in_range bear first then bear.facing <- (180. /. Float.pi *. Vector2.angle first.position bear.position)
-      -. 90.
-  else update_angle_bear bear rest
+      if is_balloon_in_range bear first then
+        bear.facing <-
+          (180. /. Float.pi *. Vector2.angle first.position bear.position)
+          -. 90.
+      else update_angle_bear bear rest
 
-let rec update_angles (bears : Bears.bear list) (balloons : Balloons.balloon list) =
-  match bears with 
+let rec update_angles (bears : Bears.bear list)
+    (balloons : Balloons.balloon list) =
+  match bears with
   | [] -> ()
-  | first :: rest -> update_angle_bear first balloons; update_angles rest balloons
+  | first :: rest ->
+      update_angle_bear first balloons;
+      update_angles rest balloons
