@@ -90,7 +90,7 @@ let place_bear () =
     && (Option.get !selected_bear).cost <= !Constants.cash
     && Bears.check_collision_bears !selected_bear !Bears.bear_collection
        == false
-    && (Option.get !selected_bear).bear_type = Dragon
+    && (Option.get !selected_bear).bear_type <> Dragon
   then (
     selected := false;
     Bears.bear_collection := Option.get !selected_bear :: !Bears.bear_collection;
