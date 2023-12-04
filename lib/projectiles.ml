@@ -186,6 +186,7 @@ let fire_dart_nail (bear : Bears.bear) =
     :: create_dart_nail bear 0.0 (-7.5)
     :: !bullet_collection
 
+
 let init_projectile (bear : Bears.bear) (balloon : Balloons.balloon) =
   match bear with
   | { bear_type = Dart; _ } -> fire_dart bear balloon

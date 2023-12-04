@@ -2,6 +2,7 @@ open Raylib
 (* open Constants *)
 
 type bear_types = Dart | Hockey | Pumpkin | Sniper | Dragon
+type dragon_direction = Left | Up | Right | Down
 
 (*Width and height are temporary, shouldn't be needed if all images are the same
    size.*)
@@ -23,6 +24,8 @@ type bear = {
   mutable damage : int;
   mutable facing : float;
   mutable pops_lead : bool;
+  mutable fire_rectangle : Rectangle.t option;
+  mutable dragon_direction : dragon_direction option;
 }
 
 let bear_collection : bear list ref = ref []
@@ -30,6 +33,8 @@ let bear_radius = 40.
 let menu_bear_radius = 52.
 let get_x bear = Vector2.x bear.position
 let get_y bear = Vector2.y bear.position
+let fire_rect_length = 150.
+let fire_rect_width = 80.
 
 (*The bears displayed on the menu.*)
 let menu_bears : bear list ref = ref []
@@ -67,6 +72,8 @@ let make_dart_bear (menu_bear : bool) pos =
     damage = 1;
     pops_lead = false;
     facing = 0.;
+    fire_rectangle = None;
+    dragon_direction = None;
   }
 
 (******************************************************************************)
@@ -95,6 +102,8 @@ let make_hockey_bear (menu_bear : bool) pos =
     damage = 1;
     pops_lead = false;
     facing = 0.;
+    fire_rectangle = None;
+    dragon_direction = None;
   }
 
 let make_pumpkin_bear pos =
@@ -119,6 +128,8 @@ let make_pumpkin_bear pos =
     damage = 1;
     pops_lead = false;
     facing = 0.;
+    fire_rectangle = None;
+    dragon_direction = None;
   }
 
 let make_sniper_bear pos =
@@ -143,6 +154,8 @@ let make_sniper_bear pos =
     damage = 100;
     pops_lead = true;
     facing = 0.;
+    fire_rectangle = None;
+    dragon_direction = None;
   }
 
 let make_dragon_bear pos =
@@ -167,6 +180,8 @@ let make_dragon_bear pos =
     damage = 1;
     pops_lead = true;
     facing = 0.;
+    fire_rectangle = None;
+    dragon_direction = Some Left;
   }
 
 let generate_menu_bears screen_width screen_height =
@@ -221,11 +236,15 @@ let origin_vect_custom (bear : bear) =
   | Hockey -> Vector2.create (bear_radius *. 1.6) (bear_radius *. 1.6)
   | _ -> Vector2.create (bear_radius *. 1.5) (bear_radius *. 1.5)
 
+(* let draw_dragon_fire bear =
+  match bear.fire_rectangle with
+  | None -> ()
+  | Some _ -> draw_rectangle_rec (Option.get bear.fire_rectangle) Color.red *)
+
 (* draw_bear function *)
 let draw_bear (bear : bear) =
   let x = Vector2.x bear.position in
   let y = Vector2.y bear.position in
-
   draw_texture_pro bear.texture
     (*Source rect should be the size of the bear's img file.*)
     (Rectangle.create 0. 0.
@@ -259,8 +278,44 @@ let draw_selected_bear (bear : bear option) =
 let check_circle_collision circ_one circ_two radius =
   Vector2.distance circ_one circ_two < 2. *. radius
 
+let update_dragon_bear (bear : bear) =
+  if is_key_pressed Key.Left then bear.dragon_direction <- Some Left;
+  if is_key_pressed Key.Right then bear.dragon_direction <- Some Right;
+  if is_key_pressed Key.Down then bear.dragon_direction <- Some Down;
+  if is_key_pressed Key.Up then bear.dragon_direction <- Some Up;
+
+  let x_pos = Vector2.x bear.position in
+  let y_pos = Vector2.y bear.position in
+  match bear.dragon_direction with
+  | Some Left ->
+      bear.fire_rectangle <-
+        Some
+          (Rectangle.create
+             (x_pos -. fire_rect_length)
+             (y_pos -. bear_radius) fire_rect_length fire_rect_width)
+  | Some Right ->
+      bear.fire_rectangle <-
+        Some
+          (Rectangle.create x_pos (y_pos -. bear_radius) fire_rect_length
+             fire_rect_width)
+  | Some Up ->
+      bear.fire_rectangle <-
+        Some
+          (Rectangle.create (x_pos -. bear_radius) (y_pos -. fire_rect_length) fire_rect_width
+             fire_rect_length)
+  | Some Down ->
+      bear.fire_rectangle <-
+        Some
+          (Rectangle.create (x_pos -. bear_radius) y_pos fire_rect_width
+             fire_rect_length)
+  | None -> ()
+
 let update_selected_bear (bear : bear option) (new_pos : Vector2.t) =
-  match bear with None -> () | Some bear -> bear.position <- new_pos
+  match bear with
+  | None -> ()
+  | Some bear ->
+      bear.position <- new_pos;
+      if bear.bear_type = Dragon then update_dragon_bear bear
 
 let rec check_collision_bears (selected_bear : bear option)
     (placed_bears : bear list) =
