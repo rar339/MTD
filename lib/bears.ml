@@ -107,7 +107,7 @@ let make_hockey_bear (menu_bear : bool) pos =
   }
 
 let make_zombie_bear pos =
-  let image = load_image "./img/blackbear.png" in
+  let image = load_image "./img/zombie_bear.png" in
   let image_width = float_of_int (Image.width image) in
   let image_height = float_of_int (Image.height image) in
   {
@@ -152,7 +152,7 @@ let make_sniper_bear pos =
     projectile_speed = 30.;
     sold = false;
     damage = 100;
-    pops_lead = true;
+    pops_lead = true; 
     facing = 0.;
     slime_rectangle = None;
     zombie_direction = None;
