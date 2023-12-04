@@ -236,8 +236,10 @@ let origin_vect_custom (bear : bear) =
   | Hockey -> Vector2.create (bear_radius *. 1.6) (bear_radius *. 1.6)
   | _ -> Vector2.create (bear_radius *. 1.5) (bear_radius *. 1.5)
 
+
 (* draw_bear function *)
-let draw_bear (bear : bear) =
+let rec draw_bear (bear : bear) =
+  if bear.bear_type = Zombie then set_zombie_facing bear else ();
   let x = Vector2.x bear.position in
   let y = Vector2.y bear.position in
   draw_texture_pro bear.texture
@@ -251,6 +253,14 @@ let draw_bear (bear : bear) =
     (origin_vect_custom bear)
     bear.facing
     (Color.create 255 255 255 255)
+  (*Helper for setting the direction zombie texture faces*)
+  and set_zombie_facing (bear : bear) =
+      match bear.zombie_direction with 
+      | Some Left -> bear.facing <- -90.
+      | Some Right -> bear.facing <- 90.
+      | Some Up -> bear.facing <- 0.
+      | Some Down -> bear.facing <- 180.
+      | None -> ()
 
 (*Draws the placed bears in the game*)
 let rec draw_bears (bears : bear list) =
