@@ -5,25 +5,6 @@ open Raylib
 open Bears
 open Constants
 
-(*Textures for balloons*)
-let red_balloon_img : Texture2D.t option ref = ref None
-let blue_balloon_img : Texture2D.t option ref = ref None
-let green_balloon_img : Texture2D.t option ref = ref None
-let yellow_balloon_img : Texture2D.t option ref = ref None
-let orange_balloon_img : Texture2D.t option ref = ref None
-let purple_balloon_img : Texture2D.t option ref = ref None
-let lead_balloon_img : Texture2D.t option ref = ref None
-
-(*Sets up balloon textures*)
-let setup_balloon_imgs () =
-  red_balloon_img := Some (Raylib.load_texture "./img/balloons/red.png");
-  blue_balloon_img := Some (Raylib.load_texture "./img/balloons/blue.png");
-  green_balloon_img := Some (Raylib.load_texture "./img/balloons/green.png");
-  yellow_balloon_img := Some (Raylib.load_texture "./img/balloons/yellow.png");
-  orange_balloon_img := Some (Raylib.load_texture "./img/balloons/orange.png");
-  purple_balloon_img := Some (Raylib.load_texture "./img/balloons/purple.png");
-  lead_balloon_img := Some (Raylib.load_texture "./img/balloons/lead.png")
-
 type balloon_colors =
   | None
   | Red

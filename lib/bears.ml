@@ -1,37 +1,6 @@
 open Raylib
 open Constants
 
-(*Textures for in-game bears*)
-let dartbear_img : Texture2D.t option ref = ref None
-let hockeybear_img : Texture2D.t option ref = ref None
-let zombiebear_img : Texture2D.t option ref = ref None
-let sniperbear_img : Texture2D.t option ref = ref None
-let dragonbear_img : Texture2D.t option ref = ref None
-
-(*Textures for menu bears*)
-let menu_dartbear_img : Texture2D.t option ref = ref None
-let menu_hockeybear_img : Texture2D.t option ref = ref None
-let menu_zombiebear_img : Texture2D.t option ref = ref None
-let menu_sniperbear_img : Texture2D.t option ref = ref None
-let menu_dragonbear_img : Texture2D.t option ref = ref None
-
-(*Sets up bear textures*)
-let setup_bear_imgs () =
-  (*in-game bears*)
-  dartbear_img := Some (Raylib.load_texture "./img/bears/dartbear.png");
-  hockeybear_img := Some (Raylib.load_texture "./img/bears/hockeybear.png");
-  zombiebear_img := Some (Raylib.load_texture "./img/bears/zombiebear.png");
-  sniperbear_img := Some (Raylib.load_texture "./img/bears/purplebear.png");
-  dragonbear_img := Some (Raylib.load_texture "./img/bears/redbear.png");
-  (*menu bears*)
-  menu_dartbear_img :=
-    Some (Raylib.load_texture "./img/bears/menu_dartbear.png");
-  menu_hockeybear_img :=
-    Some (Raylib.load_texture "./img/bears/menu_hockeybear.png");
-  menu_zombiebear_img := Some (Raylib.load_texture "./img/bears/zombiebear.png");
-  menu_sniperbear_img := Some (Raylib.load_texture "./img/bears/purplebear.png");
-  menu_dragonbear_img := Some (Raylib.load_texture "./img/bears/redbear.png")
-
 type bear_types = Dart | Hockey | Zombie | Sniper | Dragon
 type zombie_direction = Left | Up | Right | Down
 
@@ -337,7 +306,7 @@ let update_zombie_bear (bear : bear) =
       bear.slime_rectangle <-
         Some
           (Rectangle.create
-             (x_pos -. fire_rect_length)
+             (x_pos -. fire_rect_length -. bear_radius)
              (y_pos -. bear_radius) fire_rect_length fire_rect_width)
   | Some Right ->
       bear.slime_rectangle <-

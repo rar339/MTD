@@ -57,8 +57,8 @@ let setup () =
   Balloons.setup_hitbox (2. *. !screen_height /. 28.);
 
   (*Setup ALL game images into refs*)
-  Balloons.setup_balloon_imgs ();
-  Bears.setup_bear_imgs ();
+  (* Balloons.setup_balloon_imgs ();
+     Bears.setup_bear_imgs (); *)
 
   (*Adds the bears that will be displayed to menu_bears.*)
   Bears.menu_bears := generate_menu_bears !screen_width !screen_height;

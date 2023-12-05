@@ -12,12 +12,18 @@ let () = print_endline ""
 module Balloon = struct
   let balloon_h_radius = 20.
   let balloon_v_radius = 25.
+  let red_balloon_texture : Texture2D.t option ref = ref None
 
-  type balloon = { x : float; mutable y : float; speed : float }
+  type balloon = {
+    x : float;
+    mutable y : float;
+    speed : float;
+    img : Texture2D.t;
+  }
 
-  let gen_balloon x y speed = { x; y; speed }
+  let gen_balloon x y speed img = { x; y; speed; img }
 
-  let rec generate_all_balloons x_pos_start count : balloon list =
+  let rec generate_all_balloons x_pos_start count img : balloon list =
     if x_pos_start < int_of_float (!Constants.screen_width -. 100.) then
       let rand_x = Random.float 300. in
       let rand_y = Random.float 200. in
@@ -25,8 +31,10 @@ module Balloon = struct
       gen_balloon
         (float_of_int x_pos_start +. rand_x)
         (!Constants.screen_height +. rand_y)
-        (rand_speed +. 1.)
-      :: generate_all_balloons (x_pos_start + int_of_float rand_x) (count - 1)
+        (rand_speed +. 1.) img
+      :: generate_all_balloons
+           (x_pos_start + int_of_float rand_x)
+           (count - 1) img
     else []
 
   let update_balloon_position balloon =
@@ -43,17 +51,17 @@ module Balloon = struct
         update_balloon_position h;
         update_balloon_positions t
 
-  let draw_balloon (texture : Texture2D.t) balloon =
-    draw_texture_ex texture
+  let draw_balloon balloon =
+    draw_texture_ex balloon.img
       (Vector2.create balloon.x balloon.y)
       0.0 0.15 Color.white
 
-  let rec draw_balloons (texture : Texture2D.t) (balloons : balloon list) =
+  let rec draw_balloons (balloons : balloon list) =
     match balloons with
     | [] -> ()
     | h :: t ->
-        draw_balloon texture h;
-        draw_balloons texture t
+        draw_balloon h;
+        draw_balloons t
 
   let check_clicked balloon (click_pos : Vector2.t) : bool =
     (*Magic numbers represent the offset from the top left corner of PNG to
@@ -82,42 +90,41 @@ end
 let balloons = ref []
 
 let setup () =
+  (*Set up the screen and fps*)
   Raylib.init_window 0 0 "MTD";
   screen_width := float_of_int (get_screen_width ());
   screen_height := float_of_int (get_screen_height ());
   toggle_fullscreen ();
   Raylib.set_target_fps 60;
-  game_font := Some (Raylib.load_font_ex "./img/gamefont.otf" 60 None);
-  (*Create the intro screen art*)
-  let title_font = Raylib.load_font_ex "./img/machine-gunk.ttf" 100 None in
-  let custom_font = Raylib.load_font_ex "./img/machine-gunk.ttf" 36 None in
-  Raygui.set_font custom_font;
-  (*Create the intro screen art*)
-  let intro_screen_art = Raylib.load_image "./img/MTDCoverArt.png" in
-  let background = Raylib.load_texture_from_image intro_screen_art in
-  unload_image intro_screen_art;
-  let red_balloon = Raylib.load_image "./img/red.png" in
-  let red_bal_texture = Raylib.load_texture_from_image red_balloon in
-  unload_image red_balloon;
 
+  (*Set up the fonts*)
+  Constants.setup_fonts ();
 
-  
+  (*Set up the intro screen art and background*)
+  intro_screen_art := Some (Raylib.load_texture "./img/MTDCoverArt.png");
+
+  Constants.setup_balloon_imgs ();
+  Constants.setup_bear_imgs ();
+  Constants.setup_projectile_imgs ();
+
+  (* Constants.setup_projectile_imgs (); *)
+  Balloon.red_balloon_texture := !Constants.red_balloon_img;
 
   Raygui.(set_style (TextBox `Text_alignment) TextAlignment.(to_int Center));
   (* SETTING STYLE TO RED - USE HEX*)
   Raygui.(set_style (Button `Base_color_normal) 0xFF000010);
   Raygui.(set_style (Button `Base_color_focused) 0x7F000000);
   Raygui.(set_style (Button `Base_color_pressed) 0x7F000000);
+  Raygui.set_font (Option.get !custom_font);
 
   Raygui.(set_style (Default `Text_color_normal) 0xFFFFFF);
   Raygui.set_style (Default `Text_size) 36;
 
   Raygui.(set_style (Button `Border_width) 0);
 
-
-  balloons := Balloon.generate_all_balloons 0 12;
-
-  (title_font, background, red_bal_texture)
+  balloons :=
+    Balloon.generate_all_balloons 0 12 (Option.get !Balloon.red_balloon_texture);
+  ()
 
 (*Updates game)*)
 let update_home () =
@@ -128,11 +135,12 @@ let update_home () =
   Balloon.update_balloon_positions !balloons
 
 (*Draws home screen for MTD.*)
-let draw_home (title_font, background, red_bal_texture) =
+let draw_home () =
   begin_drawing ();
   clear_background Color.lightgray;
   (***** BACKGROUND *****)
-  draw_texture_ex background
+  draw_texture_ex
+    (Option.get !intro_screen_art)
     (Vector2.create 0. 0.0) (* Position *)
     0.0 (* Rotation (in radians) *)
     (!screen_width /. 1831.0) (* Scale *)
@@ -149,15 +157,15 @@ let draw_home (title_font, background, red_bal_texture) =
         "PLAY")
   then Constants.state := Inactive;
   (* Raylib.set_texture_filter (Font.texture (Raylib.get_font_default ())) TextureFilter.Point; *)
-  draw_text_ex title_font "McGraw Tower"
+  draw_text_ex (Option.get !title_font) "McGraw Tower"
     (Vector2.create (!screen_width /. 2.) (!screen_height /. 3.))
     100. 3. (Color.create 255 6 0 255);
-  draw_text_ex title_font "Defense"
+  draw_text_ex (Option.get !title_font) "Defense"
     (Vector2.create (4. *. !screen_width /. 7.) (3. *. !screen_height /. 7.))
     100. 3. (Color.create 255 6 0 255);
 
   (***** BALLOONS *****)
-  Balloon.draw_balloons red_bal_texture !balloons;
+  Balloon.draw_balloons !balloons;
 
   end_drawing ()
 
