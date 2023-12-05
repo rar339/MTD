@@ -211,7 +211,7 @@ let draw_game () =
   draw_bullets !bullet_collection;
 
   (*Draw the turning points for reference, comment out if you want them invisible*)
-  Balloonpath.draw_turnpoints !turn_points;
+  (* Balloonpath.draw_turnpoints !turn_points; *)
 
   (*Draw the balloons, the number passed in is the path's width, so that balloons
      are drawn as the correct size.*)

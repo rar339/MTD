@@ -1,5 +1,5 @@
-(** This module builds the waves of balloons for each round.*)
 open Balloons
+(** This module builds the waves of balloons for each round.*)
 
 (**A list of all the waves in our game. Generated in Game.setup().
     Waves are reprsented as a list of tuples of type balloon * int. The ints
@@ -25,7 +25,7 @@ let initialize_round (waves : (unit -> (balloon * int) list) list ref) =
 let wave1 () =
   let balloon_lst = ref [] in
   for x = 0 to 20 do
-    balloon_lst := (make_balloon x Red false, 15) :: !balloon_lst
+    balloon_lst := (make_balloon x Purple false, 15) :: !balloon_lst
   done;
   !balloon_lst
 

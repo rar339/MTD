@@ -176,7 +176,7 @@ let change_velocity balloon new_color =
 (* Creates a balloon given the color. *)
 let make_balloon i color is_lead =
   let position =
-    Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.))
+    Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.5))
   in
   let x = Vector2.x position in
   let y = Vector2.y position in
@@ -196,7 +196,7 @@ let make_balloon i color is_lead =
     slow_counter = 180;
   }
 
-(*Lowers player lives when a balloon crosses the finish line based on the
+(***Lowers player lives when a balloon crosses the finish line based on the
    value of that balloon. *)
 let lower_lives balloon = Constants.(lives := !lives - value_of_balloon balloon)
 
