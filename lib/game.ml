@@ -144,7 +144,7 @@ let update_game () =
   Bears.update_selected_bear !selected_bear (get_mouse_position ());
 
   if !Constants.state = Active then (
-    bloons_spawner (current_wave);
+    bloons_spawner current_wave;
     move_balloons !current_balloons !turn_points;
     fire_all_shots !bear_collection (sort_balloons !current_balloons);
     update_bullets !bullet_collection;
