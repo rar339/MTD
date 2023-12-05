@@ -120,11 +120,11 @@ let update_game () =
   if !Constants.state = Active then (
     bloons_spawner current_wave;
     move_balloons !current_balloons !turn_points;
-    fire_all_shots !bear_collection (List.rev !current_balloons);
+    fire_all_shots !bear_collection (sort_balloons !current_balloons);
     update_bullets !bullet_collection;
 
     (*Update all bear facing angles!*)
-    update_angles !bear_collection (List.rev !current_balloons);
+    update_angles !bear_collection (sort_balloons !current_balloons);
 
     (* update_bears_angle !bear_collection !current_balloons; *)
     update_collisions !bullet_collection !current_balloons;
@@ -180,7 +180,7 @@ let draw_game () =
   draw_bullets !bullet_collection;
 
   (*Draw the turning points for reference, comment out if you want them invisible*)
-  (* Balloonpath.draw_turnpoints !turn_points; *)
+  Balloonpath.draw_turnpoints !turn_points;
 
   (*Draw the balloons, the number passed in is the path's width, so that balloons
      are drawn as the correct size.*)

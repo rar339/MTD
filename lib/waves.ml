@@ -25,8 +25,8 @@ let initialize_round (waves : (balloon * int) list list ref) =
 
 let test_wave () =
   [
-    (Balloons.make_balloon 0 Purple false, 15);
-    (Balloons.make_balloon 0 Purple false, 15);
+    (Balloons.make_balloon 0 Red false, 15);
+    (Balloons.make_balloon 0 Blue false, 15);
   ]
 
 let wave1 () : (balloon * int) list =

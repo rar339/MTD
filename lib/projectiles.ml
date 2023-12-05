@@ -94,7 +94,25 @@ let is_balloon_in_range (bear : Bears.bear) (balloon : Balloons.balloon) : bool
     =
   Vector2.distance bear.position balloon.position <= bear.range
 
-(*Precondition: balloons must be in the order they appear on the screen.*)
+(**Determine which balloon is closer to the next turn point.*)
+let compare_balloons_helper (balloon1 : Balloons.balloon)
+    (balloon2 : Balloons.balloon) : int =
+  let x1, y1, _ = List.nth !Balloonpath.turn_points balloon1.current_turn in
+  let turn_pos = Vector2.create (float_of_int x1) (float_of_int y1) in
+  let dist1 = Vector2.distance balloon1.position turn_pos in
+  let dist2 = Vector2.distance balloon2.position turn_pos in
+  if dist1 < dist2 then -1 else 1
+
+(**Determine which balloon is in front of the other.*)
+let compare_balloons (balloon1 : Balloons.balloon) (balloon2 : Balloons.balloon)
+    : int =
+  if balloon1.current_turn > balloon2.current_turn then -1
+  else if balloon1.current_turn < balloon2.current_turn then 1
+  else compare_balloons_helper balloon1 balloon2
+
+(**Sort the balloon list to be from closest to the end to furthest from the end.*)
+let sort_balloons balloon_lst = List.sort compare_balloons balloon_lst
+
 let rec find_target (bear : Bears.bear) (balloons : Balloons.balloon list) :
     Balloons.balloon option =
   match balloons with
@@ -194,6 +212,7 @@ let init_projectile (bear : Bears.bear) (balloon : Balloons.balloon) =
   | { bear_type = Dragon; _ } -> fire_dart bear balloon
   | { bear_type = Sniper; _ } -> fire_dart bear balloon
 
+(**Precondition: balloons must be in the order they appear on the screen.*)
 let rec fire_all_shots (bears : Bears.bear list)
     (balloons : Balloons.balloon list) =
   match bears with

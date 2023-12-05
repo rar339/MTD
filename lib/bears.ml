@@ -69,7 +69,7 @@ let make_dart_bear (menu_bear : bool) pos =
     counter = 0;
     projectile_speed = 12.1;
     sold = false;
-    damage = 1;
+    damage = 0;
     pops_lead = false;
     facing = 0.;
     slime_rectangle = None;
@@ -152,7 +152,7 @@ let make_sniper_bear pos =
     projectile_speed = 30.;
     sold = false;
     damage = 100;
-    pops_lead = true; 
+    pops_lead = true;
     facing = 0.;
     slime_rectangle = None;
     zombie_direction = None;
@@ -236,7 +236,6 @@ let origin_vect_custom (bear : bear) =
   | Hockey -> Vector2.create (bear_radius *. 1.6) (bear_radius *. 1.6)
   | _ -> Vector2.create (bear_radius *. 1.5) (bear_radius *. 1.5)
 
-
 (* draw_bear function *)
 let rec draw_bear (bear : bear) =
   if bear.bear_type = Zombie then set_zombie_facing bear else ();
@@ -253,14 +252,15 @@ let rec draw_bear (bear : bear) =
     (origin_vect_custom bear)
     bear.facing
     (Color.create 255 255 255 255)
-  (*Helper for setting the direction zombie texture faces*)
-  and set_zombie_facing (bear : bear) =
-      match bear.zombie_direction with 
-      | Some Left -> bear.facing <- -90.
-      | Some Right -> bear.facing <- 90.
-      | Some Up -> bear.facing <- 0.
-      | Some Down -> bear.facing <- 180.
-      | None -> ()
+
+(*Helper for setting the direction zombie texture faces*)
+and set_zombie_facing (bear : bear) =
+  match bear.zombie_direction with
+  | Some Left -> bear.facing <- -90.
+  | Some Right -> bear.facing <- 90.
+  | Some Up -> bear.facing <- 0.
+  | Some Down -> bear.facing <- 180.
+  | None -> ()
 
 (*Draws the placed bears in the game*)
 let rec draw_bears (bears : bear list) =
@@ -306,8 +306,9 @@ let update_zombie_bear (bear : bear) =
   | Some Up ->
       bear.slime_rectangle <-
         Some
-          (Rectangle.create (x_pos -. bear_radius) (y_pos -. fire_rect_length) fire_rect_width
-             fire_rect_length)
+          (Rectangle.create (x_pos -. bear_radius)
+             (y_pos -. fire_rect_length)
+             fire_rect_width fire_rect_length)
   | Some Down ->
       bear.slime_rectangle <-
         Some
