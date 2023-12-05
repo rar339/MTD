@@ -126,12 +126,12 @@ let determine_image balloon_type =
 
 (** Determines the velocity associated with a color of a balloon. *)
 let determine_velocity = function
-  | Red -> 5.0 *. float_of_int !Constants.speed_mult
-  | Blue -> 8.0 *. float_of_int !Constants.speed_mult
-  | Green -> 10.0 *. float_of_int !Constants.speed_mult
-  | Yellow -> 10.0 *. float_of_int !Constants.speed_mult
-  | Orange -> 12.0 *. float_of_int !Constants.speed_mult
-  | Purple -> 12.0 *. float_of_int !Constants.speed_mult
+  | Red -> 2.5 *. float_of_int !Constants.speed_mult
+  | Blue -> 4.0 *. float_of_int !Constants.speed_mult
+  | Green -> 5.5 *. float_of_int !Constants.speed_mult
+  | Yellow -> 7.0 *. float_of_int !Constants.speed_mult
+  | Orange -> 10.0 *. float_of_int !Constants.speed_mult
+  | Purple -> 10.0 *. float_of_int !Constants.speed_mult
   | Lead -> 5.0 *. float_of_int !Constants.speed_mult
   | _ -> 0.0
 

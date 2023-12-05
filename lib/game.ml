@@ -17,7 +17,7 @@ let play_button screen_width screen_height =
            (155. *. screen_width /. 200.)
            (8. *. screen_height /. 9.)
            (1.5 *. screen_width /. 9.)
-           (screen_height /. 19.))
+           (screen_height /. 14.))
         ("Start Round " ^ string_of_int !Constants.round))
   then (
     initialize_round waves;
@@ -39,7 +39,7 @@ let rec update_balloon_speeds cur_blns =
   | [] -> ()
 
 let mult_button screen_width screen_height =
-  if
+  (if
     Raygui.(
       button
         (Rectangle.create
@@ -57,7 +57,16 @@ let mult_button screen_width screen_height =
     else (
       Constants.speed_mult := 1;
       update_wave_speeds !current_wave;
-      update_balloon_speeds !current_balloons)
+      update_balloon_speeds !current_balloons))
+      (* draw_rectangle_rec (Rectangle.create
+      (155. *. screen_width /. 200.)
+      (7.25 *. screen_height /. 9.)
+      (1.5 *. screen_width /. 9.)
+      (screen_height /. 19.))
+      Color.green;
+      draw_text_ex (Option.get !custom_font) (string_of_int !Constants.speed_mult ^ "X Speed") 
+      (Vector2.create (155. *. screen_width /. 200.)
+      (7.25 *. screen_height /. 9.)) 36. 10. (Color.create 0 0 0 255) *)
 
 (******************************************************************************)
 let setup () =
