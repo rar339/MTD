@@ -65,6 +65,7 @@ let get_x bear = Vector2.x bear.position
 let get_y bear = Vector2.y bear.position
 let fire_rect_length = 150.
 let fire_rect_width = 80.
+let selected_bear : bear option ref = ref None
 
 (*The bears displayed on the menu.*)
 let menu_bears : bear list ref = ref []
@@ -95,9 +96,9 @@ let make_dart_bear (menu_bear : bool) pos =
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 30;
+    attack_speed = 50 / !speed_mult;
     counter = 0;
-    projectile_speed = 12.1;
+    projectile_speed = 12.1 *. float_of_int !speed_mult;
     sold = false;
     damage = 0;
     pops_lead = false;
@@ -125,9 +126,9 @@ let make_hockey_bear (menu_bear : bool) pos =
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 100;
+    attack_speed = 100 / !speed_mult;
     counter = 50;
-    projectile_speed = 60.;
+    projectile_speed = 60. *. float_of_int !speed_mult;
     sold = false;
     damage = 1;
     pops_lead = false;
@@ -154,9 +155,9 @@ let make_zombie_bear (menu_bear : bool) pos =
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 80;
+    attack_speed = 80 / !speed_mult;
     counter = 0;
-    projectile_speed = 10.;
+    projectile_speed = 10. *. float_of_int !speed_mult;
     sold = false;
     damage = 1;
     pops_lead = false;
@@ -183,9 +184,9 @@ let make_sniper_bear (menu_bear : bool) pos =
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 150;
+    attack_speed = 150 / !speed_mult;
     counter = 50;
-    projectile_speed = 30.;
+    projectile_speed = 30. *. float_of_int !speed_mult;
     sold = false;
     damage = 100;
     pops_lead = true;
@@ -212,9 +213,9 @@ let make_dragon_bear (menu_bear : bool) pos =
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 10;
+    attack_speed = 20 / !speed_mult;
     counter = 50;
-    projectile_speed = 10.;
+    projectile_speed = 10. *. float_of_int !speed_mult;
     sold = false;
     damage = 1;
     pops_lead = true;
