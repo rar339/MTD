@@ -121,10 +121,12 @@ let update_bear_selections placed_bears pos bears =
           Some (Bears.make_zombie_bear false (get_mouse_position ()))
   | Some { bear_type = Sniper; _ } ->
       if not placed_bears then
-        selected_bear := Some (Bears.make_sniper_bear false (get_mouse_position ()))
+        selected_bear :=
+          Some (Bears.make_sniper_bear false (get_mouse_position ()))
   | Some { bear_type = Dragon; _ } ->
       if not placed_bears then
-        selected_bear := Some (Bears.make_dragon_bear false (get_mouse_position ()))
+        selected_bear :=
+          Some (Bears.make_dragon_bear false (get_mouse_position ()))
 
 (**Check_click is called in Game.update_game() to update whether or not a bear
     has been selected. If a user clicked a button, we do not deselect their 
