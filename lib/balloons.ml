@@ -15,16 +15,14 @@ let purple_balloon_img : Texture2D.t option ref = ref None
 let lead_balloon_img : Texture2D.t option ref = ref None
 
 (*Sets up balloon textures*)
-let setup_balloon_imgs () = begin
+let setup_balloon_imgs () =
   red_balloon_img := Some (Raylib.load_texture "./img/balloons/red.png");
   blue_balloon_img := Some (Raylib.load_texture "./img/balloons/blue.png");
   green_balloon_img := Some (Raylib.load_texture "./img/balloons/green.png");
   yellow_balloon_img := Some (Raylib.load_texture "./img/balloons/yellow.png");
   orange_balloon_img := Some (Raylib.load_texture "./img/balloons/orange.png");
   purple_balloon_img := Some (Raylib.load_texture "./img/balloons/purple.png");
-  lead_balloon_img := Some (Raylib.load_texture "./img/balloons/lead.png");
-end
-
+  lead_balloon_img := Some (Raylib.load_texture "./img/balloons/lead.png")
 
 type balloon_colors =
   | None
@@ -74,8 +72,6 @@ let hitbox_width = ref 0.0
 let hitbox_height = ref 0.0
 let hitbox_x_offset = ref 0.0
 let hitbox_y_offset = ref 0.0
-
-
 
 let setup_hitbox path_width =
   hitbox_width := path_width /. 1.5;
@@ -141,22 +137,21 @@ let rec draw_balloons path_width (balloon_list : balloon list) =
       draw_balloons path_width t
 
 let determine_image balloon_type =
-  
   match balloon_type with
   | None -> failwith "impossible?"
-  | Red -> Option.get(!red_balloon_img)
-  | Blue -> Option.get(!blue_balloon_img)
-  | Green -> Option.get(!green_balloon_img)
-  | Yellow -> Option.get(!yellow_balloon_img)
-  | Orange -> Option.get(!orange_balloon_img)
-  | Purple -> Option.get(!purple_balloon_img)
-  | Lead -> Option.get(!lead_balloon_img)
+  | Red -> Option.get !red_balloon_img
+  | Blue -> Option.get !blue_balloon_img
+  | Green -> Option.get !green_balloon_img
+  | Yellow -> Option.get !yellow_balloon_img
+  | Orange -> Option.get !orange_balloon_img
+  | Purple -> Option.get !purple_balloon_img
+  | Lead -> Option.get !lead_balloon_img
 
 (** Determines the velocity associated with a color of a balloon. *)
 let determine_velocity = function
   | Red -> 5.0 *. float_of_int !Constants.speed_mult
   | Blue -> 8.0 *. float_of_int !Constants.speed_mult
-  | Green -> 10.0  *. float_of_int !Constants.speed_mult
+  | Green -> 10.0 *. float_of_int !Constants.speed_mult
   | Yellow -> 10.0 *. float_of_int !Constants.speed_mult
   | Orange -> 12.0 *. float_of_int !Constants.speed_mult
   | Purple -> 12.0 *. float_of_int !Constants.speed_mult

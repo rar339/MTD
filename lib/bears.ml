@@ -1,4 +1,5 @@
 open Raylib
+open Constants
 
 (*Textures for in-game bears*)
 let dartbear_img : Texture2D.t option ref = ref None
