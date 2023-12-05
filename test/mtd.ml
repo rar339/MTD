@@ -29,19 +29,6 @@ let run_tests () =
   Raylib.init_window 0 0 "TESTS";
   (*Lead Balloon at (0,0) with 0 with no velocity, and is lead. *)
   let balloon1 = make_test_balloon 0.0 0.0 0 vel0 Lead true in
-
-  let draw_turnpoints_tests =
-    [
-      ( "balloonpath draw_turnpoints empty list" >:: fun _ ->
-        assert_equal (Balloonpath.draw_turnpoints []) () );
-      ( "balloonpath draw_turnpoints single element list" >:: fun _ ->
-        assert_equal (MTD.Balloonpath.draw_turnpoints [ (10, 20, 3) ]) () );
-      ( "balloonpath draw_turnpoints multi element list" >:: fun _ ->
-        assert_equal
-          (MTD.Balloonpath.draw_turnpoints [ (0, 2, 3); (2, 3, 1) ])
-          () );
-    ]
-  in
   let check_turn_collide_tests =
     [
       ( "balloonpath check_turn_collide empty list" >:: fun _ ->
@@ -73,8 +60,8 @@ let run_tests () =
   let balloonpath_tests =
     List.flatten
       [
-        draw_turnpoints_tests @ check_turn_collide_tests @ turn_balloon_tests
-        @ move_balloons_tests @ extract_points_tests @ point_json_parse_tests;
+        check_turn_collide_tests @ turn_balloon_tests @ move_balloons_tests
+        @ extract_points_tests @ point_json_parse_tests;
       ]
   in
 

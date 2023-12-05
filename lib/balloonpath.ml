@@ -1,18 +1,9 @@
 open Raylib
 open Constants
 
-(**turn_points are represented by the type (int * int * int) array. This maps 
+(*turn_points are represented by the type (int * int * int) array. This maps
     to (x,y,turn number).*)
 let turn_points : (int * int * int) list ref = ref []
-
-let draw_turnpoint x_pos y_pos = draw_circle x_pos y_pos 1.0 Color.red
-
-let rec draw_turnpoints (turn_points : (int * int * int) list) =
-  match turn_points with
-  | [] -> ()
-  | (x, y, _) :: t ->
-      draw_turnpoint x y;
-      draw_turnpoints t
 
 (*Checks if the given balloon is colliding with a turn point, meaning it should
    make a turn. *)
