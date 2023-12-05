@@ -1,3 +1,6 @@
+(**This module is responsible for constructing the path's turns and moving the
+  balloons along the path.*)
+
 open Raylib
 
 val turn_points : (int * int * int) list ref

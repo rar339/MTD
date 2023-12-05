@@ -400,6 +400,13 @@ let display_selection selection =
   let rect_height = Rectangle.height (Option.get !Constants.selection_rect) in
   let rect_x = Rectangle.x (Option.get !Constants.selection_rect) in
   let rect_y = Rectangle.y (Option.get !Constants.selection_rect) in
+  (match selection with
+  | None -> ()
+  | Some bear ->
+      draw_circle
+        (Constants.round_float (Vector2.x bear.position))
+        (Constants.round_float (Vector2.y bear.position))
+        bear.range (Color.create 0 0 0 100));
   match selection with
   | None -> ()
   | Some ({ bear_type = Dart; _ } as bear) ->
