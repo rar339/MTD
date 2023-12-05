@@ -24,8 +24,8 @@ let state = ref Home
 let round = ref 1
 
 (*Game restart attributes*)
-let start_cash = 4000
-let start_lives = 1
+let start_cash = 400
+let start_lives = 150
 
 (*Game global attributes*)
 let count = ref 0

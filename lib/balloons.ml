@@ -154,13 +154,13 @@ let determine_image balloon_type =
 
 (** Determines the velocity associated with a color of a balloon. *)
 let determine_velocity = function
-  | Red -> 5.0 /. 2.
-  | Blue -> 8.0 /. 2.
-  | Green -> 10.0 /. 2.
-  | Yellow -> 10.0 /. 2.
-  | Orange -> 12.0 /. 2.
-  | Purple -> 12.0 /. 2.
-  | Lead -> 5.0 /. 2.
+  | Red -> 5.0
+  | Blue -> 8.0
+  | Green -> 10.0
+  | Yellow -> 10.0
+  | Orange -> 12.0
+  | Purple -> 12.0
+  | Lead -> 5.0
   | _ -> 0.0
 
 (* Changes the velocity of a balloon while preserving its direction. *)

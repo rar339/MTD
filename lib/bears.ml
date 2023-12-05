@@ -99,7 +99,7 @@ let make_dart_bear (menu_bear : bool) pos =
     counter = 0;
     projectile_speed = 12.1;
     sold = false;
-    damage = 1;
+    damage = 0;
     pops_lead = false;
     facing = 0.;
     slime_rectangle = None;
@@ -125,7 +125,7 @@ let make_hockey_bear (menu_bear : bool) pos =
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 50;
+    attack_speed = 100;
     counter = 50;
     projectile_speed = 60.;
     sold = false;
