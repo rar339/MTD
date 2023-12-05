@@ -1,5 +1,5 @@
 open Raylib
-(* open Constants *)
+open Constants
 
 type bear_types = Dart | Hockey | Zombie | Sniper | Dragon
 type zombie_direction = Left | Up | Right | Down
@@ -35,6 +35,7 @@ let get_x bear = Vector2.x bear.position
 let get_y bear = Vector2.y bear.position
 let fire_rect_length = 150.
 let fire_rect_width = 80.
+let selected_bear : bear option ref = ref None
 
 (*The bears displayed on the menu.*)
 let menu_bears : bear list ref = ref []
@@ -65,9 +66,9 @@ let make_dart_bear (menu_bear : bool) pos =
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 30;
+    attack_speed = 50 / !speed_mult;
     counter = 0;
-    projectile_speed = 12.1;
+    projectile_speed = 12.1 *. float_of_int !speed_mult;
     sold = false;
     damage = 1;
     pops_lead = false;
@@ -95,9 +96,9 @@ let make_hockey_bear (menu_bear : bool) pos =
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 100;
+    attack_speed = 100 / !speed_mult;
     counter = 50;
-    projectile_speed = 60.;
+    projectile_speed = 60. *. float_of_int !speed_mult;
     sold = false;
     damage = 1;
     pops_lead = false;
@@ -121,9 +122,9 @@ let make_zombie_bear pos =
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 80;
+    attack_speed = 80 / !speed_mult;
     counter = 0;
-    projectile_speed = 10.;
+    projectile_speed = 10. *. float_of_int !speed_mult;
     sold = false;
     damage = 1;
     pops_lead = false;
@@ -147,12 +148,12 @@ let make_sniper_bear pos =
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 150;
+    attack_speed = 150 / !speed_mult;
     counter = 50;
-    projectile_speed = 30.;
+    projectile_speed = 30. *. float_of_int !speed_mult;
     sold = false;
     damage = 100;
-    pops_lead = true; 
+    pops_lead = true;
     facing = 0.;
     slime_rectangle = None;
     zombie_direction = None;
@@ -173,9 +174,9 @@ let make_dragon_bear pos =
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 10;
+    attack_speed = 20 / !speed_mult;
     counter = 50;
-    projectile_speed = 10.;
+    projectile_speed = 10. *. float_of_int !speed_mult;
     sold = false;
     damage = 1;
     pops_lead = true;
@@ -236,7 +237,6 @@ let origin_vect_custom (bear : bear) =
   | Hockey -> Vector2.create (bear_radius *. 1.6) (bear_radius *. 1.6)
   | _ -> Vector2.create (bear_radius *. 1.5) (bear_radius *. 1.5)
 
-
 (* draw_bear function *)
 let rec draw_bear (bear : bear) =
   if bear.bear_type = Zombie then set_zombie_facing bear else ();
@@ -253,14 +253,15 @@ let rec draw_bear (bear : bear) =
     (origin_vect_custom bear)
     bear.facing
     (Color.create 255 255 255 255)
-  (*Helper for setting the direction zombie texture faces*)
-  and set_zombie_facing (bear : bear) =
-      match bear.zombie_direction with 
-      | Some Left -> bear.facing <- -90.
-      | Some Right -> bear.facing <- 90.
-      | Some Up -> bear.facing <- 0.
-      | Some Down -> bear.facing <- 180.
-      | None -> ()
+
+(*Helper for setting the direction zombie texture faces*)
+and set_zombie_facing (bear : bear) =
+  match bear.zombie_direction with
+  | Some Left -> bear.facing <- -90.
+  | Some Right -> bear.facing <- 90.
+  | Some Up -> bear.facing <- 0.
+  | Some Down -> bear.facing <- 180.
+  | None -> ()
 
 (*Draws the placed bears in the game*)
 let rec draw_bears (bears : bear list) =
@@ -306,8 +307,9 @@ let update_zombie_bear (bear : bear) =
   | Some Up ->
       bear.slime_rectangle <-
         Some
-          (Rectangle.create (x_pos -. bear_radius) (y_pos -. fire_rect_length) fire_rect_width
-             fire_rect_length)
+          (Rectangle.create (x_pos -. bear_radius)
+             (y_pos -. fire_rect_length)
+             fire_rect_width fire_rect_length)
   | Some Down ->
       bear.slime_rectangle <-
         Some

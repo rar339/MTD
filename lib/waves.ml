@@ -6,7 +6,7 @@ open Balloons
     Waves are reprsented as a list of tuples of type balloon * int. The ints
     correspond to how many frames before that balloon is spawned (added to 
     current_balloons THUNKY)*)
-let waves :  (unit -> (balloon * int) list) list ref = ref []
+let waves : (unit -> (balloon * int) list) list ref = ref []
 
 (**The current wave of baloons, when this is the empty list, the wave is over.*)
 let current_wave = ref []
@@ -147,18 +147,18 @@ let wave16 () =
   for x = 0 to 50 do
     balloon_lst := (make_balloon x Red false, 2) :: !balloon_lst
   done;
-  for x = 0 to 60 do 
+  for x = 0 to 60 do
     balloon_lst := (make_balloon x Blue false, 2) :: !balloon_lst
   done;
-  for x = 0 to 40 do 
+  for x = 0 to 40 do
     balloon_lst := (make_balloon x Green false, 2) :: !balloon_lst
   done;
-  for x = 0 to 20 do 
+  for x = 0 to 20 do
     balloon_lst := (make_balloon x Green false, 2) :: !balloon_lst
   done;
   !balloon_lst
 
-  (********* LEFT TO DO *************)
+(********* LEFT TO DO *************)
 let wave17 () =
   let balloon_lst = ref [] in
   for x = 0 to 70 do
