@@ -160,10 +160,11 @@ let setup () =
 let bloons_spawner current_wave =
   match !current_wave with
   | [] -> ()
-  | (bloon, counter) :: t when counter = 0 ->
+  | (bloon, counter) :: t when counter <= 0 ->
       current_balloons := bloon :: !current_balloons;
       current_wave := t
-  | (bloon, counter) :: t -> current_wave := (bloon, counter - 1) :: t
+  | (bloon, counter) :: t ->
+      current_wave := (bloon, counter - (1 * !speed_mult)) :: t
 
 (* If there are no balloons on the screen, the round is over. *)
 let update_state () =
