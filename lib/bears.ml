@@ -1,5 +1,36 @@
 open Raylib
-(* open Constants *)
+open Constants
+
+(*Textures for in-game bears*)
+let dartbear_img : Texture2D.t option ref = ref None
+let hockeybear_img : Texture2D.t option ref = ref None
+let zombiebear_img : Texture2D.t option ref = ref None
+let sniperbear_img : Texture2D.t option ref = ref None
+let dragonbear_img : Texture2D.t option ref = ref None
+
+(*Textures for menu bears*)
+let menu_dartbear_img : Texture2D.t option ref = ref None
+let menu_hockeybear_img : Texture2D.t option ref = ref None
+let menu_zombiebear_img : Texture2D.t option ref = ref None
+let menu_sniperbear_img : Texture2D.t option ref = ref None
+let menu_dragonbear_img : Texture2D.t option ref = ref None
+
+(*Sets up bear textures*)
+let setup_bear_imgs () =
+  (*in-game bears*)
+  dartbear_img := Some (Raylib.load_texture "./img/bears/dartbear.png");
+  hockeybear_img := Some (Raylib.load_texture "./img/bears/hockeybear.png");
+  zombiebear_img := Some (Raylib.load_texture "./img/bears/zombiebear.png");
+  sniperbear_img := Some (Raylib.load_texture "./img/bears/purplebear.png");
+  dragonbear_img := Some (Raylib.load_texture "./img/bears/redbear.png");
+  (*menu bears*)
+  menu_dartbear_img :=
+    Some (Raylib.load_texture "./img/bears/menu_dartbear.png");
+  menu_hockeybear_img :=
+    Some (Raylib.load_texture "./img/bears/menu_hockeybear.png");
+  menu_zombiebear_img := Some (Raylib.load_texture "./img/bears/zombiebear.png");
+  menu_sniperbear_img := Some (Raylib.load_texture "./img/bears/purplebear.png");
+  menu_dragonbear_img := Some (Raylib.load_texture "./img/bears/redbear.png")
 
 type bear_types = Dart | Hockey | Zombie | Sniper | Dragon
 type zombie_direction = Left | Up | Right | Down
@@ -35,6 +66,7 @@ let get_x bear = Vector2.x bear.position
 let get_y bear = Vector2.y bear.position
 let fire_rect_length = 150.
 let fire_rect_width = 80.
+let selected_bear : bear option ref = ref None
 
 (*The bears displayed on the menu.*)
 let menu_bears : bear list ref = ref []
@@ -49,11 +81,11 @@ let string_of_beartype bear_type =
 
 let make_dart_bear (menu_bear : bool) pos =
   let image =
-    if not menu_bear then load_image "./img/newdart_bear.png"
-    else load_image "./img/menu_dartbear.png"
+    if menu_bear then Option.get !menu_dartbear_img
+    else Option.get !dartbear_img
   in
-  let image_width = float_of_int (Image.width image) in
-  let image_height = float_of_int (Image.height image) in
+  let image_width = float_of_int (Texture.width image) in
+  let image_height = float_of_int (Texture.height image) in
   {
     bear_type = Dart;
     range = 150.;
@@ -61,13 +93,13 @@ let make_dart_bear (menu_bear : bool) pos =
     upgrades = 0;
     is_bomb = false;
     position = pos;
-    texture = load_texture_from_image image;
+    texture = image;
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 30;
+    attack_speed = 50 / !speed_mult;
     counter = 0;
-    projectile_speed = 12.1;
+    projectile_speed = 12.1 *. float_of_int !speed_mult;
     sold = false;
     damage = 1;
     pops_lead = false;
@@ -79,11 +111,11 @@ let make_dart_bear (menu_bear : bool) pos =
 (******************************************************************************)
 let make_hockey_bear (menu_bear : bool) pos =
   let image =
-    if not menu_bear then load_image "./img/hockeybear.png"
-    else load_image "./img/menu_hockeybear.png"
+    if menu_bear then Option.get !menu_hockeybear_img
+    else Option.get !hockeybear_img
   in
-  let image_width = float_of_int (Image.width image) in
-  let image_height = float_of_int (Image.height image) in
+  let image_width = float_of_int (Texture.width image) in
+  let image_height = float_of_int (Texture.height image) in
   {
     bear_type = Hockey;
     range = 90.;
@@ -91,13 +123,13 @@ let make_hockey_bear (menu_bear : bool) pos =
     upgrades = 0;
     is_bomb = false;
     position = pos;
-    texture = load_texture_from_image image;
+    texture = image;
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 100;
+    attack_speed = 100 / !speed_mult;
     counter = 50;
-    projectile_speed = 60.;
+    projectile_speed = 60. *. float_of_int !speed_mult;
     sold = false;
     damage = 1;
     pops_lead = false;
@@ -106,10 +138,13 @@ let make_hockey_bear (menu_bear : bool) pos =
     zombie_direction = None;
   }
 
-let make_zombie_bear pos =
-  let image = load_image "./img/zombie_bear.png" in
-  let image_width = float_of_int (Image.width image) in
-  let image_height = float_of_int (Image.height image) in
+let make_zombie_bear (menu_bear : bool) pos =
+  let image =
+    if menu_bear then Option.get !menu_zombiebear_img
+    else Option.get !zombiebear_img
+  in
+  let image_width = float_of_int (Texture.width image) in
+  let image_height = float_of_int (Texture.height image) in
   {
     bear_type = Zombie;
     range = 120.;
@@ -117,13 +152,13 @@ let make_zombie_bear pos =
     upgrades = 0;
     is_bomb = true;
     position = pos;
-    texture = load_texture_from_image image;
+    texture = image;
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 80;
+    attack_speed = 80 / !speed_mult;
     counter = 0;
-    projectile_speed = 10.;
+    projectile_speed = 10. *. float_of_int !speed_mult;
     sold = false;
     damage = 1;
     pops_lead = false;
@@ -132,10 +167,13 @@ let make_zombie_bear pos =
     zombie_direction = Some Left;
   }
 
-let make_sniper_bear pos =
-  let image = load_image "./img/purplebear.png" in
-  let image_width = float_of_int (Image.width image) in
-  let image_height = float_of_int (Image.height image) in
+let make_sniper_bear (menu_bear : bool) pos =
+  let image =
+    if menu_bear then Option.get !menu_sniperbear_img
+    else Option.get !sniperbear_img
+  in
+  let image_width = float_of_int (Texture.width image) in
+  let image_height = float_of_int (Texture.height image) in
   {
     bear_type = Sniper;
     range = 1000.;
@@ -143,13 +181,13 @@ let make_sniper_bear pos =
     upgrades = 0;
     is_bomb = false;
     position = pos;
-    texture = load_texture_from_image image;
+    texture = image;
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 150;
+    attack_speed = 150 / !speed_mult;
     counter = 50;
-    projectile_speed = 30.;
+    projectile_speed = 30. *. float_of_int !speed_mult;
     sold = false;
     damage = 100;
     pops_lead = true;
@@ -158,10 +196,13 @@ let make_sniper_bear pos =
     zombie_direction = None;
   }
 
-let make_dragon_bear pos =
-  let image = load_image "./img/greenbear.png" in
-  let image_width = float_of_int (Image.width image) in
-  let image_height = float_of_int (Image.height image) in
+let make_dragon_bear (menu_bear : bool) pos =
+  let image =
+    if menu_bear then Option.get !menu_dragonbear_img
+    else Option.get !dragonbear_img
+  in
+  let image_width = float_of_int (Texture.width image) in
+  let image_height = float_of_int (Texture.height image) in
   {
     bear_type = Dragon;
     range = 120.;
@@ -169,13 +210,13 @@ let make_dragon_bear pos =
     upgrades = 0;
     is_bomb = false;
     position = pos;
-    texture = load_texture_from_image image;
+    texture = image;
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 10;
+    attack_speed = 20 / !speed_mult;
     counter = 50;
-    projectile_speed = 10.;
+    projectile_speed = 10. *. float_of_int !speed_mult;
     sold = false;
     damage = 1;
     pops_lead = true;
@@ -190,11 +231,11 @@ let generate_menu_bears screen_width screen_height =
       (Vector2.create (5.55 *. screen_width /. 7.) (0.8 *. screen_height /. 4.));
     make_hockey_bear true
       (Vector2.create (6. *. screen_width /. 7.) (0.8 *. screen_height /. 4.));
-    make_zombie_bear
+    make_zombie_bear true
       (Vector2.create (6.45 *. screen_width /. 7.) (0.8 *. screen_height /. 4.));
-    make_sniper_bear
+    make_sniper_bear true
       (Vector2.create (5.75 *. screen_width /. 7.) (1.2 *. screen_height /. 4.));
-    make_dragon_bear
+    make_dragon_bear true
       (Vector2.create (6.25 *. screen_width /. 7.) (1.2 *. screen_height /. 4.));
   ]
 

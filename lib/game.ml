@@ -40,6 +40,11 @@ let setup () =
   background_height := Image.height game_image;
   (*The expression in setup_hitbox corresponds to the path_width*)
   Balloons.setup_hitbox (2. *. !screen_height /. 28.);
+
+  (*Setup ALL game images into refs*)
+  Balloons.setup_balloon_imgs ();
+  Bears.setup_bear_imgs ();
+
   (*Adds the bears that will be displayed to menu_bears.*)
   Bears.menu_bears := generate_menu_bears !screen_width !screen_height;
 
@@ -233,7 +238,6 @@ let draw_game () =
              (4. *. !screen_height /. 5.))
           ""
       in
-
       draw_text_ex (Option.get !game_font)
         "\t\t\t\t\t\t\t\t\t\t\t\t\t\tWelcome to McGraw Tower Defense!\n\n\
          \t\t\t\t\t\tDefend Cornell and McGraw Tower from waves of \n\

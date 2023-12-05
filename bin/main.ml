@@ -110,6 +110,7 @@ let setup () =
 
   Raygui.(set_style (Button `Border_width) 0);
 
+
   balloons := Balloon.generate_all_balloons 0 12;
 
   (title_font, background, red_bal_texture)
@@ -159,10 +160,10 @@ let draw_home (title_font, background, red_bal_texture) =
 (*Updates and draws the window based on the current gamestate.*)
 let update_and_draw tuple =
   update_home ();
-  if !Constants.state <> Home then (
+  if !Constants.state <> Home then
     let open MTD in
     (* clear_background Color.lightgray; *)
-    Game.loop ())
+    Game.loop ()
   else draw_home tuple
 
 (*This is the main game loop. This is the loop that is recursively called every

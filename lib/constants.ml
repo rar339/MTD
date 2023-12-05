@@ -23,9 +23,16 @@ let screen_height = ref 834.
 let state = ref Home
 let round = ref 1
 
+(* Game speed multiplier *)
+let speed_mult = ref 1
+let _ = speed_mult
+
 (*Game restart attributes*)
 let start_cash = 400
 let start_lives = 150
+
+(* Game speed multiplier *)
+let speed_mult = ref 1
 
 (*Game global attributes*)
 let count = ref 0
@@ -33,7 +40,6 @@ let showInstructions = ref true
 let restartGame = ref false
 let game_font : Raylib.Font.t option ref = ref None
 let selected : bool ref = ref false
-let selected_bear : Bears.bear option ref = ref None
 let menu_rect : Raylib.Rectangle.t option ref = ref None
 let heart_img : Raylib.Texture2D.t option ref = ref None
 let cash_img : Raylib.Texture2D.t option ref = ref None

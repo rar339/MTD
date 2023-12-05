@@ -5,6 +5,25 @@ open Raylib
 open Bears
 open Constants
 
+(*Textures for balloons*)
+let red_balloon_img : Texture2D.t option ref = ref None
+let blue_balloon_img : Texture2D.t option ref = ref None
+let green_balloon_img : Texture2D.t option ref = ref None
+let yellow_balloon_img : Texture2D.t option ref = ref None
+let orange_balloon_img : Texture2D.t option ref = ref None
+let purple_balloon_img : Texture2D.t option ref = ref None
+let lead_balloon_img : Texture2D.t option ref = ref None
+
+(*Sets up balloon textures*)
+let setup_balloon_imgs () =
+  red_balloon_img := Some (Raylib.load_texture "./img/balloons/red.png");
+  blue_balloon_img := Some (Raylib.load_texture "./img/balloons/blue.png");
+  green_balloon_img := Some (Raylib.load_texture "./img/balloons/green.png");
+  yellow_balloon_img := Some (Raylib.load_texture "./img/balloons/yellow.png");
+  orange_balloon_img := Some (Raylib.load_texture "./img/balloons/orange.png");
+  purple_balloon_img := Some (Raylib.load_texture "./img/balloons/purple.png");
+  lead_balloon_img := Some (Raylib.load_texture "./img/balloons/lead.png")
+
 type balloon_colors =
   | None
   | Red
@@ -120,23 +139,23 @@ let rec draw_balloons path_width (balloon_list : balloon list) =
 let determine_image balloon_type =
   match balloon_type with
   | None -> failwith "impossible?"
-  | Red -> Raylib.load_texture "./img/red.png"
-  | Blue -> Raylib.load_texture "./img/blue.png"
-  | Green -> Raylib.load_texture "./img/green.png"
-  | Yellow -> Raylib.load_texture "./img/yellow.png"
-  | Orange -> Raylib.load_texture "./img/orange.png"
-  | Purple -> Raylib.load_texture "./img/purple.png"
-  | Lead -> Raylib.load_texture "./img/lead.png"
+  | Red -> Option.get !red_balloon_img
+  | Blue -> Option.get !blue_balloon_img
+  | Green -> Option.get !green_balloon_img
+  | Yellow -> Option.get !yellow_balloon_img
+  | Orange -> Option.get !orange_balloon_img
+  | Purple -> Option.get !purple_balloon_img
+  | Lead -> Option.get !lead_balloon_img
 
 (** Determines the velocity associated with a color of a balloon. *)
 let determine_velocity = function
-  | Red -> 5.0
-  | Blue -> 8.0
-  | Green -> 10.0
-  | Yellow -> 10.0
-  | Orange -> 12.0
-  | Purple -> 12.0
-  | Lead -> 5.0
+  | Red -> 5.0 *. float_of_int !Constants.speed_mult
+  | Blue -> 8.0 *. float_of_int !Constants.speed_mult
+  | Green -> 10.0 *. float_of_int !Constants.speed_mult
+  | Yellow -> 10.0 *. float_of_int !Constants.speed_mult
+  | Orange -> 12.0 *. float_of_int !Constants.speed_mult
+  | Purple -> 12.0 *. float_of_int !Constants.speed_mult
+  | Lead -> 5.0 *. float_of_int !Constants.speed_mult
   | _ -> 0.0
 
 (* Changes the velocity of a balloon while preserving its direction. *)
