@@ -327,7 +327,10 @@ let rec update_angle_bear (bear : Bears.bear) (balloons : Balloons.balloon list)
   match balloons with
   | [] -> ()
   | first :: rest ->
-      if is_balloon_in_range bear first then
+      if
+        is_balloon_in_range bear first
+        && bear.bear_type <> Hockey && bear.bear_type <> Zombie
+      then
         bear.facing <-
           (180. /. Float.pi *. Vector2.angle first.position bear.position)
           -. 90.
