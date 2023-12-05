@@ -1,3 +1,5 @@
+open Raylib
+
 (* This is a file containing the relevant constants for our game. Those
    that are mutable are declared as pointers. *)
 type gamestate = Home | Inactive | Active | Lose
@@ -34,7 +36,6 @@ let start_lives = 150
 let count = ref 0
 let showInstructions = ref true
 let restartGame = ref false
-let game_font : Raylib.Font.t option ref = ref None
 let selected : bool ref = ref false
 let menu_rect : Raylib.Rectangle.t option ref = ref None
 let mult_rect : Raylib.Rectangle.t option ref = ref None
@@ -43,6 +44,89 @@ let cash_img : Raylib.Texture2D.t option ref = ref None
 let pop_img : Raylib.Texture2D.t option ref = ref None
 let dart_img : Raylib.Texture2D.t option ref = ref None
 let selection_rect : Raylib.Rectangle.t option ref = ref None
+
+(******************************************************************************)
+(*Set up fonts*)
+let game_font : Raylib.Font.t option ref = ref None
+let title_font : Raylib.Font.t option ref = ref None
+let custom_font : Raylib.Font.t option ref = ref None
+
+let setup_fonts () =
+  game_font := Some (Raylib.load_font_ex "./img/fonts/gamefont.otf" 60 None);
+  title_font :=
+    Some (Raylib.load_font_ex "./img/fonts/machine-gunk.ttf" 100 None);
+  custom_font :=
+    Some (Raylib.load_font_ex "./img/fonts/machine-gunk.ttf" 36 None)
+
+(******************************************************************************)
+(*Set up the title screen art*)
+let intro_screen_art : Raylib.Texture2D.t option ref = ref None
+
+(******************************************************************************)
+
+(* Textures for projectiles*)
+let hockeypuck_img : Texture2D.t option ref = ref None
+let fireball_img : Texture2D.t option ref = ref None
+let dartshot_img : Texture2D.t option ref = ref None
+
+(*Textures for in-game bears*)
+let dartbear_img : Texture2D.t option ref = ref None
+let hockeybear_img : Texture2D.t option ref = ref None
+let zombiebear_img : Texture2D.t option ref = ref None
+let sniperbear_img : Texture2D.t option ref = ref None
+let dragonbear_img : Texture2D.t option ref = ref None
+
+(*Textures for menu bears*)
+let menu_dartbear_img : Texture2D.t option ref = ref None
+let menu_hockeybear_img : Texture2D.t option ref = ref None
+let menu_zombiebear_img : Texture2D.t option ref = ref None
+let menu_sniperbear_img : Texture2D.t option ref = ref None
+let menu_dragonbear_img : Texture2D.t option ref = ref None
+
+(*Textures for balloons*)
+let red_balloon_img : Texture2D.t option ref = ref None
+let blue_balloon_img : Texture2D.t option ref = ref None
+let green_balloon_img : Texture2D.t option ref = ref None
+let yellow_balloon_img : Texture2D.t option ref = ref None
+let orange_balloon_img : Texture2D.t option ref = ref None
+let purple_balloon_img : Texture2D.t option ref = ref None
+let lead_balloon_img : Texture2D.t option ref = ref None
+
+(******************************************************************************)
+(*Set up textures*)
+let setup_bear_imgs () =
+  (*in-game bears*)
+  dartbear_img := Some (Raylib.load_texture "./img/bears/dartbear.png");
+  hockeybear_img := Some (Raylib.load_texture "./img/bears/hockeybear.png");
+  zombiebear_img := Some (Raylib.load_texture "./img/bears/zombiebear.png");
+  sniperbear_img := Some (Raylib.load_texture "./img/bears/purplebear.png");
+  dragonbear_img := Some (Raylib.load_texture "./img/bears/redbear.png");
+  (*menu bears*)
+  menu_dartbear_img :=
+    Some (Raylib.load_texture "./img/bears/menu_dartbear.png");
+  menu_hockeybear_img :=
+    Some (Raylib.load_texture "./img/bears/menu_hockeybear.png");
+  menu_zombiebear_img := Some (Raylib.load_texture "./img/bears/zombiebear.png");
+  menu_sniperbear_img := Some (Raylib.load_texture "./img/bears/purplebear.png");
+  menu_dragonbear_img := Some (Raylib.load_texture "./img/bears/redbear.png")
+
+(*Sets up balloon textures*)
+let setup_balloon_imgs () =
+  red_balloon_img := Some (Raylib.load_texture "./img/balloons/red.png");
+  blue_balloon_img := Some (Raylib.load_texture "./img/balloons/blue.png");
+  green_balloon_img := Some (Raylib.load_texture "./img/balloons/green.png");
+  yellow_balloon_img := Some (Raylib.load_texture "./img/balloons/yellow.png");
+  orange_balloon_img := Some (Raylib.load_texture "./img/balloons/orange.png");
+  purple_balloon_img := Some (Raylib.load_texture "./img/balloons/purple.png");
+  lead_balloon_img := Some (Raylib.load_texture "./img/balloons/lead.png")
+
+let setup_projectile_imgs () =
+  hockeypuck_img :=
+    Some (Raylib.load_texture "./img/projectiles/hockeypuck.png");
+  fireball_img := Some (Raylib.load_texture "./img/projectiles/fireball.png");
+  dartshot_img := Some (Raylib.load_texture "./img/projectiles/dartshot.png")
+
+(******************************************************************************)
 
 (* Utility Functions *)
 let round_float x = int_of_float (Float.round x)

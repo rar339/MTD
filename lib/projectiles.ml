@@ -72,23 +72,9 @@ let projectile_moving_calc (bear : Bears.bear) (balloon : Balloons.balloon) =
 
 let determine_projectile_img (bear : Bears.bear) =
   match bear.bear_type with
-  | Dart ->
-      Some (Raylib.load_texture_from_image (Raylib.load_image "img/dart.png"))
-  | Dragon ->
-      Some
-        (Raylib.load_texture_from_image (Raylib.load_image "img/fireball.png"))
-  | Hockey ->
-      Some
-        (Raylib.load_texture_from_image
-           (Raylib.load_image "img/hockeypuck.png"))
-  | Zombie ->
-      Some
-        (Raylib.load_texture_from_image
-           (Raylib.load_image "img/hockeypuck.png"))
-  | Sniper ->
-      Some
-        (Raylib.load_texture_from_image
-           (Raylib.load_image "img/hockeypuck.png"))
+  | Dragon -> !fireball_img
+  | Dart -> !dartshot_img
+  | _ -> !hockeypuck_img
 
 let is_balloon_in_range (bear : Bears.bear) (balloon : Balloons.balloon) : bool
     =
