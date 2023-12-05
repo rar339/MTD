@@ -28,7 +28,7 @@ let speed_mult = ref 1
 let _ = speed_mult
 
 (*Game restart attributes*)
-let start_cash = 400
+let start_cash = 400345634
 let start_lives = 150
 
 (* Game speed multiplier *)

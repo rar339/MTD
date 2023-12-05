@@ -21,6 +21,7 @@ let play_button screen_width screen_height =
   then (
     initialize_round waves;
     Constants.state := Active)
+
 (******************************************************************************)
 let mult_button screen_width screen_height =
   if
@@ -31,12 +32,11 @@ let mult_button screen_width screen_height =
            (7.25 *. screen_height /. 9.)
            (1.5 *. screen_width /. 9.)
            (screen_height /. 19.))
-        (string_of_int (!Constants.speed_mult) ^"x Speed"))
-  then (
-    (* Change game_speed*)
-    if !Constants.speed_mult = 1 
-      then Constants.speed_mult := 2 else 
-      Constants.speed_mult := 1)
+        (string_of_int !Constants.speed_mult ^ "x Speed"))
+  then
+    if (* Change game_speed*)
+       !Constants.speed_mult = 1 then Constants.speed_mult := 2
+    else Constants.speed_mult := 1
 
 (******************************************************************************)
 let setup () =

@@ -29,22 +29,57 @@ let rec check_turn_collide (balloon : Balloons.balloon)
         && balloon.current_turn < i
       then (
         balloon.current_turn <- balloon.current_turn + 1;
-        Some i)
+        Some (x, y, i))
       else check_turn_collide balloon t
 
-let turn_balloon rate i =
+let turn_balloon (balloon : Balloons.balloon) rate (x, y, i) =
+  let bal_x = Vector2.x balloon.position in
+  let bal_y = Vector2.y balloon.position in
   match i with
-  | 1 -> Vector2.create 0.0 rate
-  | 2 -> Vector2.create (-.rate) 0.0
-  | 3 -> Vector2.create 0.0 (-.rate)
-  | 4 -> Vector2.create rate 0.0
-  | 5 -> Vector2.create 0.0 (-.rate)
-  | 6 -> Vector2.create rate 0.0
-  | 7 -> Vector2.create 0.0 rate
-  | 8 -> Vector2.create (-.rate) 0.0
-  | 9 -> Vector2.create 0.0 rate
-  | 10 -> Vector2.create rate 0.0
-  | 11 -> Vector2.create 0.0 (-.rate)
+  | 1 ->
+      balloon.position <-
+        Vector2.create (float_of_int x -. (!Balloons.hitbox_width /. 2.0)) bal_y;
+      Vector2.create 0.0 rate
+  | 2 ->
+      balloon.position <-
+        Vector2.create bal_x (float_of_int y -. (!Balloons.hitbox_height /. 2.0));
+      Vector2.create (-.rate) 0.0
+  | 3 ->
+      balloon.position <-
+        Vector2.create (float_of_int x +. (!Balloons.hitbox_width /. 2.0)) bal_y;
+      Vector2.create 0.0 (-.rate)
+  | 4 ->
+      balloon.position <-
+        Vector2.create bal_x (float_of_int y -. (!Balloons.hitbox_height /. 2.0));
+      Vector2.create rate 0.0
+  | 5 ->
+      balloon.position <-
+        Vector2.create (float_of_int x -. (!Balloons.hitbox_width /. 2.0)) bal_y;
+      Vector2.create 0.0 (-.rate)
+  | 6 ->
+      balloon.position <-
+        Vector2.create bal_x (float_of_int y +. (!Balloons.hitbox_height /. 2.0));
+      Vector2.create rate 0.0
+  | 7 ->
+      balloon.position <-
+        Vector2.create (float_of_int x +. (!Balloons.hitbox_width /. 2.0)) bal_y;
+      Vector2.create 0.0 rate
+  | 8 ->
+      balloon.position <-
+        Vector2.create bal_x (float_of_int y +. (!Balloons.hitbox_height /. 2.0));
+      Vector2.create (-.rate) 0.0
+  | 9 ->
+      balloon.position <-
+        Vector2.create (float_of_int x -. (!Balloons.hitbox_width /. 2.0)) bal_y;
+      Vector2.create 0.0 rate
+  | 10 ->
+      balloon.position <-
+        Vector2.create bal_x (float_of_int y -. (!Balloons.hitbox_height /. 2.0));
+      Vector2.create rate 0.0
+  | 11 ->
+      balloon.position <-
+        Vector2.create (float_of_int x -. (!Balloons.hitbox_width /. 2.0)) bal_y;
+      Vector2.create 0.0 (-.rate)
   | _ -> failwith "impossible"
 
 (**Moves the balloon, taking into consideration if a turn is reached. If a turn
@@ -56,9 +91,9 @@ let rec move_balloon (balloon : Balloons.balloon) turn_pts =
   let y_rate = Vector2.y balloon.velocity in
   match check_turn_collide balloon turn_pts with
   | None -> balloon.position <- Vector2.create (x +. x_rate) (y +. y_rate)
-  | Some i ->
+  | Some turn_pt ->
       balloon.velocity <-
-        turn_balloon (if x_rate = 0.0 then y_rate else x_rate) i;
+        turn_balloon balloon (if x_rate = 0.0 then y_rate else x_rate) turn_pt;
       move_balloon balloon turn_pts
 
 let rec move_balloons (balloon_list : Balloons.balloon list) turn_pts =
