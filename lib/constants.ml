@@ -41,6 +41,7 @@ let restartGame = ref false
 let game_font : Raylib.Font.t option ref = ref None
 let selected : bool ref = ref false
 let menu_rect : Raylib.Rectangle.t option ref = ref None
+let mult_rect : Raylib.Rectangle.t option ref = ref None
 let heart_img : Raylib.Texture2D.t option ref = ref None
 let cash_img : Raylib.Texture2D.t option ref = ref None
 let pop_img : Raylib.Texture2D.t option ref = ref None
