@@ -84,7 +84,33 @@ let setup () =
 
   (*Load all the waves for the game.*)
   waves :=
-    [ Waves.test_wave (); Waves.wave1 (); Waves.wave2 (); Waves.wave3 () ]
+    [
+      Waves.wave1;
+      Waves.wave2;
+      Waves.wave3;
+      Waves.wave4;
+      Waves.wave5;
+      Waves.wave6;
+      Waves.wave7;
+      Waves.wave8;
+      Waves.wave9;
+      Waves.wave10;
+      Waves.wave11;
+      Waves.wave12;
+      Waves.wave13;
+      Waves.wave14;
+      Waves.wave15;
+      Waves.wave16;
+      Waves.wave17;
+      Waves.wave18;
+      Waves.wave19;
+      Waves.wave20;
+      Waves.wave21;
+      Waves.wave22;
+      Waves.wave23;
+      Waves.wave24;
+      Waves.wave25;
+    ]
 
 (******************************************************************************)
 
@@ -118,7 +144,7 @@ let update_game () =
   Bears.update_selected_bear !selected_bear (get_mouse_position ());
 
   if !Constants.state = Active then (
-    bloons_spawner current_wave;
+    bloons_spawner (current_wave);
     move_balloons !current_balloons !turn_points;
     fire_all_shots !bear_collection (sort_balloons !current_balloons);
     update_bullets !bullet_collection;
