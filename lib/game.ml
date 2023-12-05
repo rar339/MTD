@@ -40,7 +40,6 @@ let setup () =
   background_height := Image.height game_image;
   (*The expression in setup_hitbox corresponds to the path_width*)
   Balloons.setup_hitbox (2. *. !screen_height /. 28.);
-  
 
   (*Setup ALL game images into refs*)
   Balloons.setup_balloon_imgs ();

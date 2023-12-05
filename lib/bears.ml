@@ -26,7 +26,7 @@ let setup_bear_imgs () =
   menu_dartbear_img :=
     Some (Raylib.load_texture "./img/bears/menu_dartbear.png");
   menu_hockeybear_img :=
-    Some (Raylib.load_texture "./img/bears/menu_hockey_bear.png");
+    Some (Raylib.load_texture "./img/bears/menu_hockeybear.png");
   menu_zombiebear_img := Some (Raylib.load_texture "./img/bears/zombiebear.png");
   menu_sniperbear_img := Some (Raylib.load_texture "./img/bears/purplebear.png");
   menu_dragonbear_img := Some (Raylib.load_texture "./img/bears/redbear.png")
