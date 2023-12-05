@@ -6,6 +6,7 @@ open Gamebackground
 open Gamebounds
 open Balloonpath
 open Projectiles
+open Balloons
 
 (******************************************************************************)
 let play_button screen_width screen_height =
@@ -23,6 +24,20 @@ let play_button screen_width screen_height =
     Constants.state := Active)
 
 (******************************************************************************)
+let rec update_wave_speeds cur_wave =
+  match cur_wave with
+  | (bln, _) :: t ->
+      bln.velocity <- change_velocity bln bln.color;
+      update_wave_speeds t
+  | [] -> ()
+
+let rec update_balloon_speeds cur_blns =
+  match cur_blns with
+  | bln :: t ->
+      bln.velocity <- change_velocity bln bln.color;
+      update_balloon_speeds t
+  | [] -> ()
+
 let mult_button screen_width screen_height =
   if
     Raygui.(
@@ -32,11 +47,17 @@ let mult_button screen_width screen_height =
            (7.25 *. screen_height /. 9.)
            (1.5 *. screen_width /. 9.)
            (screen_height /. 19.))
-        (string_of_int !Constants.speed_mult ^ "x Speed"))
+        (string_of_int !Constants.speed_mult ^ "X Speed"))
   then
     if (* Change game_speed*)
-       !Constants.speed_mult = 1 then Constants.speed_mult := 2
-    else Constants.speed_mult := 1
+       !Constants.speed_mult = 1 then (
+      Constants.speed_mult := 2;
+      update_wave_speeds !current_wave;
+      update_balloon_speeds !current_balloons)
+    else (
+      Constants.speed_mult := 1;
+      update_wave_speeds !current_wave;
+      update_balloon_speeds !current_balloons)
 
 (******************************************************************************)
 let setup () =
@@ -134,7 +155,7 @@ let setup () =
 
 (******************************************************************************)
 
-(**Adds bloons that are ready to be added to the screen, to current_bloons. If
+(**Adds bloons that are ready to be added to the screen, to current_balloons. If
    none are ready, decreases the counter on the next balloon to be added.*)
 let bloons_spawner current_wave =
   match !current_wave with

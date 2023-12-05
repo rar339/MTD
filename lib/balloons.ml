@@ -1,6 +1,3 @@
-(* This file specifies the properties and behaviors of balloons. There
-   are several different colors of balloons, each with their own velocities
-   and associated values. *)
 open Raylib
 open Bears
 open Constants
@@ -46,7 +43,6 @@ type balloon = {
   mutable remove : bool;
   mutable is_slowed : bool;
   mutable slow_counter : int;
-  order : int; (*We likely do not need this*)
 }
 
 let hitbox_width = ref 0.0
@@ -144,18 +140,14 @@ let change_velocity balloon new_color =
   let velocity = balloon.velocity in
   if Vector2.x velocity = 0.0 then
     if Vector2.y velocity >= 0.0 then
-      balloon.velocity <- Vector2.create 0.0 (determine_velocity new_color)
-    else
-      balloon.velocity <-
-        Vector2.create 0.0 (-1.0 *. determine_velocity new_color)
+      Vector2.create 0.0 (determine_velocity new_color)
+    else Vector2.create 0.0 (-1.0 *. determine_velocity new_color)
   else if Vector2.x velocity >= 0.0 then
-    balloon.velocity <- Vector2.create (determine_velocity new_color) 0.0
-  else
-    balloon.velocity <-
-      Vector2.create (-1.0 *. determine_velocity new_color) 0.0
+    Vector2.create (1.0 *. determine_velocity new_color) 0.0
+  else Vector2.create (-1.0 *. determine_velocity new_color) 0.0
 
 (* Creates a balloon given the color. *)
-let make_balloon i color is_lead =
+let make_balloon color is_lead =
   let position =
     Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.5))
   in
@@ -173,7 +165,6 @@ let make_balloon i color is_lead =
     current_turn = 0;
     is_slowed = false;
     remove = false;
-    order = i;
     slow_counter = 180;
   }
 
@@ -192,7 +183,7 @@ let check_balloon_exit (balloon : balloon) =
 let set_balloon_color balloon new_color =
   balloon.color <- new_color;
   balloon.img <- determine_image new_color;
-  change_velocity balloon new_color;
+  balloon.velocity <- change_velocity balloon new_color;
   if new_color <> Lead then balloon.is_lead <- false
 
 (**Updates a balloons color, etc. after a collision with a projectile.

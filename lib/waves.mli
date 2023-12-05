@@ -14,72 +14,76 @@ val current_balloons : balloon list ref
 val initialize_round : (unit -> (balloon * int) list) list ref -> unit
 
 val wave1 : unit -> (balloon * int) list
-(**Testb documentation*)
+(**Generates the 1st wave.*)
 
 val wave2 : unit -> (balloon * int) list
-(**Testc documentation*)
+(**Generates the 2nd wave.*)
 
 val wave3 : unit -> (Balloons.balloon * int) list
+(**Generates the 3rd wave.*)
 
-(**Tesd doc*)
 val wave4 : unit -> (balloon * int) list
-(**Testb documentation*)
+(**Generates the 4th wave.*)
 
 val wave5 : unit -> (balloon * int) list
-(**Testc documentation*)
+(**Generates the 5th wave.*)
 
 val wave6 : unit -> (Balloons.balloon * int) list
+(**Generates the 6th wave.*)
 
 val wave7 : unit -> (balloon * int) list
-(**Testb documentation*)
+(**Generates the 7th wave.*)
 
 val wave8 : unit -> (balloon * int) list
-(**Testc documentation*)
+(**Generates the 8th wave.*)
 
 val wave9 : unit -> (Balloons.balloon * int) list
+(**Generates the 9th wave.*)
 
-(**Tesd doc*)
 val wave10 : unit -> (balloon * int) list
-(**Testb documentation*)
+(**Generates the 10th wave.*)
 
 val wave11 : unit -> (balloon * int) list
-(**Testc documentation*)
+(**Generates the 11th wave.*)
 
 val wave12 : unit -> (Balloons.balloon * int) list
+(**Generates the 12th wave.*)
 
 val wave13 : unit -> (balloon * int) list
-(**Testb documentation*)
+(**Generates the 13th wave.*)
 
 val wave14 : unit -> (balloon * int) list
-(**Testc documentation*)
+(**Generates the 14th wave.*)
 
 val wave15 : unit -> (Balloons.balloon * int) list
+(**Generates the 15th wave.*)
 
-(**Tesd doc*)
 val wave16 : unit -> (balloon * int) list
-(**Testb documentation*)
+(**Generates the 16th wave.*)
 
 val wave17 : unit -> (balloon * int) list
-(**Testc documentation*)
+(**Generates the 17th wave.*)
 
 val wave18 : unit -> (Balloons.balloon * int) list
+(**Generates the 18th wave.*)
 
 val wave19 : unit -> (balloon * int) list
-(**Testb documentation*)
+(**Generates the 19th wave.*)
 
 val wave20 : unit -> (balloon * int) list
-(**Testc documentation*)
+(**Generates the 20th wave.*)
 
 val wave21 : unit -> (Balloons.balloon * int) list
+(**Generates the 21st wave.*)
 
-(**Tesd doc*)
 val wave22 : unit -> (balloon * int) list
-(**Testb documentation*)
+(**Generates the 22nd wave.*)
 
 val wave23 : unit -> (balloon * int) list
-(**Testc documentation*)
+(**Generates the 23rd wave.*)
 
 val wave24 : unit -> (balloon * int) list
-(**Testc documentation*)
+(**Generates the 24th wave.*)
 
 val wave25 : unit -> (Balloons.balloon * int) list
+(**Generates the 25th wave.*)
