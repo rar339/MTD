@@ -268,7 +268,7 @@ let check_screen_bounds bullet =
 
 (*Check if a bullet is within it's tower's range.*)
 let check_tower_bounds bullet =
-  Vector2.distance bullet.origin.position bullet.position > bullet.origin.range
+  Vector2.distance bullet.origin.position bullet.position > bullet.origin.range *. 1.5
 
 (*Delete bullets that have left the bounds of the screen or their tower's
    range. TRUE if it is out of bounds and should be deleted.*)
