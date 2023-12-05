@@ -212,7 +212,7 @@ let draw_game () =
   (* Drawing round button *)
   if !Constants.state <> Active then play_button !screen_width !screen_height;
 
-  if !Constants.state <> Active then mult_button !screen_width !screen_height;
+  mult_button !screen_width !screen_height;
 
   (*Draw the SELECTED bear to PLACE*)
   Bears.draw_selected_bear !selected_bear;
