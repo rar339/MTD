@@ -99,6 +99,10 @@ let setup () =
   let red_balloon = Raylib.load_image "./img/red.png" in
   let red_bal_texture = Raylib.load_texture_from_image red_balloon in
   unload_image red_balloon;
+
+
+  
+
   Raygui.(set_style (TextBox `Text_alignment) TextAlignment.(to_int Center));
   (* SETTING STYLE TO RED - USE HEX*)
   Raygui.(set_style (Button `Base_color_normal) 0xFF000010);
