@@ -1,4 +1,5 @@
 open Raylib
+open Constants
 
 type bear_types = Dart | Hockey | Zombie | Sniper | Dragon
 type zombie_direction = Left | Up | Right | Down

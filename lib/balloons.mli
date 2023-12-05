@@ -5,8 +5,6 @@
 open Raylib
 open Bears
 
-val setup_balloon_imgs : unit -> unit
-(**Sets up balloon textures.*)
 
 type balloon_colors =
   | None
