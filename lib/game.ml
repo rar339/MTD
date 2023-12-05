@@ -239,7 +239,6 @@ let draw_game () =
 
   (*Draw the information panel based on what was last clicked and/or hovered over.*)
   Menubar.display_bear_info !Menubar.select_display !Menubar.hover_display;
-
   if !showInstructions then (
     draw_rectangle 0 0
       (int_of_float !screen_width)
