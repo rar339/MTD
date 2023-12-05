@@ -64,7 +64,7 @@ val determine_image : balloon_colors -> Texture2D.t
 val determine_velocity : balloon_colors -> float
 (** Determines the velocity for a balloon given its color. *)
 
-val change_velocity : balloon -> balloon_colors -> unit
+val change_velocity : balloon -> balloon_colors -> Raylib.Vector2.t
 (** Changes the velocity of a balloon while preserving its direction. *)
 
 val make_balloon : balloon_colors -> bool -> balloon
