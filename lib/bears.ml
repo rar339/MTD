@@ -1,6 +1,5 @@
 open Raylib
 open Constants
-
 type bear_types = Dart | Hockey | Zombie | Sniper | Dragon
 type zombie_direction = Left | Up | Right | Down
 
@@ -33,8 +32,8 @@ let bear_radius = 40.
 let menu_bear_radius = 52.
 let get_x bear = Vector2.x bear.position
 let get_y bear = Vector2.y bear.position
-let fire_rect_length = 150.
-let fire_rect_width = 80.
+let fire_rect_length = 3. *. !screen_height /. 28.
+let fire_rect_width = bear_radius *. 2.
 let selected_bear : bear option ref = ref None
 
 (*The bears displayed on the menu.*)
@@ -68,7 +67,7 @@ let make_dart_bear (menu_bear : bool) pos =
     is_placed = true;
     attack_speed = 50 / !Constants.speed_mult;
     counter = 0;
-    projectile_speed = 40.0 *. float_of_int !Constants.speed_mult;
+    projectile_speed = 12.0 *. float_of_int !Constants.speed_mult;
     sold = false;
     damage = 1;
     pops_lead = false;
@@ -311,18 +310,18 @@ let update_zombie_bear (bear : bear) =
   | Some Right ->
       bear.slime_rectangle <-
         Some
-          (Rectangle.create x_pos (y_pos -. bear_radius) fire_rect_length
+          (Rectangle.create (x_pos +. bear_radius) (y_pos -. bear_radius) fire_rect_length
              fire_rect_width)
   | Some Up ->
       bear.slime_rectangle <-
         Some
           (Rectangle.create (x_pos -. bear_radius)
-             (y_pos -. fire_rect_length)
+             (y_pos -. fire_rect_length -. bear_radius)
              fire_rect_width fire_rect_length)
   | Some Down ->
       bear.slime_rectangle <-
         Some
-          (Rectangle.create (x_pos -. bear_radius) y_pos fire_rect_width
+          (Rectangle.create (x_pos -. bear_radius) (y_pos +. bear_radius) fire_rect_width
              fire_rect_length)
   | None -> ()
 
