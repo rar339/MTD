@@ -18,11 +18,6 @@ let create_rectangle_bound x1 x2 y1 y2 w1 w2 h1 h2 =
     (w1 *. floor (!screen_width /. w2))
     (h1 *. floor (!screen_height /. h2))
 
-let list_from_yojson (dimensions_list : Yojson.Basic.t) =
-  match dimensions_list with
-  | `List dims -> List.map Yojson.Basic.Util.to_float dims
-  | _ -> failwith "impossible"
-
 let produce_rectangle (dim : float list) : Rectangle.t =
   create_rectangle_bound (List.nth dim 0) (List.nth dim 1) (List.nth dim 2)
     (List.nth dim 3) (List.nth dim 4) (List.nth dim 5) (List.nth dim 6)
