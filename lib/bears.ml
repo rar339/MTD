@@ -1,5 +1,6 @@
 open Raylib
 open Constants
+
 type bear_types = Dart | Hockey | Zombie | Sniper | Dragon
 type zombie_direction = Left | Up | Right | Down
 
@@ -310,8 +311,8 @@ let update_zombie_bear (bear : bear) =
   | Some Right ->
       bear.slime_rectangle <-
         Some
-          (Rectangle.create (x_pos +. bear_radius) (y_pos -. bear_radius) fire_rect_length
-             fire_rect_width)
+          (Rectangle.create (x_pos +. bear_radius) (y_pos -. bear_radius)
+             fire_rect_length fire_rect_width)
   | Some Up ->
       bear.slime_rectangle <-
         Some
@@ -321,8 +322,8 @@ let update_zombie_bear (bear : bear) =
   | Some Down ->
       bear.slime_rectangle <-
         Some
-          (Rectangle.create (x_pos -. bear_radius) (y_pos +. bear_radius) fire_rect_width
-             fire_rect_length)
+          (Rectangle.create (x_pos -. bear_radius) (y_pos +. bear_radius)
+             fire_rect_width fire_rect_length)
   | None -> ()
 
 let update_selected_bear (bear : bear option) (new_pos : Vector2.t) =
