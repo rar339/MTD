@@ -99,15 +99,15 @@ let setup_bear_imgs () =
   dartbear_img := Some (Raylib.load_texture "./img/bears/dartbear.png");
   hockeybear_img := Some (Raylib.load_texture "./img/bears/hockeybear.png");
   zombiebear_img := Some (Raylib.load_texture "./img/bears/zombiebear.png");
-  sniperbear_img := Some (Raylib.load_texture "./img/bears/purplebear.png");
+  sniperbear_img := Some (Raylib.load_texture "./img/bears/sniperbear.png");
   dragonbear_img := Some (Raylib.load_texture "./img/bears/redbear.png");
   (*menu bears*)
   menu_dartbear_img :=
     Some (Raylib.load_texture "./img/bears/menu_dartbear.png");
   menu_hockeybear_img :=
     Some (Raylib.load_texture "./img/bears/menu_hockeybear.png");
-  menu_zombiebear_img := Some (Raylib.load_texture "./img/bears/zombiebear.png");
-  menu_sniperbear_img := Some (Raylib.load_texture "./img/bears/purplebear.png");
+  menu_zombiebear_img := Some (Raylib.load_texture "./img/bears/menu_zombiebear.png");
+  menu_sniperbear_img := Some (Raylib.load_texture "./img/bears/menu_sniperbear.png");
   menu_dragonbear_img := Some (Raylib.load_texture "./img/bears/redbear.png")
 
 (*Sets up balloon textures*)

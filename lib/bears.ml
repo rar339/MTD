@@ -143,6 +143,7 @@ let dest_rect_custom (bear : bear) (x : float) (y : float) =
   match bear.bear_type with
   | Dart -> Rectangle.create x y (bear_radius *. 3.) (bear_radius *. 3.)
   | Hockey -> Rectangle.create x y (bear_radius *. 3.2) (bear_radius *. 3.2)
+  | Sniper -> Rectangle.create x y (bear_radius *. 3.5) (bear_radius *. 3.5)
   | _ -> Rectangle.create x y (bear_radius *. 3.) (bear_radius *. 3.)
 
 (* Helps with placement of images to ensure its centered, the factor must be
@@ -151,6 +152,7 @@ let origin_vect_custom (bear : bear) =
   match bear.bear_type with
   | Dart -> Vector2.create (bear_radius *. 1.5) (bear_radius *. 1.5)
   | Hockey -> Vector2.create (bear_radius *. 1.6) (bear_radius *. 1.6)
+  | Sniper -> Vector2.create (bear_radius *. 1.6) (bear_radius *. 1.6)
   | _ -> Vector2.create (bear_radius *. 1.5) (bear_radius *. 1.5)
 
 (* draw_bear function *)
