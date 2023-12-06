@@ -386,11 +386,12 @@ let display_selection selection =
   let rect_y = Rectangle.y (Option.get !Constants.selection_rect) in
   (match selection with
   | None -> ()
-  | Some bear ->
+  | Some bear when bear.bear_type <> Sniper ->
       draw_circle
         (Constants.round_float (Vector2.x bear.position))
         (Constants.round_float (Vector2.y bear.position))
-        bear.range (Color.create 0 0 0 100));
+        bear.range (Color.create 0 0 0 100)
+  | _ -> ());
   match selection with
   | None -> ()
   | Some ({ bear_type = Dart; _ } as bear) ->

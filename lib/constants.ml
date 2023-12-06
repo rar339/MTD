@@ -15,7 +15,7 @@ let lives = ref 100
 let cash = ref 5000
 
 (* If a baloon is ever at a negative y value, it has reached the end of the path. *)
-let end_line = -60.
+let end_line = 0.0
 
 (* Screen constants *)
 let screen_width = ref 1194.
@@ -106,8 +106,10 @@ let setup_bear_imgs () =
     Some (Raylib.load_texture "./img/bears/menu_dartbear.png");
   menu_hockeybear_img :=
     Some (Raylib.load_texture "./img/bears/menu_hockeybear.png");
-  menu_zombiebear_img := Some (Raylib.load_texture "./img/bears/menu_zombiebear.png");
-  menu_sniperbear_img := Some (Raylib.load_texture "./img/bears/menu_sniperbear.png");
+  menu_zombiebear_img :=
+    Some (Raylib.load_texture "./img/bears/menu_zombiebear.png");
+  menu_sniperbear_img :=
+    Some (Raylib.load_texture "./img/bears/menu_sniperbear.png");
   menu_dragonbear_img := Some (Raylib.load_texture "./img/bears/redbear.png")
 
 (*Sets up balloon textures*)
