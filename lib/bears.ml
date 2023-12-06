@@ -1,5 +1,6 @@
 open Raylib
 open Constants
+open Yojson.Basic.Util
 
 type bear_types = Dart | Hockey | Zombie | Sniper | Dragon
 type zombie_direction = Left | Up | Right | Down
@@ -11,7 +12,6 @@ type bear = {
   mutable range : float;
   mutable cost : int;
   mutable upgrades : int;
-  is_bomb : bool;
   mutable position : Raylib.Vector2.t;
   texture : Raylib.Texture2D.t;
   image_width : float;
@@ -40,6 +40,24 @@ let selected_bear : bear option ref = ref None
 (*The bears displayed on the menu.*)
 let menu_bears : bear list ref = ref []
 
+let determine_image menu_bear bear_type =
+  match bear_type with
+  | Dart ->
+      if menu_bear then Option.get !menu_dartbear_img
+      else Option.get !dartbear_img
+  | Hockey ->
+      if menu_bear then Option.get !menu_hockeybear_img
+      else Option.get !hockeybear_img
+  | Zombie ->
+      if menu_bear then Option.get !menu_zombiebear_img
+      else Option.get !zombiebear_img
+  | Sniper ->
+      if menu_bear then Option.get !menu_sniperbear_img
+      else Option.get !sniperbear_img
+  | Dragon ->
+      if menu_bear then Option.get !menu_dragonbear_img
+      else Option.get !dragonbear_img
+
 let string_of_beartype bear_type =
   match bear_type with
   | Dart -> "Dart"
@@ -48,163 +66,52 @@ let string_of_beartype bear_type =
   | Sniper -> "Sniper"
   | Dragon -> "Dragon"
 
-let make_dart_bear (menu_bear : bool) pos =
-  let image =
-    if menu_bear then Option.get !menu_dartbear_img
-    else Option.get !dartbear_img
-  in
+(**Extract the json dictionary containing the properties for the given bear type.*)
+let extract_bear_properties (bear_type : bear_types) =
+  let json = Yojson.Basic.from_file "./data/bears.json" in
+  json |> member (string_of_beartype bear_type)
+
+(**Creates a bear given whether the bear is a menu bear the type of a bear, and its position.*)
+let make_bear (menu_bear : bool) (bear_type : bear_types) pos =
+  let image = determine_image menu_bear bear_type in
   let image_width = float_of_int (Texture.width image) in
   let image_height = float_of_int (Texture.height image) in
+  let properties = extract_bear_properties bear_type in
   {
-    bear_type = Dart;
-    range = 150.;
-    cost = 200;
+    bear_type;
+    range = properties |> member "range" |> to_float;
+    cost = properties |> member "cost" |> to_int;
     upgrades = 0;
-    is_bomb = false;
     position = pos;
     texture = image;
     image_width;
     image_height;
     is_placed = true;
-    attack_speed = 50 / !Constants.speed_mult;
+    attack_speed =
+      (properties |> member "attack_speed" |> to_int) / !Constants.speed_mult;
     counter = 0;
-    projectile_speed = 12.0 *. float_of_int !Constants.speed_mult;
+    projectile_speed =
+      (properties |> member "projectile_speed" |> to_float)
+      *. float_of_int !Constants.speed_mult;
     sold = false;
-    damage = 1;
-    pops_lead = false;
+    damage = properties |> member "damage" |> to_int;
+    pops_lead = bear_type = Dragon || bear_type = Sniper;
     facing = 0.;
     slime_rectangle = None;
-    zombie_direction = None;
-  }
-
-(******************************************************************************)
-let make_hockey_bear (menu_bear : bool) pos =
-  let image =
-    if menu_bear then Option.get !menu_hockeybear_img
-    else Option.get !hockeybear_img
-  in
-  let image_width = float_of_int (Texture.width image) in
-  let image_height = float_of_int (Texture.height image) in
-  {
-    bear_type = Hockey;
-    range = 90.;
-    cost = 200;
-    upgrades = 0;
-    is_bomb = false;
-    position = pos;
-    texture = image;
-    image_width;
-    image_height;
-    is_placed = true;
-    attack_speed = 100 / !Constants.speed_mult;
-    counter = 50;
-    projectile_speed = 100.;
-    sold = false;
-    damage = 1;
-    pops_lead = false;
-    facing = 0.;
-    slime_rectangle = None;
-    zombie_direction = None;
-  }
-
-let make_zombie_bear (menu_bear : bool) pos =
-  let image =
-    if menu_bear then Option.get !menu_zombiebear_img
-    else Option.get !zombiebear_img
-  in
-  let image_width = float_of_int (Texture.width image) in
-  let image_height = float_of_int (Texture.height image) in
-  {
-    bear_type = Zombie;
-    range = 120.;
-    cost = 350;
-    upgrades = 0;
-    is_bomb = true;
-    position = pos;
-    texture = image;
-    image_width;
-    image_height;
-    is_placed = true;
-    attack_speed = 80 / !Constants.speed_mult;
-    counter = 0;
-    projectile_speed = 100.;
-    sold = false;
-    damage = 1;
-    pops_lead = false;
-    facing = 0.;
-    slime_rectangle = None;
-    zombie_direction = Some Left;
-  }
-
-let make_sniper_bear (menu_bear : bool) pos =
-  let image =
-    if menu_bear then Option.get !menu_sniperbear_img
-    else Option.get !sniperbear_img
-  in
-  let image_width = float_of_int (Texture.width image) in
-  let image_height = float_of_int (Texture.height image) in
-  {
-    bear_type = Sniper;
-    range = 1000.;
-    cost = 400;
-    upgrades = 0;
-    is_bomb = false;
-    position = pos;
-    texture = image;
-    image_width;
-    image_height;
-    is_placed = true;
-    attack_speed = 150 / !Constants.speed_mult;
-    counter = 50;
-    projectile_speed = 100.;
-    sold = false;
-    damage = 100;
-    pops_lead = true;
-    facing = 0.;
-    slime_rectangle = None;
-    zombie_direction = None;
-  }
-
-let make_dragon_bear (menu_bear : bool) pos =
-  let image =
-    if menu_bear then Option.get !menu_dragonbear_img
-    else Option.get !dragonbear_img
-  in
-  let image_width = float_of_int (Texture.width image) in
-  let image_height = float_of_int (Texture.height image) in
-  {
-    bear_type = Dragon;
-    range = 120.;
-    cost = 1000;
-    upgrades = 0;
-    is_bomb = false;
-    position = pos;
-    texture = image;
-    image_width;
-    image_height;
-    is_placed = true;
-    attack_speed = 3 / !Constants.speed_mult;
-    counter = 50;
-    projectile_speed = 80.;
-    sold = false;
-    damage = 1;
-    pops_lead = true;
-    facing = 0.;
-    slime_rectangle = None;
-    zombie_direction = None;
+    zombie_direction = (if bear_type = Zombie then Some Left else None);
   }
 
 let generate_menu_bears screen_width screen_height =
   [
-    make_dart_bear true
+    make_bear true Dart
       (Vector2.create (5.55 *. screen_width /. 7.) (0.8 *. screen_height /. 4.));
-    make_hockey_bear true
+    make_bear true Hockey
       (Vector2.create (6. *. screen_width /. 7.) (0.8 *. screen_height /. 4.));
-    make_zombie_bear true
+    make_bear true Zombie
       (Vector2.create (6.45 *. screen_width /. 7.) (0.8 *. screen_height /. 4.));
-    make_sniper_bear true
+    make_bear true Sniper
       (Vector2.create (5.75 *. screen_width /. 7.) (1.2 *. screen_height /. 4.));
-    make_dragon_bear true
+    make_bear true Dragon
       (Vector2.create (6.25 *. screen_width /. 7.) (1.2 *. screen_height /. 4.));
   ]
 

@@ -103,30 +103,14 @@ let place_bear () =
   bears or menu bears.
   Parameters: [placed_bears] [position] [bear_list]*)
 let update_bear_selections placed_bears pos bears =
-  let bear = determine_bear_clicked pos bears in
-  if placed_bears then select_display := bear;
-  match bear with
+  let bear_opt = determine_bear_clicked pos bears in
+  if placed_bears then select_display := bear_opt;
+  match bear_opt with
   | None -> ()
-  | Some { bear_type = Dart; _ } ->
+  | Some bear ->
       if not placed_bears then
         selected_bear :=
-          Some (Bears.make_dart_bear false (get_mouse_position ()))
-  | Some { bear_type = Hockey; _ } ->
-      if not placed_bears then
-        selected_bear :=
-          Some (Bears.make_hockey_bear false (get_mouse_position ()))
-  | Some { bear_type = Zombie; _ } ->
-      if not placed_bears then
-        selected_bear :=
-          Some (Bears.make_zombie_bear false (get_mouse_position ()))
-  | Some { bear_type = Sniper; _ } ->
-      if not placed_bears then
-        selected_bear :=
-          Some (Bears.make_sniper_bear false (get_mouse_position ()))
-  | Some { bear_type = Dragon; _ } ->
-      if not placed_bears then
-        selected_bear :=
-          Some (Bears.make_dragon_bear false (get_mouse_position ()))
+          Some (Bears.make_bear false bear.bear_type (get_mouse_position ()))
 
 (**Check_click is called in Game.update_game() to update whether or not a bear
     has been selected. If a user clicked a button, we do not deselect their 

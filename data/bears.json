@@ -1,0 +1,37 @@
+{
+  "Dart": {
+    "range": 150.0,
+    "cost": 200,
+    "attack_speed": 50,
+    "projectile_speed": 12.0,
+    "damage": 1
+  },
+  "Hockey": {
+    "range": 90.0,
+    "cost": 200,
+    "attack_speed": 100,
+    "projectile_speed": 100.0,
+    "damage": 1
+  },
+  "Zombie": {
+    "range": 120.0,
+    "cost": 250,
+    "attack_speed": 80,
+    "projectile_speed": 100.0,
+    "damage": 1
+  },
+  "Sniper": {
+    "range": 1000.0,
+    "cost": 400,
+    "attack_speed": 150,
+    "projectile_speed": 100.0,
+    "damage": 100
+  },
+  "Dragon": {
+    "range": 120.0,
+    "cost": 1000,
+    "attack_speed": 3,
+    "projectile_speed": 80.0,
+    "damage": 1
+  }
+}

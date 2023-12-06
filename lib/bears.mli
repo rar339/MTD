@@ -11,7 +11,6 @@ type bear = {
   mutable range : float;
   mutable cost : int;
   mutable upgrades : int;
-  is_bomb : bool;
   mutable position : Raylib.Vector2.t;
   texture : Raylib.Texture2D.t;
   image_width : float;
@@ -43,20 +42,14 @@ val menu_bears : bear list ref
 val string_of_beartype : bear_types -> string
 (**Given a bear type, gives the string representation.*)
 
-val make_dart_bear : bool -> Vector2.t -> bear
-(**Makes a dart bear given whether or not it is a menu bear and its position.*)
+val determine_image : bool -> bear_types -> Texture2D.t
+(**Determines the image for a bear given its type and whether its a menu bear.*)
 
-val make_hockey_bear : bool -> Vector2.t -> bear
-(**Makes a hockey bear given whether or not it is a menu bear and its position.*)
+val extract_bear_properties : bear_types -> Yojson.Basic.t
+(**Extract the json dictionary containing the properties for the given bear type.*)
 
-val make_zombie_bear : bool -> Vector2.t -> bear
-(**Makes a zombie bear given whether or not it is a menu bear and its position.*)
-
-val make_sniper_bear : bool -> Vector2.t -> bear
-(**Makes a sniper bear given whether or not it is a menu bear and its position.*)
-
-val make_dragon_bear : bool -> Vector2.t -> bear
-(**Makes a dragon bear given whether or not it is a menu bear and its position.*)
+val make_bear : bool -> bear_types -> Vector2.t -> bear
+(**Creates a bear given whether the bear is a menu bear the type of a bear, and its position.*)
 
 val generate_menu_bears : float -> float -> bear list
 (**A list containing all the different bears to be displayed on the menu.*)
