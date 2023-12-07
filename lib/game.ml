@@ -6,7 +6,6 @@ open Gamebackground
 open Gamebounds
 open Balloonpath
 open Projectiles
-open Balloons
 
 (******************************************************************************)
 let play_button screen_width screen_height =
@@ -24,22 +23,8 @@ let play_button screen_width screen_height =
     Constants.state := Active)
 
 (******************************************************************************)
-let rec update_wave_speeds cur_wave =
-  match cur_wave with
-  | (bln, _) :: t ->
-      bln.velocity <- change_velocity bln bln.color;
-      update_wave_speeds t
-  | [] -> ()
-
-let rec update_balloon_speeds cur_blns =
-  match cur_blns with
-  | bln :: t ->
-      bln.velocity <- change_velocity bln bln.color;
-      update_balloon_speeds t
-  | [] -> ()
-
 let mult_button screen_width screen_height =
-  (if
+  if
     Raygui.(
       button
         (Rectangle.create
@@ -48,25 +33,22 @@ let mult_button screen_width screen_height =
            (1.5 *. screen_width /. 9.)
            (screen_height /. 19.))
         (string_of_int !Constants.speed_mult ^ "X Speed"))
-  then
-    if (* Change game_speed*)
-       !Constants.speed_mult = 1 then (
-      Constants.speed_mult := 2;
-      update_wave_speeds !current_wave;
-      update_balloon_speeds !current_balloons)
-    else (
-      Constants.speed_mult := 1;
-      update_wave_speeds !current_wave;
-      update_balloon_speeds !current_balloons))
-      (* draw_rectangle_rec (Rectangle.create
-      (155. *. screen_width /. 200.)
-      (7.25 *. screen_height /. 9.)
-      (1.5 *. screen_width /. 9.)
-      (screen_height /. 19.))
-      Color.green;
-      draw_text_ex (Option.get !custom_font) (string_of_int !Constants.speed_mult ^ "X Speed") 
-      (Vector2.create (155. *. screen_width /. 200.)
-      (7.25 *. screen_height /. 9.)) 36. 10. (Color.create 0 0 0 255) *)
+  then (
+    (if (!Constants.speed_mult = 1) then Constants.speed_mult := 2
+   else (Constants.speed_mult := 1));
+    Waves.update_wave_speeds !current_wave;
+    Waves.update_balloon_speeds !current_balloons;
+    Bears.update_bear_firing_rate !bear_collection;)
+
+(* draw_rectangle_rec (Rectangle.create
+   (155. *. screen_width /. 200.)
+   (7.25 *. screen_height /. 9.)
+   (1.5 *. screen_width /. 9.)
+   (screen_height /. 19.))
+   Color.green;
+   draw_text_ex (Option.get !custom_font) (string_of_int !Constants.speed_mult ^ "X Speed")
+   (Vector2.create (155. *. screen_width /. 200.)
+   (7.25 *. screen_height /. 9.)) 36. 10. (Color.create 0 0 0 255) *)
 
 (******************************************************************************)
 let setup () =

@@ -91,8 +91,7 @@ let make_bear (menu_bear : bool) (bear_type : bear_types) pos =
       (properties |> member "attack_speed" |> to_int) / !Constants.speed_mult;
     counter = 0;
     projectile_speed =
-      (properties |> member "projectile_speed" |> to_float)
-      *. float_of_int !Constants.speed_mult;
+      (properties |> member "projectile_speed" |> to_float);
     sold = false;
     damage = properties |> member "damage" |> to_int;
     pops_lead = bear_type = Dragon || bear_type = Sniper;
@@ -259,3 +258,9 @@ let rec remove_bears bear_lst =
   | [] -> []
   | bear :: rest ->
       if bear.sold then remove_bears rest else bear :: remove_bears rest
+
+let rec update_bear_firing_rate = function 
+  | bear :: t ->
+      bear.attack_speed <- bear.attack_speed / !Constants.speed_mult;
+      update_bear_firing_rate t
+  | [] -> ()
