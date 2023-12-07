@@ -18,7 +18,7 @@ type bear = {
   is_placed : bool;
   mutable attack_speed : int;
   mutable counter : int;
-  projectile_speed : float;
+  mutable projectile_speed : float;
   mutable sold : bool;
   mutable damage : int;
   mutable facing : float;
@@ -94,7 +94,6 @@ val check_collision_bears : bear option -> bear list -> bool
 
 val remove_bears : bear list -> bear list
 (**Returns a list with the sold bears removed.*)
-
 
 val update_bear_firing_rate : bear list -> unit
 (* Updates the firing rates of bears according to the speed multiplier*)

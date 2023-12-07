@@ -67,13 +67,7 @@ let draw_balloon path_width (balloon : balloon) =
     (Rectangle.create x y (path_width /. 0.9) path_width)
     (Vector2.create (path_width /. 1.8) (path_width /. 2.))
     0.
-    (Color.create 255 255 255 255);
-
-  (*Comment/uncomment the draw function below as needed for debugging hitbox.*)
-  (* draw_rectangle_rec (get_hitbox balloon) Color.gold; *)
-
-  (*Comment/uncomment the draw function below as needed for debugging hitbox.*)
-  draw_circle (round_float x) (round_float y) 5.0 Color.green
+    (Color.create 255 255 255 255)
 
 (* Draws pop image n times when called *)
 let rec draw_pop balloon n =
@@ -184,7 +178,7 @@ let update_balloon_status bear balloon =
         balloon.remove <- true;
         Constants.cash := !Constants.cash + value_of_balloon balloon.color;
         begin_drawing ();
-        draw_pop balloon (value_of_balloon balloon.color);
+        draw_pop balloon 1;
         end_drawing ()
     | color ->
         set_balloon_color balloon color;
