@@ -22,6 +22,7 @@ type bear = {
   mutable damage : int;
   mutable facing : float;
   mutable pops_lead : bool;
+  mutable freeze_duration : int;
 }
 
 val bear_collection : bear list ref

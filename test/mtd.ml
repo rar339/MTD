@@ -14,8 +14,7 @@ let make_test_balloon x_pos y_pos current_turn velocity color is_lead :
     img = Raylib.load_texture "./img/balloons/red.png";
     current_turn;
     remove = false;
-    is_slowed = false;
-    slow_counter = 0;
+    freeze_duration = 0;
   }
 
 let triple_option_printer elt_printer triple =

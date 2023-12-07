@@ -63,7 +63,16 @@ val init_puck : bear -> float -> float -> bullet
 val fire_pucks : bear -> unit
 (**Fires a dart in a nail shooter way.*)
 
-val init_projectile : bear -> balloon -> unit
+val find_balloons_in_range : bear -> balloon list -> balloon list
+(**Returns the list of balloons in range of the bear.*)
+
+val freeze_balloons : bear -> balloon list -> unit
+(**Applies a bear's freeze to all the balloons in the given list.*)
+
+val fire_polar : bear -> balloon list -> unit
+(**Fires the given polar bear.*)
+
+val init_projectile : bear -> balloon -> balloon list -> unit
 (**Fires a projectile given a bear and a target balloon.*)
 
 val fire_all_shots : bear list -> balloon list -> unit
