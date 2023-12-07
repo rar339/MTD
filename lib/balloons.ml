@@ -164,7 +164,7 @@ let set_balloon_color balloon new_color =
 (**Updates a balloons color, etc. after a collision with a projectile.
     If bear is a zombie, slows down the balloon*)
 let update_balloon_status bear balloon =
-  (if bear.bear_type == Zombie && not balloon.is_slowed then
+  (if bear.bear_type == Polar && not balloon.is_slowed then
      let new_velocity =
        Vector2.multiply (Vector2.create 0.5 0.5) balloon.velocity
      in

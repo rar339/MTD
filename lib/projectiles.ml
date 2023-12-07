@@ -175,7 +175,7 @@ let init_projectile (bear : Bears.bear) (balloon : Balloons.balloon) =
   match bear with
   | { bear_type = Dart; _ } -> fire_dart bear balloon
   | { bear_type = Hockey; _ } -> fire_pucks bear
-  | { bear_type = Zombie; _ } -> fire_dart bear balloon
+  | { bear_type = Polar; _ } -> fire_dart bear balloon
   | { bear_type = Dragon; _ } -> fire_dart bear balloon
   | { bear_type = Sniper; _ } -> fire_sniper bear balloon
 
@@ -228,8 +228,7 @@ let update_bullet_collision bullet balloon_list =
   | { bear_type = Dart; _ } as bear -> dart_collisions bear bullet balloon_list
   | { bear_type = Hockey; _ } as bear ->
       dart_collisions bear bullet balloon_list
-  | { bear_type = Zombie; _ } as bear ->
-      dart_collisions bear bullet balloon_list
+  | { bear_type = Polar; _ } as bear -> dart_collisions bear bullet balloon_list
   | { bear_type = Dragon; _ } as bear ->
       dart_collisions bear bullet balloon_list
   | { bear_type = Sniper; _ } -> bullet.timer <- bullet.timer - 1
@@ -301,7 +300,7 @@ let rec update_angle_bear (bear : Bears.bear) (balloons : Balloons.balloon list)
   | first :: rest ->
       if
         is_balloon_in_range bear first
-        && bear.bear_type <> Hockey && bear.bear_type <> Zombie
+        && bear.bear_type <> Hockey && bear.bear_type <> Polar
       then
         bear.facing <-
           (180. /. Float.pi *. Vector2.angle first.position bear.position)

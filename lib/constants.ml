@@ -72,14 +72,14 @@ let dartshot_img : Texture2D.t option ref = ref None
 (*Textures for in-game bears*)
 let dartbear_img : Texture2D.t option ref = ref None
 let hockeybear_img : Texture2D.t option ref = ref None
-let zombiebear_img : Texture2D.t option ref = ref None
+let polarbear_img : Texture2D.t option ref = ref None
 let sniperbear_img : Texture2D.t option ref = ref None
 let dragonbear_img : Texture2D.t option ref = ref None
 
 (*Textures for menu bears*)
 let menu_dartbear_img : Texture2D.t option ref = ref None
 let menu_hockeybear_img : Texture2D.t option ref = ref None
-let menu_zombiebear_img : Texture2D.t option ref = ref None
+let menu_polarbear_img : Texture2D.t option ref = ref None
 let menu_sniperbear_img : Texture2D.t option ref = ref None
 let menu_dragonbear_img : Texture2D.t option ref = ref None
 
@@ -98,7 +98,7 @@ let setup_bear_imgs () =
   (*in-game bears*)
   dartbear_img := Some (Raylib.load_texture "./img/bears/dartbear.png");
   hockeybear_img := Some (Raylib.load_texture "./img/bears/hockeybear.png");
-  zombiebear_img := Some (Raylib.load_texture "./img/bears/zombiebear.png");
+  polarbear_img := Some (Raylib.load_texture "./img/bears/zombiebear.png");
   sniperbear_img := Some (Raylib.load_texture "./img/bears/sniperbear.png");
   dragonbear_img := Some (Raylib.load_texture "./img/bears/redbear.png");
   (*menu bears*)
@@ -106,7 +106,7 @@ let setup_bear_imgs () =
     Some (Raylib.load_texture "./img/bears/menu_dartbear.png");
   menu_hockeybear_img :=
     Some (Raylib.load_texture "./img/bears/menu_hockeybear.png");
-  menu_zombiebear_img :=
+  menu_polarbear_img :=
     Some (Raylib.load_texture "./img/bears/menu_zombiebear.png");
   menu_sniperbear_img :=
     Some (Raylib.load_texture "./img/bears/menu_sniperbear.png");

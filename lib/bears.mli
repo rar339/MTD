@@ -3,8 +3,7 @@
 
 open Raylib
 
-type bear_types = Dart | Hockey | Zombie | Sniper | Dragon
-type zombie_direction = Left | Up | Right | Down
+type bear_types = Dart | Hockey | Polar | Sniper | Dragon
 
 type bear = {
   bear_type : bear_types;
@@ -23,8 +22,6 @@ type bear = {
   mutable damage : int;
   mutable facing : float;
   mutable pops_lead : bool;
-  mutable slime_rectangle : Rectangle.t option;
-  mutable zombie_direction : zombie_direction option;
 }
 
 val bear_collection : bear list ref
@@ -81,9 +78,6 @@ val draw_selected_bear : bear option -> unit
 
 val check_circle_collision : Vector2.t -> Vector2.t -> float -> bool
 (**Checks for a collision between two circles.*)
-
-val update_zombie_bear : bear -> unit
-(**Updates the direction that the given zombie bear is facing.*)
 
 val update_selected_bear : bear option -> Vector2.t -> unit
 (**Updates the position of the currently selected bear based on where the user

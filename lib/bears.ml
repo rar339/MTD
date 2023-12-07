@@ -2,8 +2,7 @@ open Raylib
 open Constants
 open Yojson.Basic.Util
 
-type bear_types = Dart | Hockey | Zombie | Sniper | Dragon
-type zombie_direction = Left | Up | Right | Down
+type bear_types = Dart | Hockey | Polar | Sniper | Dragon
 
 (*Width and height are temporary, shouldn't be needed if all images are the same
    size.*)
@@ -24,8 +23,6 @@ type bear = {
   mutable damage : int;
   mutable facing : float;
   mutable pops_lead : bool;
-  mutable slime_rectangle : Rectangle.t option;
-  mutable zombie_direction : zombie_direction option;
 }
 
 let bear_collection : bear list ref = ref []
@@ -48,9 +45,9 @@ let determine_image menu_bear bear_type =
   | Hockey ->
       if menu_bear then Option.get !menu_hockeybear_img
       else Option.get !hockeybear_img
-  | Zombie ->
-      if menu_bear then Option.get !menu_zombiebear_img
-      else Option.get !zombiebear_img
+  | Polar ->
+      if menu_bear then Option.get !menu_polarbear_img
+      else Option.get !polarbear_img
   | Sniper ->
       if menu_bear then Option.get !menu_sniperbear_img
       else Option.get !sniperbear_img
@@ -62,7 +59,7 @@ let string_of_beartype bear_type =
   match bear_type with
   | Dart -> "Dart"
   | Hockey -> "Hockey"
-  | Zombie -> "Zombie"
+  | Polar -> "Polar"
   | Sniper -> "Sniper"
   | Dragon -> "Dragon"
 
@@ -97,8 +94,6 @@ let make_bear (menu_bear : bool) (bear_type : bear_types) pos =
     damage = properties |> member "damage" |> to_int;
     pops_lead = bear_type = Dragon || bear_type = Sniper;
     facing = 0.;
-    slime_rectangle = None;
-    zombie_direction = (if bear_type = Zombie then Some Left else None);
   }
 
 let generate_menu_bears screen_width screen_height =
@@ -107,7 +102,7 @@ let generate_menu_bears screen_width screen_height =
       (Vector2.create (5.55 *. screen_width /. 7.) (0.8 *. screen_height /. 4.));
     make_bear true Hockey
       (Vector2.create (6. *. screen_width /. 7.) (0.8 *. screen_height /. 4.));
-    make_bear true Zombie
+    make_bear true Polar
       (Vector2.create (6.45 *. screen_width /. 7.) (0.8 *. screen_height /. 4.));
     make_bear true Sniper
       (Vector2.create (5.75 *. screen_width /. 7.) (1.2 *. screen_height /. 4.));
@@ -156,8 +151,7 @@ let origin_vect_custom (bear : bear) =
   | _ -> Vector2.create (bear_radius *. 1.5) (bear_radius *. 1.5)
 
 (* draw_bear function *)
-let rec draw_bear (bear : bear) =
-  if bear.bear_type = Zombie then set_zombie_facing bear else ();
+let draw_bear (bear : bear) =
   let x = Vector2.x bear.position in
   let y = Vector2.y bear.position in
   draw_texture_pro bear.texture
@@ -171,15 +165,6 @@ let rec draw_bear (bear : bear) =
     (origin_vect_custom bear)
     bear.facing
     (Color.create 255 255 255 255)
-
-(*Helper for setting the direction zombie texture faces*)
-and set_zombie_facing (bear : bear) =
-  match bear.zombie_direction with
-  | Some Left -> bear.facing <- -90.
-  | Some Right -> bear.facing <- 90.
-  | Some Up -> bear.facing <- 0.
-  | Some Down -> bear.facing <- 180.
-  | None -> ()
 
 (*Draws the placed bears in the game*)
 let rec draw_bears (bears : bear list) =
@@ -202,45 +187,8 @@ let draw_selected_bear (bear : bear option) =
 let check_circle_collision circ_one circ_two radius =
   Vector2.distance circ_one circ_two < 2. *. radius
 
-let update_zombie_bear (bear : bear) =
-  if is_key_pressed Key.Left then bear.zombie_direction <- Some Left;
-  if is_key_pressed Key.Right then bear.zombie_direction <- Some Right;
-  if is_key_pressed Key.Down then bear.zombie_direction <- Some Down;
-  if is_key_pressed Key.Up then bear.zombie_direction <- Some Up;
-
-  let x_pos = Vector2.x bear.position in
-  let y_pos = Vector2.y bear.position in
-  match bear.zombie_direction with
-  | Some Left ->
-      bear.slime_rectangle <-
-        Some
-          (Rectangle.create
-             (x_pos -. fire_rect_length -. bear_radius)
-             (y_pos -. bear_radius) fire_rect_length fire_rect_width)
-  | Some Right ->
-      bear.slime_rectangle <-
-        Some
-          (Rectangle.create (x_pos +. bear_radius) (y_pos -. bear_radius)
-             fire_rect_length fire_rect_width)
-  | Some Up ->
-      bear.slime_rectangle <-
-        Some
-          (Rectangle.create (x_pos -. bear_radius)
-             (y_pos -. fire_rect_length -. bear_radius)
-             fire_rect_width fire_rect_length)
-  | Some Down ->
-      bear.slime_rectangle <-
-        Some
-          (Rectangle.create (x_pos -. bear_radius) (y_pos +. bear_radius)
-             fire_rect_width fire_rect_length)
-  | None -> ()
-
 let update_selected_bear (bear : bear option) (new_pos : Vector2.t) =
-  match bear with
-  | None -> ()
-  | Some bear ->
-      bear.position <- new_pos;
-      if bear.bear_type = Zombie then update_zombie_bear bear
+  match bear with None -> () | Some bear -> bear.position <- new_pos
 
 let rec check_collision_bears (selected_bear : bear option)
     (placed_bears : bear list) =
