@@ -147,7 +147,7 @@ let dest_rect_custom (bear : bear) (x : float) (y : float) =
   | _ -> Rectangle.create x y (bear_radius *. 3.) (bear_radius *. 3.)
 
 (* Helps with placement of images to ensure its centered, the factor must be
-   1/2 of factor for dest_rect!*)
+   1/2 of factor for dest_rect*)
 let origin_vect_custom (bear : bear) =
   match bear.bear_type with
   | Dart -> Vector2.create (bear_radius *. 1.5) (bear_radius *. 1.5)

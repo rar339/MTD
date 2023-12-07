@@ -39,7 +39,7 @@ let rec update_balloon_speeds cur_blns =
   | [] -> ()
 
 let mult_button screen_width screen_height =
-  (if
+  if
     Raygui.(
       button
         (Rectangle.create
@@ -57,16 +57,16 @@ let mult_button screen_width screen_height =
     else (
       Constants.speed_mult := 1;
       update_wave_speeds !current_wave;
-      update_balloon_speeds !current_balloons))
-      (* draw_rectangle_rec (Rectangle.create
-      (155. *. screen_width /. 200.)
-      (7.25 *. screen_height /. 9.)
-      (1.5 *. screen_width /. 9.)
-      (screen_height /. 19.))
-      Color.green;
-      draw_text_ex (Option.get !custom_font) (string_of_int !Constants.speed_mult ^ "X Speed") 
-      (Vector2.create (155. *. screen_width /. 200.)
-      (7.25 *. screen_height /. 9.)) 36. 10. (Color.create 0 0 0 255) *)
+      update_balloon_speeds !current_balloons)
+(* draw_rectangle_rec (Rectangle.create
+   (155. *. screen_width /. 200.)
+   (7.25 *. screen_height /. 9.)
+   (1.5 *. screen_width /. 9.)
+   (screen_height /. 19.))
+   Color.green;
+   draw_text_ex (Option.get !custom_font) (string_of_int !Constants.speed_mult ^ "X Speed")
+   (Vector2.create (155. *. screen_width /. 200.)
+   (7.25 *. screen_height /. 9.)) 36. 10. (Color.create 0 0 0 255) *)
 
 (******************************************************************************)
 let setup () =
@@ -219,9 +219,9 @@ let draw_game () =
   (*Draw the background & reference grid*)
   Gamebackground.draw_background background;
 
-  (* Gamebackground.draw_ref_grid
-     (int_of_float !screen_width)
-     (int_of_float !screen_height); *)
+  Gamebackground.draw_ref_grid
+    (int_of_float !screen_width)
+    (int_of_float !screen_height);
 
   (*This line shows ref rectangles! Comment out if you want them invisible*)
   (* Gamebounds.draw_rectangles !path_rectangles; *)

@@ -23,7 +23,7 @@
   "Sniper": {
     "range": 2000.0,
     "cost": 400,
-    "attack_speed": 150,
+    "attack_speed": 50,
     "projectile_speed": 100.0,
     "damage": 100
   },
