@@ -52,7 +52,7 @@ let title_font : Raylib.Font.t option ref = ref None
 let custom_font : Raylib.Font.t option ref = ref None
 
 let setup_fonts () =
-  game_font := Some (Raylib.load_font_ex "./img/fonts/gamefont.otf" 60 None);
+  game_font := Some (Raylib.load_font_ex "./img/fonts/gamefont.otf" 48 None);
   title_font :=
     Some (Raylib.load_font_ex "./img/fonts/machine-gunk.ttf" 100 None);
   custom_font :=

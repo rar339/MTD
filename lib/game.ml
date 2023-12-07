@@ -98,16 +98,6 @@ let setup () =
          (7. *. floor (!screen_width /. 28.))
          (15. *. !screen_height /. 40.));
 
-  (* Setup lives and cash images *)
-  Constants.heart_img :=
-    Some Raylib.(load_texture_from_image (load_image "./img/heart.png"));
-
-  Constants.cash_img :=
-    Some Raylib.(load_texture_from_image (load_image "./img/dollar.png"));
-
-  Constants.pop_img :=
-    Some (Raylib.load_texture_from_image (Raylib.load_image "./img/pop.png"));
-
   path_rectangles := rect_json_parse ();
 
   (*Turn points on the path*)
@@ -252,6 +242,7 @@ let draw_game () =
   (*Draw the information panel based on what was last clicked and/or hovered over.*)
   Menubar.display_bear_info !Menubar.select_display !Menubar.hover_display;
   if !showInstructions then (
+    Raygui.set_font (Option.get !game_font);
     draw_rectangle 0 0
       (int_of_float !screen_width)
       (int_of_float !screen_height)
@@ -266,16 +257,21 @@ let draw_game () =
              (4. *. !screen_height /. 5.))
           ""
       in
-      draw_text_ex (Option.get !game_font)
-        "\t\t\t\t\t\t\t\t\t\t\t\t\t\tWelcome to McGraw Tower Defense!\n\n\
-         \t\t\t\t\t\tDefend Cornell and McGraw Tower from waves of \n\
-         \t\t\t\t\t\t\toncoming balloons. You earn cash for every \n\
-         \t\t\t\t\t\t\tlayer of balloon that you pop and at the end \n\
-         \t\t\t\t\t\t\tof each round. Use it strategically to buy and \n\
-         \t\t\t\t\t\t\tupgrade bears. \n\n\
-        \         \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tGood luck!"
-        (Vector2.create (x_pos +. 10.) (y_pos +. 30.))
-        60. 2. Color.white;
+      Raygui.label
+        (Rectangle.create (!screen_width /. 3.) (1.8 *. !screen_height /. 9.) 100. 100.)
+        "Welcome to McGraw Tower Defense!";
+      Raygui.label
+        (Rectangle.create (!screen_width /. 5.) (3.2 *. !screen_height /. 9.) 100. 100.)
+        "Defend Cornell and McGraw Tower from waves of oncoming balloons.";
+      Raygui.label
+        (Rectangle.create (!screen_width /. 5.2) (3.8 *. !screen_height /. 9.) 100. 100.)
+        "You earn cash for every layer of a balloon that you pop and at the";
+      Raygui.label
+        (Rectangle.create (!screen_width /. 5.) (4.4 *. !screen_height /. 9.) 100. 100.)
+        "end of each round. Use it strategically to buy and upgrade bears.";
+      Raygui.label
+        (Rectangle.create (!screen_width /. 2.2) (6.4 *. !screen_height /. 9.) 100. 100.)
+        "Goodluck!";
       show_window
     then showInstructions := false)
   else if (*RESTART GAME********************************)
