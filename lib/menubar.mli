@@ -50,10 +50,10 @@ val lives_box : float -> float -> Rectangle.t
 val cash : float -> float -> Rectangle.t
 (**TODO5: Add spec.*)
 
-val draw_heart : Texture2D.t option -> float -> float -> unit
+val draw_heart :  float -> float -> unit
 (**TODO6: Add spec.*)
 
-val draw_cash : Texture2D.t option -> float -> float -> unit
+val draw_cash :  float -> float -> unit
 (**Draws the menubar rectangle and bear icons.*)
 
 val lives_and_cash_count : float -> float -> unit

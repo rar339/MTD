@@ -61,6 +61,11 @@ let setup_fonts () =
 (******************************************************************************)
 (*Set up the title screen art*)
 let intro_screen_art : Raylib.Texture2D.t option ref = ref None
+let game_background_img : Raylib.Texture2D.t option ref = ref None
+
+let setup_background_imgs () =
+intro_screen_art := Some (Raylib.load_texture "./img/background/MTDCoverArt.png");
+game_background_img := Some (Raylib.load_texture "./img/background/mtd_map.png")
 
 (******************************************************************************)
 
@@ -129,6 +134,15 @@ let setup_projectile_imgs () =
   dartshot_img := Some (Raylib.load_texture "./img/projectiles/dartshot.png")
 
 (******************************************************************************)
+(*Setup misc images*)
+let dollar_img : Texture2D.t option ref = ref None
+let heart_logo_img : Texture2D.t option ref = ref None
+let popped_img : Texture2D.t option ref = ref None
+
+let setup_misc_imgs ()=
+  heart_logo_img := Some (Raylib.load_texture "./img/misc/heart_logo.png");
+  dollar_img := Some (Raylib.load_texture "./img/misc/dollar.png");
+  popped_img := Some (Raylib.load_texture "./img/misc/popped.png")
 
 (* Utility Functions *)
 let round_float x = int_of_float (Float.round x)
