@@ -43,6 +43,13 @@ let run_tests () =
           ~printer:(triple_option_printer string_of_int)
           (Some (0, 0, 4))
           (MTD.Balloonpath.check_turn_collide balloon1 [ (0, 0, 4) ]) );
+      ( "balloonpath check_turn_collide multi element list, no collide"
+      >:: fun _ ->
+        assert_equal
+          ~printer:(triple_option_printer string_of_int)
+          None
+          (MTD.Balloonpath.check_turn_collide balloon1
+             [ (100, 200, 5); (100, 200, 5); (3456, 345, 0) ]) );
       ( "balloonpath check_turn_collide multi element list, yes collide"
       >:: fun _ ->
         assert_equal
@@ -52,8 +59,137 @@ let run_tests () =
              [ (0, 0, 4); (100, 200, 5); (3456, 345, 0) ]) );
     ]
   in
-  let turn_balloon_tests = [] in
-  let move_balloons_tests = [] in
+  let turn_balloon_tests =
+    let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+    [
+      (let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create 0.0 1.0 in
+       let (v2 : Raylib.Vector2.t) =
+         MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 1)
+       in
+       "balloonpath turn_balloon multi element list, yes turn 1" >:: fun _ ->
+       assert_equal
+         (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
+         (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+       let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create (-1.0) 0.0 in
+       let (v2 : Raylib.Vector2.t) =
+         MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 2)
+       in
+       "balloonpath turn_balloon multi element list, yes turn 2" >:: fun _ ->
+       assert_equal
+         (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
+         (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+       let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create 0.0 (-1.0) in
+       let (v2 : Raylib.Vector2.t) =
+         MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 3)
+       in
+       "balloonpath turn_balloon multi element list, yes turn 3" >:: fun _ ->
+       assert_equal
+         (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
+         (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+       let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create 1.0 0.0 in
+       let (v2 : Raylib.Vector2.t) =
+         MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 4)
+       in
+       "balloonpath turn_balloon multi element list, yes turn 4" >:: fun _ ->
+       assert_equal
+         (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
+         (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+       let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create 0.0 (-1.0) in
+       let (v2 : Raylib.Vector2.t) =
+         MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 5)
+       in
+       "balloonpath turn_balloon multi element list, yes turn 5" >:: fun _ ->
+       assert_equal
+         (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
+         (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+       let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create 1.0 0.0 in
+       let (v2 : Raylib.Vector2.t) =
+         MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 6)
+       in
+       "balloonpath turn_balloon multi element list, yes turn 6" >:: fun _ ->
+       assert_equal
+         (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
+         (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+       let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create 0.0 1.0 in
+       let (v2 : Raylib.Vector2.t) =
+         MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 7)
+       in
+       "balloonpath turn_balloon multi element list, yes turn 7" >:: fun _ ->
+       assert_equal
+         (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
+         (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+       let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create (-1.0) 0.0 in
+       let (v2 : Raylib.Vector2.t) =
+         MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 8)
+       in
+       "balloonpath turn_balloon multi element list, yes turn 8" >:: fun _ ->
+       assert_equal
+         (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
+         (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+       let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create 0.0 1.0 in
+       let (v2 : Raylib.Vector2.t) =
+         MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 9)
+       in
+       "balloonpath turn_balloon multi element list, yes turn 9" >:: fun _ ->
+       assert_equal
+         (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
+         (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+       let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create 1.0 0.0 in
+       let (v2 : Raylib.Vector2.t) =
+         MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 10)
+       in
+       "balloonpath turn_balloon multi element list, yes turn 10" >:: fun _ ->
+       assert_equal
+         (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
+         (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+       let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create 0.0 (-1.0) in
+       let (v2 : Raylib.Vector2.t) =
+         MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 11)
+       in
+       "balloonpath turn_balloon multi element list, yes turn 11" >:: fun _ ->
+       assert_equal
+         (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
+         (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
+    ]
+  in
+  let move_balloons_tests =
+    [
+      ( "balloonpath move_balloons empty balloons and turn points" >:: fun _ ->
+        assert_equal () (MTD.Balloonpath.move_balloons [] []) );
+      (let balloon_lst =
+         [
+           make_test_balloon 1.0 1.0 1 vel0 Lead true;
+           make_test_balloon 1.0 1.0 1 vel0 Red false;
+         ]
+       in
+       "balloonpath move_balloons multi element balloons empty turn points"
+       >:: fun _ ->
+       assert_equal () (MTD.Balloonpath.move_balloons balloon_lst []));
+      (let turn_points = [ (1, 1, 2); (2, 3, 4) ] in
+       "balloonpath move_balloons empty balloons with turn points" >:: fun _ ->
+       assert_equal () (MTD.Balloonpath.move_balloons [] turn_points));
+      (let balloon_lst =
+         [
+           make_test_balloon 1.0 1.0 1 vel0 Lead true;
+           make_test_balloon 1.0 1.0 1 vel0 Red false;
+         ]
+       in
+       let turn_points = [ (1, 1, 2); (2, 3, 4) ] in
+       "balloonpath move_balloons multi element balloons and turn points"
+       >:: fun _ ->
+       assert_equal () (MTD.Balloonpath.move_balloons balloon_lst turn_points));
+    ]
+  in
   let extract_points_tests = [] in
   let point_json_parse_tests = [] in
 
