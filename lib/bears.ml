@@ -19,7 +19,7 @@ type bear = {
   is_placed : bool;
   mutable attack_speed : int;
   mutable counter : int;
-  projectile_speed : float;
+  mutable projectile_speed : float;
   mutable sold : bool;
   mutable damage : int;
   mutable facing : float;
@@ -91,7 +91,8 @@ let make_bear (menu_bear : bool) (bear_type : bear_types) pos =
       (properties |> member "attack_speed" |> to_int) / !Constants.speed_mult;
     counter = 0;
     projectile_speed =
-      (properties |> member "projectile_speed" |> to_float);
+      (properties |> member "projectile_speed" |> to_float)
+      *. float_of_int !Constants.speed_mult;
     sold = false;
     damage = properties |> member "damage" |> to_int;
     pops_lead = bear_type = Dragon || bear_type = Sniper;
@@ -146,7 +147,7 @@ let dest_rect_custom (bear : bear) (x : float) (y : float) =
   | _ -> Rectangle.create x y (bear_radius *. 3.) (bear_radius *. 3.)
 
 (* Helps with placement of images to ensure its centered, the factor must be
-   1/2 of factor for dest_rect!*)
+   1/2 of factor for dest_rect*)
 let origin_vect_custom (bear : bear) =
   match bear.bear_type with
   | Dart -> Vector2.create (bear_radius *. 1.5) (bear_radius *. 1.5)
@@ -259,8 +260,13 @@ let rec remove_bears bear_lst =
   | bear :: rest ->
       if bear.sold then remove_bears rest else bear :: remove_bears rest
 
-let rec update_bear_firing_rate = function 
+let rec update_bear_firing_rate = function
   | bear :: t ->
-      bear.attack_speed <- bear.attack_speed / !Constants.speed_mult;
+      bear.attack_speed <-
+        (if !Constants.speed_mult = 2 then bear.attack_speed / 2
+         else bear.attack_speed * 2);
+      bear.projectile_speed <-
+        (if !Constants.speed_mult = 2 then bear.projectile_speed *. 2.
+         else bear.projectile_speed /. 2.);
       update_bear_firing_rate t
   | [] -> ()

@@ -47,14 +47,10 @@ type balloon = {
 
 let hitbox_width = ref 0.0
 let hitbox_height = ref 0.0
-let hitbox_x_offset = ref 0.0
-let hitbox_y_offset = ref 0.0
 
 let setup_hitbox path_width =
   hitbox_width := path_width /. 1.5;
-  hitbox_height := path_width /. 1.5;
-  hitbox_x_offset := path_width *. 0.21;
-  hitbox_y_offset := path_width *. 0.21
+  hitbox_height := path_width /. 1.5
 
 (* This should be dependent on the size of the balloon image. Needs fine tuning. *)
 let get_hitbox (balloon : balloon) =
@@ -64,32 +60,14 @@ let get_hitbox (balloon : balloon) =
     !hitbox_width !hitbox_height
 
 let draw_balloon path_width (balloon : balloon) =
-  let x =
-    Vector2.x balloon.position -. !hitbox_y_offset -. (!hitbox_width /. 2.)
-  in
-  let y =
-    Vector2.y balloon.position -. !hitbox_y_offset -. (!hitbox_width /. 2.)
-  in
+  let x = Vector2.x balloon.position in
+  let y = Vector2.y balloon.position in
   draw_texture_pro balloon.img
     (Rectangle.create 0. 0. 385. 500.)
-    (Rectangle.create x y 80. path_width)
-    (Vector2.create 0. 0.) 0.
+    (Rectangle.create x y (path_width /. 0.9) path_width)
+    (Vector2.create (path_width /. 1.8) (path_width /. 2.))
+    0.
     (Color.create 255 255 255 255)
-
-(*Comment/uncomment the draw function below as needed for debugging hitbox.*)
-(* draw_rectangle
-   (Constants.round_float
-      (Vector2.x balloon.position -. (!hitbox_width /. 2.)))
-   (Constants.round_float
-      (Vector2.y balloon.position -. (!hitbox_height /. 2.)))
-   (Constants.round_float !hitbox_width)
-   (Constants.round_float !hitbox_height)
-   Color.gold; *)
-(*Comment/uncomment the draw function below as needed for debugging hitbox.*)
-(* draw_circle
-   (round_float (x +. !hitbox_y_offset +. (!hitbox_width /. 2.)))
-   (round_float (y +. !hitbox_y_offset +. (!hitbox_height /. 2.)))
-   5.0 Color.green *)
 
 (* Draws pop image n times when called *)
 let rec draw_pop balloon n =
@@ -149,17 +127,14 @@ let change_velocity balloon new_color =
 (* Creates a balloon given the color. *)
 let make_balloon color is_lead =
   let position =
-    Raylib.Vector2.create (-30.0) (2. *. floor (!screen_height /. 28.5))
+    Raylib.Vector2.create (-30.0) (3. *. floor (!screen_height /. 28.5))
   in
   let x = Vector2.x position in
   let y = Vector2.y position in
   {
     color;
     velocity = Raylib.Vector2.create (determine_velocity color) 0.0;
-    position =
-      Vector2.create
-        (x +. !hitbox_y_offset +. (!hitbox_width /. 2.))
-        (y +. !hitbox_y_offset +. (!hitbox_height /. 2.));
+    position = Vector2.create x y;
     is_lead;
     img = determine_image color;
     current_turn = 0;
@@ -203,7 +178,7 @@ let update_balloon_status bear balloon =
         balloon.remove <- true;
         Constants.cash := !Constants.cash + value_of_balloon balloon.color;
         begin_drawing ();
-        draw_pop balloon (value_of_balloon balloon.color);
+        draw_pop balloon 1;
         end_drawing ()
     | color ->
         set_balloon_color balloon color;

@@ -13,7 +13,8 @@ type bullet = {
   radius : float;
   mutable pierce : int;
   mutable hits : Balloons.balloon list;
-  mutable fire : bool;
+  mutable timer : int;
+  target : balloon option;
 }
 (**-Pierce is how many balloons a bullet can pierce through.
   -Damage is how many layers of a bullet will go through.
@@ -31,7 +32,7 @@ val vector_angle : Vector2.t -> float
 val calculate_new_vel : bear -> Vector2.t -> Vector2.t
 (**Given a bear and a target position, returns the velocity vector the projectile should have. *)
 
-val projectile_moving_calc : bear -> balloon -> Vector2.t
+val projectile_moving_calc : bear -> balloon -> float * Vector2.t
 (**Calculates the velocity vector for a projectile that was jus fired.*)
 
 val determine_projectile_img : bear -> Texture2D.t option
@@ -56,13 +57,10 @@ val find_target : bear -> balloon list -> balloon option
 val fire_dart : bear -> balloon -> unit
 (**Fires a dart.*)
 
-val fire_slow_goo : bear -> balloon -> unit
-(**Fires a slow goo.*)
-
-val create_dart_nail : bear -> float -> float -> bullet
+val init_puck : bear -> float -> float -> bullet
 (**Fires a dart nail in specified directions. *)
 
-val fire_dart_nail : bear -> unit
+val fire_pucks : bear -> unit
 (**Fires a dart in a nail shooter way.*)
 
 val init_projectile : bear -> balloon -> unit

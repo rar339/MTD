@@ -20,7 +20,8 @@ type bullet = {
   radius : float;
   mutable pierce : int;
   mutable hits : Balloons.balloon list;
-  mutable fire : bool;
+  mutable timer : int;
+  target : balloon option;
 }
 
 let bullet_collection : bullet list ref = ref []
@@ -66,7 +67,7 @@ let projectile_moving_calc (bear : Bears.bear) (balloon : Balloons.balloon) =
   let new_x_t = x_target +. (enemy_vel_x *. n) in
   let new_y_t = y_target +. (enemy_vel_y *. n) in
 
-  calculate_new_vel bear (Vector2.create new_x_t new_y_t)
+  (n, calculate_new_vel bear (Vector2.create new_x_t new_y_t))
 
 (******************************************************************************)
 
@@ -109,8 +110,7 @@ let rec find_target (bear : Bears.bear) (balloons : Balloons.balloon list) :
 
 (*Fires a dart.*)
 let fire_dart (bear : Bears.bear) (balloon : Balloons.balloon) =
-  let velocity = projectile_moving_calc bear balloon in
-  let is_fire = match bear.bear_type with Dragon -> true | _ -> false in
+  let _, velocity = projectile_moving_calc bear balloon in
   let new_color =
     match bear.bear_type with Dragon -> Color.red | _ -> Color.black
   in
@@ -124,46 +124,13 @@ let fire_dart (bear : Bears.bear) (balloon : Balloons.balloon) =
       radius = bullet_radius;
       pierce = 1;
       hits = [];
-      fire = is_fire;
+      timer = 1;
+      target = None;
     }
-    :: !bullet_collection
-
-let fire_slow_goo (bear : Bears.bear) (balloon : Balloons.balloon) =
-  let velocity = projectile_moving_calc bear balloon in
-  let theta = atan2 (Vector2.x velocity) (Vector2.y velocity) in
-  let magnitude = Vector2.length velocity in
-  let upper_velocity =
-    Vector2.create
-      (magnitude *. cos (theta +. 30.))
-      (magnitude *. sin (theta +. 30.))
-  in
-  bullet_collection :=
-    {
-      origin = bear;
-      position = bear.position;
-      velocity;
-      color = Color.black;
-      image = determine_projectile_img bear;
-      radius = bullet_radius;
-      pierce = 1;
-      hits = [];
-      fire = false;
-    }
-    :: {
-         origin = bear;
-         position = bear.position;
-         velocity = upper_velocity;
-         color = Color.black;
-         image = determine_projectile_img bear;
-         radius = bullet_radius;
-         pierce = 1;
-         hits = [];
-         fire = false;
-       }
     :: !bullet_collection
 
 (* Creates dart that will shoot on eight sides of bear *)
-let create_dart_nail (bear : bear) (v1 : float) (v2 : float) =
+let init_puck (bear : bear) (v1 : float) (v2 : float) =
   let velocity = Vector2.create v1 v2 in
   {
     origin = bear;
@@ -174,29 +141,43 @@ let create_dart_nail (bear : bear) (v1 : float) (v2 : float) =
     radius = bullet_radius;
     pierce = 1;
     hits = [];
-    fire = false;
+    timer = 1;
+    target = None;
   }
 
 (*Fires a dart in a nail shooter way.*)
-let fire_dart_nail (bear : Bears.bear) =
+let fire_pucks (bear : Bears.bear) =
   bullet_collection :=
-    create_dart_nail bear (-7.5) 7.5
-    :: create_dart_nail bear (-7.5) 0.0
-    :: create_dart_nail bear (-7.5) (-7.5)
-    :: create_dart_nail bear 7.5 7.5
-    :: create_dart_nail bear 7.5 0.0
-    :: create_dart_nail bear 7.5 (-7.5)
-    :: create_dart_nail bear 0.0 7.5
-    :: create_dart_nail bear 0.0 (-7.5)
+    init_puck bear (-7.5) 7.5 :: init_puck bear (-7.5) 0.0
+    :: init_puck bear (-7.5) (-7.5)
+    :: init_puck bear 7.5 7.5 :: init_puck bear 7.5 0.0
+    :: init_puck bear 7.5 (-7.5) :: init_puck bear 0.0 7.5
+    :: init_puck bear 0.0 (-7.5) :: !bullet_collection
+
+let fire_sniper (bear : Bears.bear) (balloon : Balloons.balloon) =
+  let time, velocity = projectile_moving_calc bear balloon in
+  bullet_collection :=
+    {
+      origin = bear;
+      position = bear.position;
+      velocity;
+      color = Color.black;
+      image = determine_projectile_img bear;
+      radius = bullet_radius;
+      pierce = 1;
+      hits = [];
+      timer = round_float time;
+      target = Some balloon;
+    }
     :: !bullet_collection
 
 let init_projectile (bear : Bears.bear) (balloon : Balloons.balloon) =
   match bear with
   | { bear_type = Dart; _ } -> fire_dart bear balloon
-  | { bear_type = Hockey; _ } -> fire_dart_nail bear
-  | { bear_type = Zombie; _ } -> fire_slow_goo bear balloon
+  | { bear_type = Hockey; _ } -> fire_pucks bear
+  | { bear_type = Zombie; _ } -> fire_dart bear balloon
   | { bear_type = Dragon; _ } -> fire_dart bear balloon
-  | { bear_type = Sniper; _ } -> fire_dart bear balloon
+  | { bear_type = Sniper; _ } -> fire_sniper bear balloon
 
 (**Precondition: balloons must be in the order they appear on the screen.*)
 let rec fire_all_shots (bears : Bears.bear list)
@@ -251,8 +232,7 @@ let update_bullet_collision bullet balloon_list =
       dart_collisions bear bullet balloon_list
   | { bear_type = Dragon; _ } as bear ->
       dart_collisions bear bullet balloon_list
-  | { bear_type = Sniper; _ } as bear ->
-      dart_collisions bear bullet balloon_list
+  | { bear_type = Sniper; _ } -> bullet.timer <- bullet.timer - 1
 
 let rec update_collisions bullet_list balloon_list =
   match bullet_list with
@@ -268,52 +248,44 @@ let check_screen_bounds bullet =
 
 (*Check if a bullet is within it's tower's range.*)
 let check_tower_bounds bullet =
-  Vector2.distance bullet.origin.position bullet.position > bullet.origin.range *. 1.5
+  Vector2.distance bullet.origin.position bullet.position
+  > bullet.origin.range *. 1.5
 
 (*Delete bullets that have left the bounds of the screen or their tower's
    range. TRUE if it is out of bounds and should be deleted.*)
 let check_bullet_bounds bullet =
   check_screen_bounds bullet || check_tower_bounds bullet
 
+let time_expired bullet =
+  match bullet.origin.bear_type with
+  | Sniper ->
+      if bullet.timer <= 0 then (
+        update_balloon_status bullet.origin (Option.get bullet.target);
+        true)
+      else false
+  | _ -> false
+
 (*Remove bullets whether they are out of bounds or have collided.*)
 let rec remove_bullets bullet_list =
   match bullet_list with
   | [] -> []
   | bullet :: t ->
-      if check_bullet_bounds bullet || bullet.pierce = 0 then remove_bullets t
+      if check_bullet_bounds bullet || bullet.pierce = 0 || time_expired bullet
+      then remove_bullets t
       else bullet :: remove_bullets t
 
 let draw_bullet bullet =
-  match bullet.fire with
-  | false ->
+  match bullet.origin.bear_type with
+  | Dragon ->
       draw_texture_ex (Option.get bullet.image) bullet.position
         (180. /. Float.pi *. vector_angle bullet.velocity)
         1.
         (Color.create 255 255 255 255)
-  (* draw_circle
-     (round_float (Vector2.x bullet.position))
-     (round_float (Vector2.y bullet.position))
-     bullet.radius bullet.color *)
-  | true ->
+  | _ ->
       draw_texture_ex (Option.get bullet.image) bullet.position
         (180. /. Float.pi *. vector_angle bullet.velocity)
         1.
         (Color.create 255 255 255 255)
-(* draw_circle
-   (round_float (Vector2.x bullet.position))
-   (round_float (Vector2.y bullet.position))
-   bullet.radius bullet.color *)
-
-(* Can import image but greatly reduces performance *)
-(* let bullet_image = Raylib.load_image "./img/fireball.png" in
-   let bull_img = Raylib.load_texture_from_image bullet_image in
-   let x = Vector2.x bullet.position in
-   let y = Vector2.y bullet.position in
-   draw_texture_pro bull_img
-     (Rectangle.create 0. 0. 355. 348.)
-     (Rectangle.create (x -. 10.) (y -. 10.) 60. 60.)
-     (Vector2.create 0. 0.) 180.
-     (Color.create 255 255 255 255) *)
 
 let rec draw_bullets bullets =
   match bullets with
