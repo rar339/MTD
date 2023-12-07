@@ -34,11 +34,11 @@ let mult_button screen_width screen_height =
            (screen_height /. 19.))
         (string_of_int !Constants.speed_mult ^ "X Speed"))
   then (
-    (if (!Constants.speed_mult = 1) then Constants.speed_mult := 2
-   else (Constants.speed_mult := 1));
+    if !Constants.speed_mult = 1 then Constants.speed_mult := 2
+    else Constants.speed_mult := 1;
     Waves.update_wave_speeds !current_wave;
     Waves.update_balloon_speeds !current_balloons;
-    Bears.update_bear_firing_rate !bear_collection;)
+    Bears.update_bear_firing_rate !bear_collection)
 
 (* draw_rectangle_rec (Rectangle.create
    (155. *. screen_width /. 200.)
@@ -61,10 +61,9 @@ let setup () =
   Raygui.(set_style (Label `Text_color_normal) 0xFFFFFFFF);
 
   (* Setup background image *)
-  let game_image : Image.t = Raylib.load_image "./img/mtd_map.png" in
-  Gamebackground.background := Some (load_texture_from_image game_image);
-  background_width := Image.width game_image;
-  background_height := Image.height game_image;
+  background_width := Texture.width (Option.get !game_background_img);
+  background_height := Texture.height (Option.get !game_background_img);
+
   (*The expression in setup_hitbox corresponds to the path_width*)
   Balloons.setup_hitbox (2. *. !screen_height /. 28.);
 
@@ -199,7 +198,7 @@ let draw_game () =
   begin_drawing ();
   clear_background Color.white;
   (*Draw the background & reference grid*)
-  Gamebackground.draw_background background;
+  Gamebackground.draw_background (Option.get !game_background_img);
 
   (* Gamebackground.draw_ref_grid
      (int_of_float !screen_width)
@@ -218,8 +217,8 @@ let draw_game () =
     (Menubar.cash !screen_width !screen_height)
     (Color.create 0 150 0 100);
 
-  Menubar.draw_heart !Constants.heart_img !screen_width !screen_height;
-  Menubar.draw_cash !Constants.cash_img !screen_width !screen_height;
+  Menubar.draw_heart !screen_width !screen_height;
+  Menubar.draw_cash !screen_width !screen_height;
   Menubar.lives_and_cash_count !screen_width !screen_height;
 
   (* Drawing round button *)

@@ -157,15 +157,15 @@ let cash screen_width screen_height =
     (1. *. screen_width /. 9.)
     (screen_height /. 19.)
 
-let draw_heart heart_text screen_width screen_height =
-  draw_texture_ex (Option.get heart_text)
+let draw_heart screen_width screen_height =
+  draw_texture_ex (Option.get !heart_logo_img)
     (Vector2.create
        (149. *. screen_width /. 200.)
        (0.45 *. screen_height /. 9.))
     0. 0.10 Color.white
 
-let draw_cash cash_text screen_width screen_height =
-  draw_texture_ex (Option.get cash_text)
+let draw_cash screen_width screen_height =
+  draw_texture_ex (Option.get !dollar_img)
     (Vector2.create
        (174. *. screen_width /. 200.)
        (0.55 *. screen_height /. 9.))
