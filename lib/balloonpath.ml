@@ -76,16 +76,19 @@ let turn_balloon (balloon : Balloons.balloon) rate (x, y, i) =
 (**Moves the balloon, taking into consideration if a turn is reached. If a turn
    is reached, changes the velocity and then moves the balloon.*)
 let rec move_balloon (balloon : Balloons.balloon) turn_pts =
-  let x = Vector2.x balloon.position in
-  let y = Vector2.y balloon.position in
-  let x_rate = Vector2.x balloon.velocity in
-  let y_rate = Vector2.y balloon.velocity in
-  match check_turn_collide balloon turn_pts with
-  | None -> balloon.position <- Vector2.create (x +. x_rate) (y +. y_rate)
-  | Some turn_pt ->
-      balloon.velocity <-
-        turn_balloon balloon (if x_rate = 0.0 then y_rate else x_rate) turn_pt;
-      move_balloon balloon turn_pts
+  balloon.freeze_duration <- balloon.freeze_duration - 1;
+  if balloon.freeze_duration <= 0 then (
+    let x = Vector2.x balloon.position in
+    let y = Vector2.y balloon.position in
+    let x_rate = Vector2.x balloon.velocity in
+    let y_rate = Vector2.y balloon.velocity in
+    match check_turn_collide balloon turn_pts with
+    | None -> balloon.position <- Vector2.create (x +. x_rate) (y +. y_rate)
+    | Some turn_pt ->
+        balloon.velocity <-
+          turn_balloon balloon (if x_rate = 0.0 then y_rate else x_rate) turn_pt;
+        move_balloon balloon turn_pts)
+  else ()
 
 let rec move_balloons (balloon_list : Balloons.balloon list) turn_pts =
   match balloon_list with

@@ -171,11 +171,41 @@ let fire_sniper (bear : Bears.bear) (balloon : Balloons.balloon) =
     }
     :: !bullet_collection
 
-let init_projectile (bear : Bears.bear) (balloon : Balloons.balloon) =
+(**Returns the list of balloons in range of the bear.*)
+let rec find_balloons_in_range bear balloon_list =
+  match balloon_list with
+  | [] -> []
+  | balloon :: t ->
+      if is_balloon_in_range bear balloon then
+        balloon :: find_balloons_in_range bear t
+      else find_balloons_in_range bear t
+
+(**Applies a bear's freeze to all the balloons in the given list.*)
+let rec freeze_balloons (bear : Bears.bear) balloon_list =
+  match balloon_list with
+  | [] -> ()
+  | (balloon : Balloons.balloon) :: t ->
+      balloon.freeze_duration <- bear.freeze_duration;
+      freeze_balloons bear t
+
+(**Fires the given polar bear.*)
+let fire_polar (bear : Bears.bear) balloon_list =
+  begin_drawing ();
+  draw_circle
+    (Constants.round_float (Vector2.x bear.position))
+    (Constants.round_float (Vector2.y bear.position))
+    bear.range
+    (Color.create 138 222 235 100);
+  end_drawing ();
+  let balloons_in_range = find_balloons_in_range bear balloon_list in
+  freeze_balloons bear balloons_in_range
+
+let init_projectile (bear : Bears.bear) (balloon : Balloons.balloon)
+    balloon_list =
   match bear with
   | { bear_type = Dart; _ } -> fire_dart bear balloon
   | { bear_type = Hockey; _ } -> fire_pucks bear
-  | { bear_type = Polar; _ } -> fire_dart bear balloon
+  | { bear_type = Polar; _ } -> fire_polar bear balloon_list
   | { bear_type = Dragon; _ } -> fire_dart bear balloon
   | { bear_type = Sniper; _ } -> fire_sniper bear balloon
 
@@ -192,7 +222,7 @@ let rec fire_all_shots (bears : Bears.bear list)
       | Some balloon ->
           if first.counter <= 0 then (
             first.counter <- first.attack_speed;
-            init_projectile first balloon)
+            init_projectile first balloon balloons)
           else first.counter <- first.counter - 1;
           fire_all_shots rest balloons)
 

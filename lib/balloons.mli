@@ -5,7 +5,6 @@
 open Raylib
 open Bears
 
-
 type balloon_colors =
   | None
   | Red
@@ -30,8 +29,7 @@ type balloon = {
   mutable img : Raylib.Texture2D.t;
   mutable current_turn : int;
   mutable remove : bool;
-  mutable is_slowed : bool;
-  mutable slow_counter : int;
+  mutable freeze_duration : int;
 }
 
 val hitbox_width : float ref
