@@ -22,6 +22,20 @@ let initialize_round (waves : (unit -> (balloon * int) list) list ref) =
       current_wave := h ();
       waves := t
 
+let rec update_wave_speeds cur_wave =
+  match cur_wave with
+  | (bln, _) :: t ->
+      bln.velocity <- change_velocity bln bln.color;
+      update_wave_speeds t
+  | [] -> ()
+
+let rec update_balloon_speeds cur_blns =
+  match cur_blns with
+  | bln :: t ->
+      bln.velocity <- change_velocity bln bln.color;
+      update_balloon_speeds t
+  | [] -> ()
+
 let wave1 () =
   let balloon_lst = ref [] in
   for _ = 0 to 20 do

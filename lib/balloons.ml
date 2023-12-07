@@ -114,8 +114,8 @@ let determine_velocity = function
   | Blue -> 4.0 *. float_of_int !Constants.speed_mult
   | Green -> 5.5 *. float_of_int !Constants.speed_mult
   | Yellow -> 7.0 *. float_of_int !Constants.speed_mult
-  | Orange -> 10.0 *. float_of_int !Constants.speed_mult
-  | Purple -> 10.0 *. float_of_int !Constants.speed_mult
+  | Orange -> 9.0 *. float_of_int !Constants.speed_mult
+  | Purple -> 9.0 *. float_of_int !Constants.speed_mult
   | Lead -> 5.0 *. float_of_int !Constants.speed_mult
   | _ -> 0.0
 

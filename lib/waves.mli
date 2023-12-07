@@ -13,6 +13,12 @@ val current_balloons : balloon list ref
 
 val initialize_round : (unit -> (balloon * int) list) list ref -> unit
 
+val update_wave_speeds : (balloon * 'a) list -> unit
+(**Updates the speeds of the balloons in the wave when the speed is updated.*)
+
+val update_balloon_speeds : balloon list -> unit
+(**Updates the speeds of the balloons*)
+
 val wave1 : unit -> (balloon * int) list
 (**Generates the 1st wave.*)
 

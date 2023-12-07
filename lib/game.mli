@@ -5,12 +5,6 @@ open Balloons
 val play_button : float -> float -> unit
 (**The play button for the round*)
 
-val update_wave_speeds : (balloon * 'a) list -> unit
-(**Updates the speeds of the balloons in the wave when the speed is updated.*)
-
-val update_balloon_speeds : balloon list -> unit
-(**Updates the speeds of the balloons*)
-
 val mult_button : float -> float -> unit
 (**Creates the GUI button responsible for changing the game speed.*)
 
