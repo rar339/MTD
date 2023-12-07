@@ -261,6 +261,6 @@ let rec remove_bears bear_lst =
 
 let rec update_bear_firing_rate = function 
   | bear :: t ->
-      bear.attack_speed <- bear.attack_speed / !Constants.speed_mult;
+      bear.attack_speed <- if (!Constants.speed_mult = 2) then bear.attack_speed / 2 else bear.attack_speed * 2;
       update_bear_firing_rate t
   | [] -> ()
