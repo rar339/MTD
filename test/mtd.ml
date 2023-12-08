@@ -189,14 +189,35 @@ let run_tests () =
        assert_equal () (MTD.Balloonpath.move_balloons balloon_lst turn_points));
     ]
   in
-  let extract_points_tests = [] in
-  let point_json_parse_tests = [] in
+  let create_turn_point_test =
+    [
+      ( "balloonpath create_turn_point all zeros" >:: fun _ ->
+        assert_equal (0, 0, 0)
+          (MTD.Balloonpath.create_turn_point 0.0 0.0 0.0 0.0 0.0) );
+      ( "balloonpath create_turn_point actual point" >:: fun _ ->
+        assert_equal (1194, 834, 1)
+          (MTD.Balloonpath.create_turn_point 1.0 1.0 10.0 10.0 1.0) );
+    ]
+  in
+  let produce_point_tests =
+    [
+      ( "balloonpath produce_point single point" >:: fun _ ->
+        assert_equal (1194, 834, 1)
+          (MTD.Balloonpath.produce_point [ 1.0; 1.0; 1.0; 1.0; 1.0 ]) );
+    ]
+  in
+  let extract_points_tests =
+    [
+      ( "balloonpath extract_points empty list" >:: fun _ ->
+        assert_equal [] (MTD.Balloonpath.extract_points []) );
+    ]
+  in
 
   let balloonpath_tests =
     List.flatten
       [
         check_turn_collide_tests @ turn_balloon_tests @ move_balloons_tests
-        @ extract_points_tests @ point_json_parse_tests;
+        @ create_turn_point_test @ produce_point_tests @ extract_points_tests;
       ]
   in
 
