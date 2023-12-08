@@ -1,0 +1,325 @@
+{
+  "1": [
+    {
+      "Colors": [
+        "Red"
+      ],
+      "Count": 20,
+      "Spacing": 15
+    }
+  ],
+  "2": [
+    {
+      "Colors": [
+        "Red"
+      ],
+      "Count": 30,
+      "Spacing": 10
+    }
+  ],
+  "3": [
+    {
+      "Colors": [
+        "Red",
+        "Blue"
+      ],
+      "Count": 10,
+      "Spacing": 15
+    }
+  ],
+  "4": [
+    {
+      "Colors": [
+        "Blue"
+      ],
+      "Count": 25,
+      "Spacing": 15
+    }
+  ],
+  "5": [
+    {
+      "Colors": [
+        "Red",
+        "Blue"
+      ],
+      "Count": 30,
+      "Spacing": 15
+    }
+  ],
+  "6": [
+    {
+      "Colors": [
+        "Green"
+      ],
+      "Count": 15,
+      "Spacing": 15
+    }
+  ],
+  "7": [
+    {
+      "Colors": [
+        "Green",
+        "Blue"
+      ],
+      "Count": 20,
+      "Spacing": 15
+    }
+  ],
+  "8": [
+    {
+      "Colors": [
+        "Green"
+      ],
+      "Count": 30,
+      "Spacing": 15
+    },
+    {
+      "Colors": [
+        "Red"
+      ],
+      "Count": 20,
+      "Spacing": 15
+    }
+  ],
+  "9": [
+    {
+      "Colors": [
+        "Green"
+      ],
+      "Count": 40,
+      "Spacing": 40
+    }
+  ],
+  "10": [
+    {
+      "Colors": [
+        "Yellow"
+      ],
+      "Count": 15,
+      "Spacing": 15
+    }
+  ],
+  "11": [
+    {
+      "Colors": [
+        "Blue"
+      ],
+      "Count": 100,
+      "Spacing": 5
+    }
+  ],
+  "12": [
+    {
+      "Colors": [
+        "Green"
+      ],
+      "Count": 30,
+      "Spacing": 15
+    },
+    {
+      "Colors": [
+        "Yellow"
+      ],
+      "Count": 10,
+      "Spacing": 50
+    }
+  ],
+  "13": [
+    {
+      "Colors": [
+        "Yellow"
+      ],
+      "Count": 22,
+      "Spacing": 20
+    }
+  ],
+  "14": [
+    {
+      "Colors": [
+        "Green",
+        "Yellow",
+        "Green",
+        "Yellow"
+      ],
+      "Count": 12,
+      "Spacing": 15
+    }
+  ],
+  "15": [
+    {
+      "Colors": [
+        "Green"
+      ],
+      "Count": 50,
+      "Spacing": 10
+    }
+  ],
+  "16": [
+    {
+      "Colors": [
+        "Red"
+      ],
+      "Count": 50,
+      "Spacing": 2
+    },
+    {
+      "Colors": [
+        "Blue"
+      ],
+      "Count": 60,
+      "Spacing": 2
+    },
+    {
+      "Colors": [
+        "Green"
+      ],
+      "Count": 60,
+      "Spacing": 2
+    },
+    {
+      "Colors": [
+        "Yellow"
+      ],
+      "Count": 10,
+      "Spacing": 30
+    }
+  ],
+  "17": [
+    {
+      "Colors": [
+        "Orange"
+      ],
+      "Count": 10,
+      "Spacing": 25
+    }
+  ],
+  "18": [
+    {
+      "Colors": [
+        "Blue"
+      ],
+      "Count": 150,
+      "Spacing": 1
+    }
+  ],
+  "19": [
+    {
+      "Colors": [
+        "Lead"
+      ],
+      "Count": 1,
+      "Spacing": 15
+    }
+  ],
+  "20": [
+    {
+      "Colors": [
+        "Orange"
+      ],
+      "Count": 15,
+      "Spacing": 15
+    }
+  ],
+  "21": [
+    {
+      "Colors": [
+        "Yellow"
+      ],
+      "Count": 50,
+      "Spacing": 15
+    }
+  ],
+  "22": [
+    {
+      "Colors": [
+        "Green",
+        "Yellow",
+        "Orange"
+      ],
+      "Count": 10,
+      "Spacing": 8
+    }
+  ],
+  "23": [
+    {
+      "Colors": [
+        "Purple"
+      ],
+      "Count": 20,
+      "Spacing": 20
+    }
+  ],
+  "24": [
+    {
+      "Colors": [
+        "Orange"
+      ],
+      "Count": 30,
+      "Spacing": 2
+    },
+    {
+      "Colors": [
+        "Green"
+      ],
+      "Count": 100,
+      "Spacing": 2
+    }
+  ],
+  "25": [
+    {
+      "Colors": [
+        "Lead",
+        "Purple"
+      ],
+      "Count": 15,
+      "Spacing": 40
+    }
+  ],
+  "26": [
+    {
+      "Colors": [
+        "Purple"
+      ],
+      "Count": 40,
+      "Spacing": 10
+    }
+  ],
+  "27": [
+    {
+      "Colors": [
+        "Green"
+      ],
+      "Count": 300,
+      "Spacing": 5
+    }
+  ],
+  "28": [
+    {
+      "Colors": [
+        "Lead"
+      ],
+      "Count": 30,
+      "Spacing": 5
+    }
+  ],
+  "29": [
+    {
+      "Colors": [
+        "Purple",
+        "Yellow"
+      ],
+      "Count": 40,
+      "Spacing": 8
+    }
+  ],
+  "30": [
+    {
+      "Colors": [
+        "Lead",
+        "Purple"
+      ],
+      "Count": 40,
+      "Spacing": 8
+    }
+  ]
+}

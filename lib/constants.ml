@@ -1,3 +1,5 @@
+(**This file builds waves of balloons for the player pop with bears.*)
+
 open Raylib
 
 (* This is a file containing the relevant constants for our game. Those

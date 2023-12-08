@@ -24,7 +24,7 @@ let play_button screen_width screen_height =
            (screen_height /. 14.))
         ("Start Round " ^ string_of_int !Constants.round))
   then (
-    initialize_round waves;
+    current_wave := generate_wave !round;
     Constants.state := Active)
 
 (******************************************************************************)
@@ -112,42 +112,7 @@ let setup () =
   path_rectangles := rect_json_parse ();
 
   (*Turn points on the path*)
-  turn_points := point_json_parse ();
-
-  (*Load all the waves for the game.*)
-  waves :=
-    [
-      Waves.wave1;
-      Waves.wave2;
-      Waves.wave3;
-      Waves.wave4;
-      Waves.wave5;
-      Waves.wave6;
-      Waves.wave7;
-      Waves.wave8;
-      Waves.wave9;
-      Waves.wave10;
-      Waves.wave11;
-      Waves.wave12;
-      Waves.wave13;
-      Waves.wave14;
-      Waves.wave15;
-      Waves.wave16;
-      Waves.wave17;
-      Waves.wave18;
-      Waves.wave19;
-      Waves.wave20;
-      Waves.wave21;
-      Waves.wave22;
-      Waves.wave23;
-      Waves.wave24;
-      Waves.wave25;
-      Waves.wave26;
-      Waves.wave27;
-      Waves.wave28;
-      Waves.wave29;
-      Waves.wave30;
-    ]
+  turn_points := point_json_parse ()
 
 (******************************************************************************)
 

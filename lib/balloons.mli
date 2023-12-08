@@ -31,6 +31,9 @@ type balloon = {
   mutable freeze_duration : int;
 }
 
+val balloon_of_string : string -> balloon
+(**Maps a string to a new balloon.*)
+
 val pops : Vector2.t list ref
 (**The positions of pops that occurred this frame.*)
 

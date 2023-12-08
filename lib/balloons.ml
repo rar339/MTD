@@ -142,6 +142,16 @@ let make_balloon color =
     freeze_duration = 0;
   }
 
+let balloon_of_string = function
+  | "Red" -> make_balloon Red
+  | "Blue" -> make_balloon Blue
+  | "Green" -> make_balloon Green
+  | "Orange" -> make_balloon Orange
+  | "Purple" -> make_balloon Purple
+  | "Yellow" -> make_balloon Yellow
+  | "Lead" -> make_balloon Lead
+  | _ -> failwith "Balloon color does not exist"
+
 (***Lowers player lives when a balloon crosses the finish line based on the
    value of that balloon. *)
 let lower_lives balloon = Constants.(lives := !lives - value_of_balloon balloon)
