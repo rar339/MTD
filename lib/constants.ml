@@ -32,7 +32,7 @@ let speed_mult = ref 1
 
 (*Game restart attributes*)
 let start_cash = 40000
-let start_lives = 50
+let start_lives = 2
 
 (*Game global attributes*)
 let count = ref 0
@@ -145,10 +145,11 @@ let setup_balloon_imgs () =
   purple_balloon_img := Some (Raylib.load_texture "./img/balloons/purple.png");
   lead_balloon_img := Some (Raylib.load_texture "./img/balloons/lead.png")
 
+  (*Set up projectile*)
 let setup_projectile_imgs () =
   hockeypuck_img :=
     Some (Raylib.load_texture "./img/projectiles/hockeypuck.png");
-  fireball_img := Some (Raylib.load_texture "./img/projectiles/fireball.png");
+  fireball_img := Some (Raylib.load_texture "./img/projectiles/firingdragon.png");
   dartshot_img := Some (Raylib.load_texture "./img/projectiles/dartshot.png")
 
 (******************************************************************************)

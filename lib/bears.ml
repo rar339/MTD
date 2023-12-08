@@ -12,7 +12,7 @@ type bear = {
   mutable cost : int;
   mutable upgrades : int;
   mutable position : Raylib.Vector2.t;
-  texture : Raylib.Texture2D.t;
+  mutable texture : Raylib.Texture2D.t;
   image_width : float;
   image_height : float;
   is_placed : bool;
@@ -24,6 +24,7 @@ type bear = {
   mutable facing : float;
   mutable pops_lead : bool;
   mutable freeze_duration : int;
+  mutable isFiring : bool;
 }
 
 let bear_collection : bear list ref = ref []
@@ -96,6 +97,7 @@ let make_bear (menu_bear : bool) (bear_type : bear_types) pos =
     pops_lead = bear_type = Dragon || bear_type = Sniper;
     facing = 0.;
     freeze_duration = 30;
+    isFiring = false;
   }
 
 let generate_menu_bears screen_width screen_height =
@@ -127,9 +129,8 @@ let rec determine_bear_hovered click_pos bear_list =
   match bear_list with
   | [] -> None
   | bear :: rest ->
-      if
-        check_collision_point_circle click_pos bear.position bear_radius
-      then Some bear
+      if check_collision_point_circle click_pos bear.position bear_radius then
+        Some bear
       else determine_bear_hovered click_pos rest
 
 let draw_menu_bear (bear : bear) =
@@ -167,6 +168,9 @@ let origin_vect_custom (bear : bear) =
 
 (* draw_bear function *)
 let draw_bear (bear : bear) =
+  if bear.bear_type == Dragon then
+    if bear.isFiring then bear.texture <- Option.get !fireball_img else
+      bear.texture <- Option.get !dragonbear_img;
   let x = Vector2.x bear.position in
   let y = Vector2.y bear.position in
   draw_texture_pro bear.texture

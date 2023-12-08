@@ -11,7 +11,7 @@ type bear = {
   mutable cost : int;
   mutable upgrades : int;
   mutable position : Raylib.Vector2.t;
-  texture : Raylib.Texture2D.t;
+  mutable texture : Raylib.Texture2D.t;
   image_width : float;
   image_height : float;
   is_placed : bool;
@@ -23,6 +23,7 @@ type bear = {
   mutable facing : float;
   mutable pops_lead : bool;
   mutable freeze_duration : int;
+  mutable isFiring : bool;
 }
 
 val bear_collection : bear list ref
