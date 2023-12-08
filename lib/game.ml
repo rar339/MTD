@@ -90,6 +90,7 @@ let setup () =
   current_wave := [];
   lives := start_lives;
   cash := start_cash;
+  round := 1;
 
   (*Make the menu rectangle*)
   Constants.menu_rect :=
@@ -249,8 +250,10 @@ let draw_game () =
 
   (*Draw the balloons, the number passed in is the path's width, so that balloons
      are drawn as the correct size.*)
-  if !Constants.state = Active then
+  if !Constants.state = Active then (
     Balloons.draw_balloons (2. *. !screen_height /. 28.) !current_balloons;
+    Balloons.draw_pops !Balloons.pops;
+    Balloons.pops := []);
 
   Menubar.draw_hover_highlight ();
 

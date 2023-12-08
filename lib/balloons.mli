@@ -31,6 +31,9 @@ type balloon = {
   mutable freeze_duration : int;
 }
 
+val pops : (Vector2.t * int) list ref
+(**The pops that occurred this frame.*)
+
 val hitbox_width : float ref
 (**The calculated hitbox width, for use by functions in this module and others.*)
 
@@ -48,7 +51,10 @@ val draw_balloon : float -> balloon -> unit
 (**Draws a given balloon given the path_width.*)
 
 (*** Draws pop image n times when called *)
-val draw_pop : balloon -> int -> unit
+val draw_pop : Vector2.t -> int -> unit
+
+val draw_pops : (Vector2.t * int) list -> unit
+(**Draws all the pops that should be drawn in the current frame.*)
 
 val draw_balloons : float -> balloon list -> unit
 (** Draws all the balloons in a balloon list. *)
