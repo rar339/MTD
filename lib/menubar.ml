@@ -319,7 +319,7 @@ let draw_range_upgrade_button bear rect_x rect_y rect_width rect_height =
   Raygui.set_font (Option.get !menu_font);
   Raygui.(set_style (Button `Base_color_normal) 0xADD8E6);
   Raygui.(set_style (Button `Base_color_focused) 0xADD8E6);
-  Raygui.(set_style (Button `Base_color_pressed) 0x7F000000);
+  Raygui.(set_style (Button `Base_color_pressed) 0x80808080);
   let upgrade_price = Constants.round_float (float_of_int bear.cost *. 0.50) in
   if
     Raygui.(
@@ -344,7 +344,7 @@ let draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height =
   Raygui.set_font (Option.get !menu_font);
   Raygui.(set_style (Button `Base_color_normal) 0xADD8E6);
   Raygui.(set_style (Button `Base_color_focused) 0xADD8E6);
-  Raygui.(set_style (Button `Base_color_pressed) 0x7F000000);
+  Raygui.(set_style (Button `Base_color_pressed) 0x80808080);
   Raygui.(set_style (Default `Text_color_normal) 0xFFFFFFFF);
 
   let upgrade_price = Constants.round_float (float_of_int bear.cost *. 0.75) in
@@ -371,7 +371,7 @@ let draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height =
   Raygui.set_font (Option.get !menu_font);
   Raygui.(set_style (Button `Base_color_normal) 0xADD8E6);
   Raygui.(set_style (Button `Base_color_focused) 0xADD8E6);
-  Raygui.(set_style (Button `Base_color_pressed) 0x7F000000);
+  Raygui.(set_style (Button `Base_color_pressed) 0x80808080);
   Raygui.(set_style (Default `Text_color_normal) 0xFFFFFFFF);
   let upgrade_price = Constants.round_float (float_of_int bear.cost *. 0.50) in
   if
@@ -419,14 +419,14 @@ let display_selection selection =
       draw_info_background ();
       draw_info_title Hockey false rect_x rect_y rect_width rect_height;
       draw_sell_button bear rect_x rect_y rect_width rect_height;
-      draw_range_upgrade_button bear rect_x (rect_y -. 120.) rect_width
+      draw_range_upgrade_button bear rect_x (rect_y -. rect_height /. 4.) rect_width
         rect_height;
       draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
   | Some ({ bear_type = Polar; _ } as bear) ->
       draw_info_background ();
       draw_info_title Polar false rect_x rect_y rect_width rect_height;
       draw_sell_button bear rect_x rect_y rect_width rect_height;
-      draw_range_upgrade_button bear rect_x (rect_y -. 120.) rect_width
+      draw_range_upgrade_button bear rect_x (rect_y -. rect_height /. 4.) rect_width
         rect_height;
       draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
   | Some ({ bear_type = Sniper; _ } as bear) ->
@@ -439,7 +439,7 @@ let display_selection selection =
       draw_info_background ();
       draw_info_title Dragon false rect_x rect_y rect_width rect_height;
       draw_sell_button bear rect_x rect_y rect_width rect_height;
-      draw_range_upgrade_button bear rect_x (rect_y -. 120.) rect_width
+      draw_range_upgrade_button bear rect_x (rect_y -. rect_height /. 4.) rect_width
         rect_height;
       draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
 
