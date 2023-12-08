@@ -231,54 +231,61 @@ let display_hover_info (hover : bear option) =
   if mem_option hover !menu_bears then
     match hover with
     | None -> ()
-    | Some ({ bear_type = Dart; _ }) -> draw_info_background ();
+    | Some { bear_type = Dart; _ } ->
+        draw_info_background ();
         draw_text_ex (Option.get !game_font) "Dart Bear"
           (Vector2.create
-             (Rectangle.x (Option.get !Constants.selection_rect) +. 0.9
+             (Rectangle.x (Option.get !Constants.selection_rect)
+             +. 0.9
                 *. (Rectangle.width (Option.get !Constants.selection_rect) /. 3.)
              )
              (Rectangle.y (Option.get !Constants.selection_rect) *. 1.05))
           45. 2. Color.black
-    | Some ({ bear_type = Hockey; _ }) ->
+    | Some { bear_type = Hockey; _ } ->
         draw_info_background ();
         draw_text_ex (Option.get !game_font) "Hockey Bear"
-        (Vector2.create
-           (Rectangle.x (Option.get !Constants.selection_rect) +. 0.8
-              *. (Rectangle.width (Option.get !Constants.selection_rect) /. 3.)
-           )
-           (Rectangle.y (Option.get !Constants.selection_rect) *. 1.05))
-        45. 2. Color.black
-    | Some ({ bear_type = Polar; _ }) ->
+          (Vector2.create
+             (Rectangle.x (Option.get !Constants.selection_rect)
+             +. 0.8
+                *. (Rectangle.width (Option.get !Constants.selection_rect) /. 3.)
+             )
+             (Rectangle.y (Option.get !Constants.selection_rect) *. 1.05))
+          45. 2. Color.black
+    | Some { bear_type = Polar; _ } ->
         draw_info_background ();
         draw_text_ex (Option.get !game_font) "Polar Bear"
-        (Vector2.create
-           (Rectangle.x (Option.get !Constants.selection_rect) +. 0.9
-              *. (Rectangle.width (Option.get !Constants.selection_rect) /. 3.)
-           )
-           (Rectangle.y (Option.get !Constants.selection_rect) *. 1.05))
-        45. 2. Color.black
-    | Some ({ bear_type = Sniper; _ }) ->
+          (Vector2.create
+             (Rectangle.x (Option.get !Constants.selection_rect)
+             +. 0.9
+                *. (Rectangle.width (Option.get !Constants.selection_rect) /. 3.)
+             )
+             (Rectangle.y (Option.get !Constants.selection_rect) *. 1.05))
+          45. 2. Color.black
+    | Some { bear_type = Sniper; _ } ->
         draw_info_background ();
         draw_text_ex (Option.get !game_font) "Sniper Bear"
-        (Vector2.create
-           (Rectangle.x (Option.get !Constants.selection_rect) +. 0.8
-              *. (Rectangle.width (Option.get !Constants.selection_rect) /. 3.)
-           )
-           (Rectangle.y (Option.get !Constants.selection_rect) *. 1.05))
-        45. 2. Color.black
-    | Some ({ bear_type = Dragon; _ }) ->
+          (Vector2.create
+             (Rectangle.x (Option.get !Constants.selection_rect)
+             +. 0.8
+                *. (Rectangle.width (Option.get !Constants.selection_rect) /. 3.)
+             )
+             (Rectangle.y (Option.get !Constants.selection_rect) *. 1.05))
+          45. 2. Color.black
+    | Some { bear_type = Dragon; _ } ->
         draw_info_background ();
         draw_text_ex (Option.get !game_font) "Dragon Bear"
-        (Vector2.create
-           (Rectangle.x (Option.get !Constants.selection_rect) +. 0.7
-              *. (Rectangle.width (Option.get !Constants.selection_rect) /. 3.)
-           )
-           (Rectangle.y (Option.get !Constants.selection_rect) *. 1.05))
-        45. 2. Color.black
+          (Vector2.create
+             (Rectangle.x (Option.get !Constants.selection_rect)
+             +. 0.7
+                *. (Rectangle.width (Option.get !Constants.selection_rect) /. 3.)
+             )
+             (Rectangle.y (Option.get !Constants.selection_rect) *. 1.05))
+          45. 2. Color.black
 
 (**Draw the sell button in the selection GUI, the sell rate is 0.70 of the original
     cost.*)
 let draw_sell_button bear rect_x rect_y rect_width rect_height =
+  Raygui.set_font (Option.get !menu_font);
   let sell_price = Constants.round_float (float_of_int bear.cost *. 0.70) in
   if
     Raygui.(
@@ -300,11 +307,11 @@ let draw_range_upgrade_button bear rect_x rect_y rect_width rect_height =
     Raygui.(
       button
         (Rectangle.create
-           (rect_x +. (rect_width /. 4.))
+           (rect_x +. (rect_height /. 7.))
            (rect_y +. (rect_height /. 2.0))
-           (rect_width /. 2.) (rect_height /. 5.))
+           (rect_width /. 1.4) (rect_height /. 5.))
         (if bear.upgrades < 2 then
-           "Larger Range \n        Cost: " ^ string_of_int upgrade_price
+           "Larger Range \tCost: " ^ string_of_int upgrade_price
          else "Cannot Upgrade "))
     && !Constants.cash >= upgrade_price
     && bear.upgrades < 2
@@ -321,11 +328,11 @@ let draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height =
     Raygui.(
       button
         (Rectangle.create
-           (rect_x +. (rect_width /. 4.))
+           (rect_x +. (rect_width /. 7.))
            (rect_y +. (rect_height /. 4.0))
-           (rect_width /. 2.) (rect_height /. 5.))
+           (rect_width /. 1.4) (rect_height /. 5.))
         (if bear.upgrades < 2 then
-           "Piercing Balloons \n        Cost: " ^ string_of_int upgrade_price
+           "Piercing Balloons \tCost: " ^ string_of_int upgrade_price
          else "Cannot Upgrade "))
     && !Constants.cash >= upgrade_price
     && bear.upgrades < 2
@@ -342,11 +349,11 @@ let draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height =
     Raygui.(
       button
         (Rectangle.create
-           (rect_x +. (rect_width /. 4.))
+           (rect_x +. (rect_width /. 7.))
            (rect_y +. (rect_height /. 2.0))
-           (rect_width /. 2.) (rect_height /. 5.))
+           (rect_width /. 1.4) (rect_height /. 5.))
         (if bear.upgrades < 2 then
-           "Faster Speed \n        Cost: " ^ string_of_int upgrade_price
+           "Faster Speed \tCost: " ^ string_of_int upgrade_price
          else "Cannot Upgrade "))
     && !Constants.cash >= upgrade_price
     && bear.upgrades < 2
