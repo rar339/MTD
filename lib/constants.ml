@@ -52,11 +52,11 @@ let title_font : Raylib.Font.t option ref = ref None
 let custom_font : Raylib.Font.t option ref = ref None
 
 let setup_fonts () =
-  game_font := Some (Raylib.load_font_ex "./img/fonts/gamefont.otf" 48 None);
+  game_font := Some (Raylib.load_font_ex "./img/fonts/gamefont.otf" (Raylib.get_screen_width() / 30) None);
   title_font :=
     Some (Raylib.load_font_ex "./img/fonts/machine-gunk.ttf" 100 None);
-  custom_font :=
-    Some (Raylib.load_font_ex "./img/fonts/machine-gunk.ttf" 36 None)
+  custom_font := 
+    Some (Raylib.load_font_ex "./img/fonts/machine-gunk.ttf" (Raylib.get_screen_width() / 30) None)
 
 (******************************************************************************)
 (*Set up the title screen art*)
@@ -64,8 +64,10 @@ let intro_screen_art : Raylib.Texture2D.t option ref = ref None
 let game_background_img : Raylib.Texture2D.t option ref = ref None
 
 let setup_background_imgs () =
-intro_screen_art := Some (Raylib.load_texture "./img/background/MTDCoverArt.png");
-game_background_img := Some (Raylib.load_texture "./img/background/mtd_map.png")
+  intro_screen_art :=
+    Some (Raylib.load_texture "./img/background/MTDCoverArt.png");
+  game_background_img :=
+    Some (Raylib.load_texture "./img/background/mtd_map.png")
 
 (******************************************************************************)
 
@@ -139,10 +141,10 @@ let dollar_img : Texture2D.t option ref = ref None
 let heart_logo_img : Texture2D.t option ref = ref None
 let popped_img : Texture2D.t option ref = ref None
 
-let setup_misc_imgs ()=
+let setup_misc_imgs () =
   heart_logo_img := Some (Raylib.load_texture "./img/misc/heart_logo.png");
   dollar_img := Some (Raylib.load_texture "./img/misc/dollar.png");
-  popped_img := Some (Raylib.load_texture "./img/misc/popped.png")
+  pop_img := Some (Raylib.load_texture "./img/misc/popped.png")
 
 (* Utility Functions *)
 let round_float x = int_of_float (Float.round x)
