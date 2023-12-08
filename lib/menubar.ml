@@ -249,6 +249,7 @@ let display_hover_info (hover : bear option) =
 (**Draw the sell button in the selection GUI, the sell rate is 0.70 of the original
     cost.*)
 let draw_sell_button bear rect_x rect_y rect_width rect_height =
+  Raygui.set_font(Option.get !menu_font);
   let sell_price = Constants.round_float (float_of_int bear.cost *. 0.70) in
   if
     Raygui.(
@@ -270,11 +271,11 @@ let draw_range_upgrade_button bear rect_x rect_y rect_width rect_height =
     Raygui.(
       button
         (Rectangle.create
-           (rect_x +. (rect_width /. 4.))
+           (rect_x +. (rect_height /. 7.))
            (rect_y +. (rect_height /. 2.0))
-           (rect_width /. 2.) (rect_height /. 5.))
+           (rect_width /. 1.4) (rect_height /. 5.))
         (if bear.upgrades < 2 then
-           "Larger Range \n        Cost: " ^ string_of_int upgrade_price
+           "Larger Range \tCost: " ^ string_of_int upgrade_price
          else "Cannot Upgrade "))
     && !Constants.cash >= upgrade_price
     && bear.upgrades < 2
@@ -291,11 +292,11 @@ let draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height =
     Raygui.(
       button
         (Rectangle.create
-           (rect_x +. (rect_width /. 4.))
+           (rect_x +. (rect_width /. 7.))
            (rect_y +. (rect_height /. 4.0))
-           (rect_width /. 2.) (rect_height /. 5.))
+           (rect_width /. 1.4) (rect_height /. 5.))
         (if bear.upgrades < 2 then
-           "Piercing Balloons \n        Cost: " ^ string_of_int upgrade_price
+           "Piercing Balloons \tCost: " ^ string_of_int upgrade_price
          else "Cannot Upgrade "))
     && !Constants.cash >= upgrade_price
     && bear.upgrades < 2
@@ -312,11 +313,11 @@ let draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height =
     Raygui.(
       button
         (Rectangle.create
-           (rect_x +. (rect_width /. 4.))
+           (rect_x +. (rect_width /. 7.))
            (rect_y +. (rect_height /. 2.0))
-           (rect_width /. 2.) (rect_height /. 5.))
+           (rect_width /. 1.4) (rect_height /. 5.))
         (if bear.upgrades < 2 then
-           "Faster Speed \n        Cost: " ^ string_of_int upgrade_price
+           "Faster Speed \tCost: " ^ string_of_int upgrade_price
          else "Cannot Upgrade "))
     && !Constants.cash >= upgrade_price
     && bear.upgrades < 2

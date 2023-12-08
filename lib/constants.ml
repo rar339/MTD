@@ -50,13 +50,16 @@ let selection_rect : Raylib.Rectangle.t option ref = ref None
 let game_font : Raylib.Font.t option ref = ref None
 let title_font : Raylib.Font.t option ref = ref None
 let custom_font : Raylib.Font.t option ref = ref None
+let menu_font : Raylib.Font.t option ref = ref None
 
 let setup_fonts () =
   game_font := Some (Raylib.load_font_ex "./img/fonts/gamefont.otf" (Raylib.get_screen_width() / 30) None);
   title_font :=
     Some (Raylib.load_font_ex "./img/fonts/machine-gunk.ttf" 100 None);
+  menu_font := Some (Raylib.load_font_ex "./img/fonts/gamefont.otf" (Raylib.get_screen_width() / 50) None);
+
   custom_font := 
-    Some (Raylib.load_font_ex "./img/fonts/machine-gunk.ttf" (Raylib.get_screen_width() / 30) None)
+    Some (Raylib.load_font_ex "./img/fonts/machine-gunk.ttf" (Raylib.get_screen_width() / 50) None)
 
 (******************************************************************************)
 (*Set up the title screen art*)
