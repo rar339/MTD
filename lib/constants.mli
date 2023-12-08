@@ -3,7 +3,7 @@
 
 open Raylib
 
-type gamestate = Home | Inactive | Active | Lose
+type gamestate = Home | Inactive | Active | Lose | Win
 
 val lives : int ref
 (** The number of lives a player has in the game. When a balloon leaves through

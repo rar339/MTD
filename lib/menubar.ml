@@ -75,7 +75,8 @@ let place_bear () =
   Parameters: [placed_bears] [position] [bear_list]*)
 let update_bear_selections placed_bears pos bears =
   let bear_opt = determine_bear_clicked pos bears in
-  if placed_bears then select_display := bear_opt;
+  let bear_opt2 = Bears.determine_bear_hovered pos bears in
+  if placed_bears then select_display := bear_opt2;
   match bear_opt with
   | None -> ()
   | Some bear ->
@@ -111,7 +112,7 @@ let check_click () =
    bear OR a placed bear.*)
 let check_hover () =
   hover_display :=
-    determine_bear_clicked (get_mouse_position ())
+    determine_bear_hovered (get_mouse_position ())
       (!menu_bears @ !bear_collection)
 
 let lives_box screen_width screen_height =
@@ -419,15 +420,17 @@ let display_selection selection =
       draw_info_background ();
       draw_info_title Hockey false rect_x rect_y rect_width rect_height;
       draw_sell_button bear rect_x rect_y rect_width rect_height;
-      draw_range_upgrade_button bear rect_x (rect_y -. rect_height /. 4.) rect_width
-        rect_height;
+      draw_range_upgrade_button bear rect_x
+        (rect_y -. (rect_height /. 4.))
+        rect_width rect_height;
       draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
   | Some ({ bear_type = Polar; _ } as bear) ->
       draw_info_background ();
       draw_info_title Polar false rect_x rect_y rect_width rect_height;
       draw_sell_button bear rect_x rect_y rect_width rect_height;
-      draw_range_upgrade_button bear rect_x (rect_y -. rect_height /. 4.) rect_width
-        rect_height;
+      draw_range_upgrade_button bear rect_x
+        (rect_y -. (rect_height /. 4.))
+        rect_width rect_height;
       draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
   | Some ({ bear_type = Sniper; _ } as bear) ->
       draw_info_background ();
@@ -439,8 +442,9 @@ let display_selection selection =
       draw_info_background ();
       draw_info_title Dragon false rect_x rect_y rect_width rect_height;
       draw_sell_button bear rect_x rect_y rect_width rect_height;
-      draw_range_upgrade_button bear rect_x (rect_y -. rect_height /. 4.) rect_width
-        rect_height;
+      draw_range_upgrade_button bear rect_x
+        (rect_y -. (rect_height /. 4.))
+        rect_width rect_height;
       draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
 
 (**check_click takes care of updating what should currently be displayed.

@@ -142,6 +142,11 @@ let setup () =
       Waves.wave23;
       Waves.wave24;
       Waves.wave25;
+      Waves.wave26;
+      Waves.wave27;
+      Waves.wave28;
+      Waves.wave29;
+      Waves.wave30;
     ]
 
 (******************************************************************************)
@@ -175,6 +180,7 @@ let update_game () =
   bear_collection := Bears.remove_bears !bear_collection;
   Projectiles.freeze_fired :=
     Projectiles.update_animation_list !Projectiles.freeze_fired;
+  if !round > 30 then Constants.state := Win;
 
   Bears.update_selected_bear !selected_bear (get_mouse_position ());
 
@@ -308,18 +314,44 @@ let draw_game () =
       (int_of_float !screen_height)
       (Color.create 150 0 0 180);
     if
-      let x_pos = 1. *. !screen_width /. 9. in
-      let y_pos = 1. *. !screen_height /. 9. in
+      let x_pos = 2.75 *. !screen_width /. 9. in
+      let y_pos = 2. *. !screen_height /. 9. in
       let show_window =
         Raygui.window_box
           (Rectangle.create x_pos y_pos
-             (4. *. !screen_width /. 5.)
-             (4. *. !screen_height /. 5.))
+             (4. *. !screen_width /. 10.)
+             (3. *. !screen_height /. 10.))
           ""
       in
       draw_text_ex (Option.get !game_font)
-        "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tYou Lost!\n\n\n\
-        \        \t\t\t\t\t\t\t\t\t\t\t\t\t\tclose this window to try again!"
+        "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tYou \
+         Lost!\n\n\
+        \                \t\t\t\t\t\t\t\t\t\t\tClose this window to try again!"
+        (Vector2.create (x_pos -. 300.) (y_pos +. 30.))
+        45. 2. Color.white;
+      show_window
+    then (
+      Constants.state := Home;
+      count := 0))
+  else if (* GAME WON********************)
+          !Constants.state = Win then (
+    draw_rectangle 0 0
+      (int_of_float !screen_width)
+      (int_of_float !screen_height)
+      (Color.create 0 150 0 180);
+    if
+      let x_pos = 2.75 *. !screen_width /. 9. in
+      let y_pos = 2. *. !screen_height /. 9. in
+      let show_window =
+        Raygui.window_box
+          (Rectangle.create x_pos y_pos
+             (4. *. !screen_width /. 10.)
+             (3. *. !screen_height /. 10.))
+          ""
+      in
+      draw_text_ex (Option.get !game_font)
+        "\t\t\t\t\t\t\t\t\t\t\t\t You Won!\n\n\
+        \   Close this window to play again!"
         (Vector2.create (x_pos +. 10.) (y_pos +. 30.))
         45. 2. Color.white;
       show_window

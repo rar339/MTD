@@ -173,7 +173,6 @@ let wave16 () =
   done;
   !balloon_lst
 
-(********* LEFT TO DO *************)
 let wave17 () =
   let balloon_lst = ref [] in
   for _ = 0 to 10 do
@@ -243,5 +242,42 @@ let wave25 () =
   for _ = 0 to 15 do
     balloon_lst :=
       (make_balloon Lead, 50) :: (make_balloon Purple, 15) :: !balloon_lst
+  done;
+  !balloon_lst
+
+let wave26 () =
+  let balloon_lst = ref [] in
+  for _ = 0 to 40 do
+    balloon_lst := (make_balloon Purple, 10) :: !balloon_lst
+  done;
+  !balloon_lst
+
+let wave27 () =
+  let balloon_lst = ref [] in
+  for _ = 0 to 300 do
+    balloon_lst := (make_balloon Green, 5) :: !balloon_lst
+  done;
+  !balloon_lst
+
+let wave28 () =
+  let balloon_lst = ref [] in
+  for _ = 0 to 30 do
+    balloon_lst := (make_balloon Lead, 5) :: !balloon_lst
+  done;
+  !balloon_lst
+
+let wave29 () =
+  let balloon_lst = ref [] in
+  for _ = 0 to 40 do
+    balloon_lst :=
+      (make_balloon Purple, 10) :: (make_balloon Yellow, 2) :: !balloon_lst
+  done;
+  !balloon_lst
+
+let wave30 () =
+  let balloon_lst = ref [] in
+  for _ = 0 to 40 do
+    balloon_lst :=
+      (make_balloon Lead, 10) :: (make_balloon Purple, 2) :: !balloon_lst
   done;
   !balloon_lst
