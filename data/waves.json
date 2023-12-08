@@ -189,7 +189,7 @@
       "Colors": [
         "Orange"
       ],
-      "Count": 20,
+      "Count": 40,
       "Spacing": 20
     }
   ],
@@ -199,7 +199,7 @@
         "Blue"
       ],
       "Count": 150,
-      "Spacing": 10
+      "Spacing": 5
     }
   ],
   "19": [
@@ -287,9 +287,9 @@
   "27": [
     {
       "Colors": [
-        "Green"
+        "Yellow"
       ],
-      "Count": 200,
+      "Count": 100,
       "Spacing": 10
     }
   ],
@@ -298,7 +298,7 @@
       "Colors": [
         "Lead"
       ],
-      "Count": 30,
+      "Count": 40,
       "Spacing": 5
     }
   ],
@@ -308,7 +308,7 @@
         "Purple",
         "Yellow"
       ],
-      "Count": 40,
+      "Count": 60,
       "Spacing": 8
     }
   ],
@@ -318,8 +318,8 @@
         "Lead",
         "Purple"
       ],
-      "Count": 40,
-      "Spacing": 8
+      "Count": 50,
+      "Spacing": 4
     }
   ]
 }

@@ -28,9 +28,9 @@
     "damage": 5
   },
   "Dragon": {
-    "range": 200.0,
-    "cost": 2200,
-    "attack_speed": 6,
+    "range": 180.0,
+    "cost": 300,
+    "attack_speed": 10,
     "projectile_speed": 40.0,
     "damage": 1
   }
