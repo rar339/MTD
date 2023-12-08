@@ -16,7 +16,7 @@
   "Polar": {
     "range": 120.0,
     "cost": 250,
-    "attack_speed": 80,
+    "attack_speed": 70,
     "projectile_speed": 100.0,
     "damage": 1
   },

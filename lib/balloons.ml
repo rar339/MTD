@@ -75,10 +75,10 @@ let rec draw_pop balloon n =
     draw_texture_pro (Option.get !pop_img)
       (Rectangle.create 0. 0. 146. 120.)
       (Rectangle.create
-         (Vector2.x balloon.position -. 32.5)
-         (Vector2.y balloon.position -. 50.0)
+         (Vector2.x balloon.position)
+         (Vector2.y balloon.position)
          80. 80.)
-      (Vector2.create 0. 0.) 0.
+      (Vector2.create 40. 40.) 0.
       (Color.create 255 255 255 255);
     draw_pop balloon (n - 1))
 
