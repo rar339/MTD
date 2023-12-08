@@ -119,7 +119,7 @@ let setup_bear_imgs () =
   (*in-game bears*)
   dartbear_img := Some (Raylib.load_texture "./img/bears/dartbear.png");
   hockeybear_img := Some (Raylib.load_texture "./img/bears/hockeybear.png");
-  polarbear_img := Some (Raylib.load_texture "./img/bears/zombiebear.png");
+  polarbear_img := Some (Raylib.load_texture "./img/bears/polarbear.png");
   sniperbear_img := Some (Raylib.load_texture "./img/bears/sniperbear.png");
   dragonbear_img := Some (Raylib.load_texture "./img/bears/redbear.png");
   (*menu bears*)
@@ -128,7 +128,7 @@ let setup_bear_imgs () =
   menu_hockeybear_img :=
     Some (Raylib.load_texture "./img/bears/menu_hockeybear.png");
   menu_polarbear_img :=
-    Some (Raylib.load_texture "./img/bears/menu_zombiebear.png");
+    Some (Raylib.load_texture "./img/bears/menu_polarbear.png");
   menu_sniperbear_img :=
     Some (Raylib.load_texture "./img/bears/menu_sniperbear.png");
   menu_dragonbear_img := Some (Raylib.load_texture "./img/bears/redbear.png")

@@ -329,7 +329,7 @@ let draw_range_upgrade_button bear rect_x rect_y rect_width rect_height =
            (rect_y +. (rect_height /. 2.0))
            (rect_width /. 1.3) (rect_height /. 5.))
         (if bear.upgrades < 2 then
-           "Larger Range \tCost: " ^ string_of_int upgrade_price
+           "Larger Range      \tCost: " ^ string_of_int upgrade_price
          else "Cannot Upgrade "))
     && !Constants.cash >= upgrade_price
     && bear.upgrades < 2
