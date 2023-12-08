@@ -45,19 +45,19 @@ val check_hover : unit -> unit
    bear OR a placed bear.*)
 
 val lives_box : float -> float -> Rectangle.t
-(**TODO4: Add spec.*)
+(**Draws the lives rectange.*)
 
 val cash : float -> float -> Rectangle.t
-(**TODO5: Add spec.*)
+(**Draws the cash rectangle.*)
 
-val draw_heart :  float -> float -> unit
-(**TODO6: Add spec.*)
+val draw_heart : float -> float -> unit
+(**Draws the heart lives.*)
 
-val draw_cash :  float -> float -> unit
+val draw_cash : float -> float -> unit
 (**Draws the menubar rectangle and bear icons.*)
 
 val lives_and_cash_count : float -> float -> unit
-(**TODO8: Add spec.*)
+(**Draws the num of lives and cash.*)
 
 val draw_menu : Rectangle.t -> unit
 (**Draws the menubar rectangle and bear icons.*)
@@ -72,15 +72,22 @@ val mem_option : 'a option -> 'a list -> bool
 val draw_hover_highlight : unit -> unit
 (**Draws the range of the bear if it is hovered over or currently selected.*)
 
-val display_hover_info : bear option -> unit
-(**Draws the information about a menu bear that is hovered over, if any. This
-    should simply drawn ontop of the current selection, if a bear is selected.*)
-
 val draw_info_background : unit -> unit
 (**Draws the rectangle for the selection GUI.*)
 
-val draw_info_title : bear_types -> bool -> float -> float -> float -> float -> unit
+val cost_of_beartype : bear_types -> int
+(* Get the cost of each bear type *)
+
+val bear_info_text : bear_types -> float -> float -> float -> float -> unit
+(* Gets the description of each bear *)
+
+val draw_info_title :
+  bear_types -> bool -> float -> float -> float -> float -> unit
 (**Draws the title for the selection GUI based on the bear type.*)
+
+val display_hover_info : bear option -> unit
+(**Draws the information about a menu bear that is hovered over, if any. This
+    should simply drawn ontop of the current selection, if a bear is selected.*)
 
 val draw_sell_button : bear -> float -> float -> float -> float -> unit
 (**Draw the sell button in the selection GUI, the sell rate is 0.70 of the original

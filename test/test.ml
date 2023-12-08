@@ -622,15 +622,18 @@ let run_tests () =
       ]
   in
 
+  (* let check_valid_placement_tests = [] in
+     let check_button_press_tests = [] in
+     let nevermind_tests = [] in
+     let mem_option_tests = [] in
+     let cost_of_beartype_tests = [] in
+
+     let menubar_tests = List.flatten [] in *)
   let tests = balloonpath_tests @ balloons_tests @ bears_tests in
   let suite = "test suite for MTD" >::: List.flatten [ tests ] in
 
   (* FINISH THESE LATER *)
   (*
-      let game_tests = []
-      let gamebackground_tests = []
-      let gamebounds_tests = []
-      let menubar_tests = []
       let projectiles_tests = []
       let waves_tests = [] *)
   run_test_tt_main suite;
