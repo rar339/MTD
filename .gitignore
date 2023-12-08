@@ -8,6 +8,10 @@
 *.cmxs
 *.cmxa
 *.html
+*.coverage
+
+# bisect working directory
+_coverage/
 
 # ocamlbuild working directory
 _build/

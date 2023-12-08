@@ -189,33 +189,195 @@ let run_tests () =
        assert_equal () (MTD.Balloonpath.move_balloons balloon_lst turn_points));
     ]
   in
-  let extract_points_tests = [] in
-  let point_json_parse_tests = [] in
+  let create_turn_point_test =
+    [
+      ( "balloonpath create_turn_point all zeros" >:: fun _ ->
+        assert_equal (0, 0, 0)
+          (MTD.Balloonpath.create_turn_point 0.0 0.0 0.0 0.0 0.0) );
+      ( "balloonpath create_turn_point actual point" >:: fun _ ->
+        assert_equal (1194, 834, 1)
+          (MTD.Balloonpath.create_turn_point 1.0 1.0 10.0 10.0 1.0) );
+    ]
+  in
+  let produce_point_tests =
+    [
+      ( "balloonpath produce_point single point" >:: fun _ ->
+        assert_equal (1194, 834, 1)
+          (MTD.Balloonpath.produce_point [ 1.0; 1.0; 1.0; 1.0; 1.0 ]) );
+    ]
+  in
+  let extract_points_tests =
+    [
+      ( "balloonpath extract_points empty list" >:: fun _ ->
+        assert_equal [] (MTD.Balloonpath.extract_points []) );
+    ]
+  in
 
   let balloonpath_tests =
     List.flatten
       [
         check_turn_collide_tests @ turn_balloon_tests @ move_balloons_tests
-        @ extract_points_tests @ point_json_parse_tests;
+        @ create_turn_point_test @ produce_point_tests @ extract_points_tests;
       ]
   in
 
-  (* FINISH THESE LATER *)
-  (* let bears_tests = []
-     let constants_tests = []
-     let game_tests = []
-     let gamebackground_tests = []
-     let gamebounds_tests = []
-     let menubar_tests = []
-     let projectiles_tests = []
-     let waves_tests = [] *)
+  let value_of_balloon_tests =
+    [
+      ( "balloons value_of_balloons None" >:: fun _ ->
+        assert_equal 0 (MTD.Balloons.value_of_balloon None) );
+      ( "balloons value_of_balloons Red" >:: fun _ ->
+        assert_equal 1 (MTD.Balloons.value_of_balloon Red) );
+      ( "balloons value_of_balloons Blue" >:: fun _ ->
+        assert_equal 2 (MTD.Balloons.value_of_balloon Blue) );
+      ( "balloons value_of_balloons Green" >:: fun _ ->
+        assert_equal 3 (MTD.Balloons.value_of_balloon Green) );
+      ( "balloons value_of_balloons Orange" >:: fun _ ->
+        assert_equal 4 (MTD.Balloons.value_of_balloon Yellow) );
+      ( "balloons value_of_balloons Purple" >:: fun _ ->
+        assert_equal 5 (MTD.Balloons.value_of_balloon Orange) );
+      ( "balloons value_of_balloons Yellow" >:: fun _ ->
+        assert_equal 6 (MTD.Balloons.value_of_balloon Purple) );
+      ( "balloons value_of_balloons Lead" >:: fun _ ->
+        assert_equal 7 (MTD.Balloons.value_of_balloon Lead) );
+    ]
+  in
+  let balloon_of_value_tests =
+    [
+      ( "balloons balloon_of_value 0" >:: fun _ ->
+        assert_equal MTD.Balloons.None (MTD.Balloons.balloon_of_value 0) );
+      ( "balloons balloon_of_value 1" >:: fun _ ->
+        assert_equal MTD.Balloons.Red (MTD.Balloons.balloon_of_value 1) );
+      ( "balloons balloon_of_value 2" >:: fun _ ->
+        assert_equal MTD.Balloons.Blue (MTD.Balloons.balloon_of_value 2) );
+      ( "balloons balloon_of_value 3" >:: fun _ ->
+        assert_equal MTD.Balloons.Green (MTD.Balloons.balloon_of_value 3) );
+      ( "balloons balloon_of_value 4" >:: fun _ ->
+        assert_equal MTD.Balloons.Yellow (MTD.Balloons.balloon_of_value 4) );
+      ( "balloons balloon_of_value 5" >:: fun _ ->
+        assert_equal MTD.Balloons.Orange (MTD.Balloons.balloon_of_value 5) );
+      ( "balloons balloon_of_value 6" >:: fun _ ->
+        assert_equal MTD.Balloons.Purple (MTD.Balloons.balloon_of_value 6) );
+      ( "balloons balloon_of_value 7" >:: fun _ ->
+        assert_equal MTD.Balloons.Lead (MTD.Balloons.balloon_of_value 7) );
+    ]
+  in
+  let get_hitbox_tests =
+    [
+      (let balloon = make_test_balloon 0.0 0.0 0 vel0 Lead true in
+       let rect = MTD.Balloons.get_hitbox balloon in
+       "balloons get_hitbox starting balloon" >:: fun _ ->
+       assert_equal (0.0, 0.0, 0.0, 0.0)
+         ( Raylib.Rectangle.x rect,
+           Raylib.Rectangle.y rect,
+           Raylib.Rectangle.height rect,
+           Raylib.Rectangle.width rect ));
+      (let balloon = make_test_balloon 1.0 1.0 0 vel0 Lead true in
+       let rect = MTD.Balloons.get_hitbox balloon in
+       "balloons get_hitbox moving balloon" >:: fun _ ->
+       assert_equal (1.0, 1.0, 0.0, 0.0)
+         ( Raylib.Rectangle.x rect,
+           Raylib.Rectangle.y rect,
+           Raylib.Rectangle.height rect,
+           Raylib.Rectangle.width rect ));
+    ]
+  in
+  let determine_image_tests =
+    [
+      (Constants.red_balloon_img :=
+         Some (Raylib.load_texture "./img/balloons/red.png");
+       "balloons determine_image Red" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.red_balloon_img)
+         (MTD.Balloons.determine_image MTD.Balloons.Red));
+      (Constants.blue_balloon_img :=
+         Some (Raylib.load_texture "./img/balloons/blue.png");
+       "balloons determine_image Blue" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.blue_balloon_img)
+         (MTD.Balloons.determine_image MTD.Balloons.Blue));
+      (Constants.green_balloon_img :=
+         Some (Raylib.load_texture "./img/balloons/green.png");
+       "balloons determine_image Green" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.green_balloon_img)
+         (MTD.Balloons.determine_image MTD.Balloons.Green));
+      (Constants.yellow_balloon_img :=
+         Some (Raylib.load_texture "./img/balloons/yellow.png");
+       "balloons determine_image Yellow" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.yellow_balloon_img)
+         (MTD.Balloons.determine_image MTD.Balloons.Yellow));
+      (Constants.orange_balloon_img :=
+         Some (Raylib.load_texture "./img/balloons/orange.png");
+       "balloons determine_image Yellow" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.orange_balloon_img)
+         (MTD.Balloons.determine_image MTD.Balloons.Orange));
+      (Constants.purple_balloon_img :=
+         Some (Raylib.load_texture "./img/balloons/purple.png");
+       "balloons determine_image Purple" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.purple_balloon_img)
+         (MTD.Balloons.determine_image MTD.Balloons.Purple));
+      (Constants.lead_balloon_img :=
+         Some (Raylib.load_texture "./img/balloons/lead.png");
+       "balloons determine_image Lead" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.lead_balloon_img)
+         (MTD.Balloons.determine_image MTD.Balloons.Lead));
+    ]
+  in
+  let determine_velocity_tests =
+    [
+      ( "balloons determine_velocity None" >:: fun _ ->
+        assert_equal 0.0 (MTD.Balloons.determine_velocity MTD.Balloons.None) );
+      ( "balloons determine_velocity Red" >:: fun _ ->
+        assert_equal 2.0 (MTD.Balloons.determine_velocity MTD.Balloons.Red) );
+      ( "balloons determine_velocity Blue" >:: fun _ ->
+        assert_equal 3.0 (MTD.Balloons.determine_velocity MTD.Balloons.Blue) );
+      ( "balloons determine_velocity Green" >:: fun _ ->
+        assert_equal 4.0 (MTD.Balloons.determine_velocity MTD.Balloons.Green) );
+      ( "balloons determine_velocity Yellow" >:: fun _ ->
+        assert_equal 4.5 (MTD.Balloons.determine_velocity MTD.Balloons.Yellow)
+      );
+      ( "balloons determine_velocity Orange" >:: fun _ ->
+        assert_equal 4.5 (MTD.Balloons.determine_velocity MTD.Balloons.Orange)
+      );
+      ( "balloons determine_velocity Purple" >:: fun _ ->
+        assert_equal 5.5 (MTD.Balloons.determine_velocity MTD.Balloons.Purple)
+      );
+      ( "balloons determine_velocity Lead" >:: fun _ ->
+        assert_equal 3.0 (MTD.Balloons.determine_velocity MTD.Balloons.Lead) );
+    ]
+  in
+  let change_velocity_tests = [] in
+  let make_balloon_tests = [] in
+  let lower_lives_tests = [] in
+  let remove_balloons_tests = [] in
+
   let balloons_tests =
-    [ ("balloon is_lead test" >:: fun _ -> assert_equal true balloon1.is_lead) ]
+    List.flatten
+      [
+        value_of_balloon_tests @ balloon_of_value_tests @ get_hitbox_tests
+        @ determine_image_tests @ determine_velocity_tests
+        @ change_velocity_tests @ make_balloon_tests @ lower_lives_tests
+        @ remove_balloons_tests;
+      ]
   in
 
   let tests = balloonpath_tests @ balloons_tests in
   let suite = "test suite for MTD" >::: List.flatten [ tests ] in
 
+  (* FINISH THESE LATER *)
+  (*
+    let bears_tests = []
+      let constants_tests = []
+      let game_tests = []
+      let gamebackground_tests = []
+      let gamebounds_tests = []
+      let menubar_tests = []
+      let projectiles_tests = []
+      let waves_tests = [] *)
   run_test_tt_main suite;
 
   Raylib.close_window ()
