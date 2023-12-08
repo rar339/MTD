@@ -176,8 +176,8 @@ let draw_game () =
   Gamebackground.draw_background (Option.get !game_background_img);
 
   (* Gamebackground.draw_ref_grid
-    (int_of_float !screen_width)
-    (int_of_float !screen_height); *)
+     (int_of_float !screen_width)
+     (int_of_float !screen_height); *)
 
   (*This line shows ref rectangles! Comment out if you want them invisible*)
   (* Gamebounds.draw_rectangles !path_rectangles; *)
@@ -193,7 +193,6 @@ let draw_game () =
     (Color.create 0 150 0 100);
 
   Menubar.draw_heart !screen_width !screen_height;
-  Menubar.draw_cash !screen_width !screen_height;
   Menubar.lives_and_cash_count !screen_width !screen_height;
 
   (* Drawing round button *)
@@ -245,30 +244,33 @@ let draw_game () =
              (4. *. !screen_height /. 5.))
           ""
       in
+      let window_box_height = 4. *. !screen_height /. 5. in
+      let window_box_width = 4. *. !screen_width /. 5. in
+      let label_height = window_box_height /. 10. in
       Raygui.label
-        (Rectangle.create (!screen_width /. 3.)
-           (1.8 *. !screen_height /. 9.)
-           100. 100.)
+        (Rectangle.create x_pos
+           (y_pos +. (1. *. window_box_height /. 10.))
+           window_box_width label_height)
         "Welcome to McGraw Tower Defense!";
       Raygui.label
-        (Rectangle.create (!screen_width /. 6.)
-           (3.2 *. !screen_height /. 9.)
-           100. 100.)
+        (Rectangle.create x_pos
+           (y_pos +. (3.4 *. window_box_height /. 10.))
+           window_box_width label_height)
         "Defend Cornell and McGraw Tower from waves of oncoming balloons.";
       Raygui.label
-        (Rectangle.create (!screen_width /. 6.2)
-           (3.8 *. !screen_height /. 9.)
-           100. 100.)
+        (Rectangle.create x_pos
+           (y_pos +. (4.3 *. window_box_height /. 10.))
+           window_box_width label_height)
         "You earn cash for every layer of a balloon that you pop and at the";
       Raygui.label
-        (Rectangle.create (!screen_width /. 6.)
-           (4.4 *. !screen_height /. 9.)
-           100. 100.)
+        (Rectangle.create x_pos
+           (y_pos +. (5.2 *. window_box_height /. 10.))
+           window_box_width label_height)
         "end of each round. Use it strategically to buy and upgrade bears.";
       Raygui.label
-        (Rectangle.create (!screen_width /. 2.2)
-           (6.4 *. !screen_height /. 9.)
-           100. 100.)
+        (Rectangle.create x_pos
+           (y_pos +. (6.1 *. (window_box_height /. 10.)))
+           window_box_width label_height)
         "Goodluck!";
       show_window
     then showInstructions := false)

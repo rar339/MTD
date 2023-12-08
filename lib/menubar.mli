@@ -53,8 +53,6 @@ val cash : float -> float -> Rectangle.t
 val draw_heart : float -> float -> unit
 (**Draws the heart lives.*)
 
-val draw_cash : float -> float -> unit
-(**Draws the menubar rectangle and bear icons.*)
 
 val lives_and_cash_count : float -> float -> unit
 (**Draws the num of lives and cash.*)
@@ -72,7 +70,7 @@ val mem_option : 'a option -> 'a list -> bool
 val draw_hover_highlight : unit -> unit
 (**Draws the range of the bear if it is hovered over or currently selected.*)
 
-val draw_info_background : unit -> unit
+val draw_info_background : Bears.bear_types -> unit
 (**Draws the rectangle for the selection GUI.*)
 
 val cost_of_beartype : bear_types -> int

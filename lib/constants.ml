@@ -31,7 +31,7 @@ let round = ref 0
 let speed_mult = ref 1
 
 (*Game restart attributes*)
-let start_cash = 600
+let start_cash = 40000
 let start_lives = 50
 
 (*Game global attributes*)
@@ -65,7 +65,7 @@ let setup_fonts () =
   menu_font :=
     Some
       (Raylib.load_font_ex "./img/fonts/gamefont.otf"
-         (Raylib.get_screen_width () / 50)
+         (Raylib.get_screen_width () / 40)
          None);
 
   custom_font :=
