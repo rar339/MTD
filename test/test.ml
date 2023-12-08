@@ -241,10 +241,115 @@ let run_tests () =
         assert_equal 7 (MTD.Balloons.value_of_balloon Lead) );
     ]
   in
-  let balloon_of_value_tests = [] in
-  let get_hitbox_tests = [] in
-  let determine_image_tests = [] in
-  let determine_velocity_tests = [] in
+  let balloon_of_value_tests =
+    [
+      ( "balloons balloon_of_value 0" >:: fun _ ->
+        assert_equal MTD.Balloons.None (MTD.Balloons.balloon_of_value 0) );
+      ( "balloons balloon_of_value 1" >:: fun _ ->
+        assert_equal MTD.Balloons.Red (MTD.Balloons.balloon_of_value 1) );
+      ( "balloons balloon_of_value 2" >:: fun _ ->
+        assert_equal MTD.Balloons.Blue (MTD.Balloons.balloon_of_value 2) );
+      ( "balloons balloon_of_value 3" >:: fun _ ->
+        assert_equal MTD.Balloons.Green (MTD.Balloons.balloon_of_value 3) );
+      ( "balloons balloon_of_value 4" >:: fun _ ->
+        assert_equal MTD.Balloons.Yellow (MTD.Balloons.balloon_of_value 4) );
+      ( "balloons balloon_of_value 5" >:: fun _ ->
+        assert_equal MTD.Balloons.Orange (MTD.Balloons.balloon_of_value 5) );
+      ( "balloons balloon_of_value 6" >:: fun _ ->
+        assert_equal MTD.Balloons.Purple (MTD.Balloons.balloon_of_value 6) );
+      ( "balloons balloon_of_value 7" >:: fun _ ->
+        assert_equal MTD.Balloons.Lead (MTD.Balloons.balloon_of_value 7) );
+    ]
+  in
+  let get_hitbox_tests =
+    [
+      (let balloon = make_test_balloon 0.0 0.0 0 vel0 Lead true in
+       let rect = MTD.Balloons.get_hitbox balloon in
+       "balloons get_hitbox starting balloon" >:: fun _ ->
+       assert_equal (0.0, 0.0, 0.0, 0.0)
+         ( Raylib.Rectangle.x rect,
+           Raylib.Rectangle.y rect,
+           Raylib.Rectangle.height rect,
+           Raylib.Rectangle.width rect ));
+      (let balloon = make_test_balloon 1.0 1.0 0 vel0 Lead true in
+       let rect = MTD.Balloons.get_hitbox balloon in
+       "balloons get_hitbox moving balloon" >:: fun _ ->
+       assert_equal (1.0, 1.0, 0.0, 0.0)
+         ( Raylib.Rectangle.x rect,
+           Raylib.Rectangle.y rect,
+           Raylib.Rectangle.height rect,
+           Raylib.Rectangle.width rect ));
+    ]
+  in
+  let determine_image_tests =
+    [
+      (Constants.red_balloon_img :=
+         Some (Raylib.load_texture "./img/balloons/red.png");
+       "balloons determine_image Red" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.red_balloon_img)
+         (MTD.Balloons.determine_image MTD.Balloons.Red));
+      (Constants.blue_balloon_img :=
+         Some (Raylib.load_texture "./img/balloons/blue.png");
+       "balloons determine_image Blue" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.blue_balloon_img)
+         (MTD.Balloons.determine_image MTD.Balloons.Blue));
+      (Constants.green_balloon_img :=
+         Some (Raylib.load_texture "./img/balloons/green.png");
+       "balloons determine_image Green" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.green_balloon_img)
+         (MTD.Balloons.determine_image MTD.Balloons.Green));
+      (Constants.yellow_balloon_img :=
+         Some (Raylib.load_texture "./img/balloons/yellow.png");
+       "balloons determine_image Yellow" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.yellow_balloon_img)
+         (MTD.Balloons.determine_image MTD.Balloons.Yellow));
+      (Constants.orange_balloon_img :=
+         Some (Raylib.load_texture "./img/balloons/orange.png");
+       "balloons determine_image Yellow" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.orange_balloon_img)
+         (MTD.Balloons.determine_image MTD.Balloons.Orange));
+      (Constants.purple_balloon_img :=
+         Some (Raylib.load_texture "./img/balloons/purple.png");
+       "balloons determine_image Purple" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.purple_balloon_img)
+         (MTD.Balloons.determine_image MTD.Balloons.Purple));
+      (Constants.lead_balloon_img :=
+         Some (Raylib.load_texture "./img/balloons/lead.png");
+       "balloons determine_image Lead" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.lead_balloon_img)
+         (MTD.Balloons.determine_image MTD.Balloons.Lead));
+    ]
+  in
+  let determine_velocity_tests =
+    [
+      ( "balloons determine_velocity None" >:: fun _ ->
+        assert_equal 0.0 (MTD.Balloons.determine_velocity MTD.Balloons.None) );
+      ( "balloons determine_velocity Red" >:: fun _ ->
+        assert_equal 2.0 (MTD.Balloons.determine_velocity MTD.Balloons.Red) );
+      ( "balloons determine_velocity Blue" >:: fun _ ->
+        assert_equal 3.0 (MTD.Balloons.determine_velocity MTD.Balloons.Blue) );
+      ( "balloons determine_velocity Green" >:: fun _ ->
+        assert_equal 4.0 (MTD.Balloons.determine_velocity MTD.Balloons.Green) );
+      ( "balloons determine_velocity Yellow" >:: fun _ ->
+        assert_equal 4.5 (MTD.Balloons.determine_velocity MTD.Balloons.Yellow)
+      );
+      ( "balloons determine_velocity Orange" >:: fun _ ->
+        assert_equal 4.5 (MTD.Balloons.determine_velocity MTD.Balloons.Orange)
+      );
+      ( "balloons determine_velocity Purple" >:: fun _ ->
+        assert_equal 5.5 (MTD.Balloons.determine_velocity MTD.Balloons.Purple)
+      );
+      ( "balloons determine_velocity Lead" >:: fun _ ->
+        assert_equal 3.0 (MTD.Balloons.determine_velocity MTD.Balloons.Lead) );
+    ]
+  in
   let change_velocity_tests = [] in
   let make_balloon_tests = [] in
   let lower_lives_tests = [] in
