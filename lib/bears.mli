@@ -37,11 +37,11 @@ val selected_bear : bear option ref
 val menu_bears : bear list ref
 (**The bears displayed on the menu.*)
 
-val string_of_beartype : bear_types -> string
-(**Given a bear type, gives the string representation.*)
-
 val determine_image : bool -> bear_types -> Texture2D.t
 (**Determines the image for a bear given its type and whether its a menu bear.*)
+
+val string_of_beartype : bear_types -> string
+(**Given a bear type, gives the string representation.*)
 
 val extract_bear_properties : bear_types -> Yojson.Basic.t
 (**Extract the json dictionary containing the properties for the given bear type.*)
@@ -52,14 +52,11 @@ val make_bear : bool -> bear_types -> Vector2.t -> bear
 val generate_menu_bears : float -> float -> bear list
 (**A list containing all the different bears to be displayed on the menu.*)
 
-(***Returns the bear clicked, if any.*)
 val determine_bear_clicked : Vector2.t -> bear list -> bear option
+(** Returns the bear clicked, if any.*)
 
 val draw_menu_bear : bear -> unit
 (**Draws a bear on the menu.*)
-
-val draw_menu_bears : bear list -> unit
-(**Draws all the menu bears in a given list.*)
 
 val dest_rect_custom : bear -> float -> float -> Rectangle.t
 (** Helps with resizing of images to make sure all bears are similar size*)
@@ -73,6 +70,9 @@ val draw_bear : bear -> unit
 
 val draw_bears : bear list -> unit
 (**Draws the placed bears in the game*)
+
+val draw_menu_bears : bear list -> unit
+(**Draws all the menu bears in a given list.*)
 
 val draw_selected_bear : bear option -> unit
 (**Draws the bear the user is currently dragging across the screen.*)
