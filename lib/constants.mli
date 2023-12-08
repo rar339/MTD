@@ -1,6 +1,7 @@
-open Raylib
 (** This is a file containing the relevant constants for our game. Those
    that are mutable are declared as references. *)
+
+open Raylib
 
 type gamestate = Home | Inactive | Active | Lose
 

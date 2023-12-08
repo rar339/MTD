@@ -17,6 +17,7 @@ let setup () =
   Raylib.init_window 0 0 "MTD";
   screen_width := float_of_int (get_screen_width ());
   screen_height := float_of_int (get_screen_height ());
+
   toggle_fullscreen ();
   Raylib.set_target_fps 60;
 
