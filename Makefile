@@ -4,7 +4,7 @@ build:
 	dune build
 
 test:
-	OCAMLRUNPARAM=b dune exec test/mtd.exe
+	OCAMLRUNPARAM=b dune exec test/test.exe
 
 bisect: bisect-clean
 	-dune exec --instrument-with bisect_ppx --force test/test.exe

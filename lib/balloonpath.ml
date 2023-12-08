@@ -108,8 +108,11 @@ let list_from_yojson (dimensions_list : Yojson.Basic.t) =
   | _ -> failwith "impossible"
 
 let produce_point (dim : float list) =
-  create_turn_point (List.nth dim 0) (List.nth dim 1) (List.nth dim 2)
-    (List.nth dim 3) (List.nth dim 4)
+  if List.length dim < 5 then
+    failwith "Cannot produce point from dimension less than 5"
+  else
+    create_turn_point (List.nth dim 0) (List.nth dim 1) (List.nth dim 2)
+      (List.nth dim 3) (List.nth dim 4)
 
 (**Takes in a list of lists.*)
 let rec extract_points (rects : Yojson.Basic.t list) =
