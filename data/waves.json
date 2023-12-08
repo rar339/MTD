@@ -4,8 +4,8 @@
       "Colors": [
         "Red"
       ],
-      "Count": 20,
-      "Spacing": 15
+      "Count": 15,
+      "Spacing": 20
     }
   ],
   "2": [
@@ -13,8 +13,8 @@
       "Colors": [
         "Red"
       ],
-      "Count": 30,
-      "Spacing": 10
+      "Count": 25,
+      "Spacing": 20
     }
   ],
   "3": [
@@ -159,28 +159,28 @@
       "Colors": [
         "Red"
       ],
-      "Count": 50,
-      "Spacing": 2
+      "Count": 30,
+      "Spacing": 8
     },
     {
       "Colors": [
         "Blue"
       ],
-      "Count": 60,
-      "Spacing": 2
+      "Count": 30,
+      "Spacing": 8
     },
     {
       "Colors": [
         "Green"
       ],
-      "Count": 60,
+      "Count": 20,
       "Spacing": 2
     },
     {
       "Colors": [
         "Yellow"
       ],
-      "Count": 10,
+      "Count": 5,
       "Spacing": 30
     }
   ],
@@ -189,8 +189,8 @@
       "Colors": [
         "Orange"
       ],
-      "Count": 10,
-      "Spacing": 25
+      "Count": 20,
+      "Spacing": 20
     }
   ],
   "18": [
@@ -199,7 +199,7 @@
         "Blue"
       ],
       "Count": 150,
-      "Spacing": 1
+      "Spacing": 10
     }
   ],
   "19": [
@@ -216,7 +216,7 @@
       "Colors": [
         "Orange"
       ],
-      "Count": 15,
+      "Count": 30,
       "Spacing": 15
     }
   ],
@@ -236,7 +236,7 @@
         "Yellow",
         "Orange"
       ],
-      "Count": 10,
+      "Count": 5,
       "Spacing": 8
     }
   ],
@@ -254,15 +254,15 @@
       "Colors": [
         "Orange"
       ],
-      "Count": 30,
+      "Count": 15,
       "Spacing": 2
     },
     {
       "Colors": [
         "Green"
       ],
-      "Count": 100,
-      "Spacing": 2
+      "Count": 75,
+      "Spacing": 10
     }
   ],
   "25": [
@@ -289,8 +289,8 @@
       "Colors": [
         "Green"
       ],
-      "Count": 300,
-      "Spacing": 5
+      "Count": 200,
+      "Spacing": 10
     }
   ],
   "28": [
