@@ -271,7 +271,7 @@ let draw_game () =
         "end of each round. Use it strategically to buy and upgrade bears.";
       Raygui.label
         (Rectangle.create (!screen_width /. 2.2) (6.4 *. !screen_height /. 9.) 100. 100.)
-        "Goodluck!";
+        "Good luck!";
       show_window
     then showInstructions := false)
   else if (*RESTART GAME********************************)
