@@ -8,8 +8,8 @@ let vel1negx = Raylib.Vector2.create (-1.0) 0.0
 let vel1negy = Raylib.Vector2.create 0.0 (-1.0)
 
 (* MAKE BALLOON TO TEST *)
-let make_test_balloon x_pos y_pos current_turn velocity color : Balloons.balloon
-    =
+let make_test_balloon x_pos y_pos current_turn velocity color :
+    MTD.Balloons.balloon =
   {
     color;
     velocity;
@@ -19,6 +19,19 @@ let make_test_balloon x_pos y_pos current_turn velocity color : Balloons.balloon
     remove = false;
     freeze_duration = 0;
   }
+
+(* let make_test_bullet bear velocity : MTD.Projectiles.bullet = {
+     origin = bear;
+     position = bear.position;
+     velocity;
+     color = new_color;
+     image = determine_projectile_img bear;
+     radius = bullet_radius;
+     pierce = 1;
+     hits = [];
+     timer = round_float time;
+     target = Some balloon;
+   } *)
 
 let triple_option_printer elt_printer triple =
   match triple with
@@ -711,13 +724,119 @@ let run_tests () =
       ]
   in
 
-  let determine_projectile_img_tests = [] in
-  let is_balloon_in_range_tests = [] in
-  let compare_balloons_tests = [] in
-  let sort_balloons_tests = [] in
-  let find_target_tests = [] in
-  let find_balloons_in_range_tests = [] in
-  let check_screen_bounds_tests = [] in
+  let is_balloon_in_range_tests =
+    [
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 0.0 0.0)
+       in
+       let balloon = MTD.Balloons.make_balloon Red in
+       "projectiles is_balloon_in_range true " >:: fun _ ->
+       assert_equal true (MTD.Projectiles.is_balloon_in_range bear balloon));
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 1000.0 1000.0)
+       in
+       let balloon = MTD.Balloons.make_balloon Red in
+       "projectiles is_balloon_in_range false " >:: fun _ ->
+       assert_equal false (MTD.Projectiles.is_balloon_in_range bear balloon));
+    ]
+  in
+  let compare_balloons_tests =
+    [
+      (let balloon1 = MTD.Balloons.make_balloon Red in
+       balloon1.current_turn <- 1;
+       let balloon2 = MTD.Balloons.make_balloon Blue in
+       "projectiles compare_balloons -1 " >:: fun _ ->
+       assert_equal (-1) (MTD.Projectiles.compare_balloons balloon1 balloon2));
+      (let balloon1 = MTD.Balloons.make_balloon Red in
+       balloon1.current_turn <- 1;
+       let balloon2 = MTD.Balloons.make_balloon Blue in
+       "projectiles compare_balloons -1 " >:: fun _ ->
+       assert_equal 1 (MTD.Projectiles.compare_balloons balloon2 balloon1));
+    ]
+  in
+  let sort_balloons_tests =
+    [
+      (let balloon1 = MTD.Balloons.make_balloon Red in
+       balloon1.current_turn <- 1;
+       let balloon2 = MTD.Balloons.make_balloon Blue in
+       let balloon_lst = [ balloon1; balloon2 ] in
+       "projectiles sort_ballooon already sorted " >:: fun _ ->
+       assert_equal balloon_lst (MTD.Projectiles.sort_balloons balloon_lst));
+      (let balloon1 = MTD.Balloons.make_balloon Red in
+       let balloon2 = MTD.Balloons.make_balloon Blue in
+       balloon2.current_turn <- 1;
+       let balloon_lst = [ balloon1; balloon2 ] in
+       "projectiles sort_ballooon need to sort " >:: fun _ ->
+       assert_equal (List.rev balloon_lst)
+         (MTD.Projectiles.sort_balloons balloon_lst));
+    ]
+  in
+  let find_target_tests =
+    [
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 1000.0 1000.0)
+       in
+       "projectiles find_target empty list " >:: fun _ ->
+       assert_equal None (MTD.Projectiles.find_target bear []));
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 10.0 10.0)
+       in
+       let balloon1 = MTD.Balloons.make_balloon Red in
+       let balloon_lst = [ balloon1 ] in
+       "projectiles find_target single element list " >:: fun _ ->
+       assert_equal (Some balloon1)
+         (MTD.Projectiles.find_target bear balloon_lst));
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 10.0 10.0)
+       in
+       let balloon1 = MTD.Balloons.make_balloon Red in
+       let balloon2 = MTD.Balloons.make_balloon Red in
+       let balloon_lst = [ balloon1; balloon2 ] in
+       "projectiles find_target multi element list " >:: fun _ ->
+       assert_equal (Some balloon1)
+         (MTD.Projectiles.find_target bear balloon_lst));
+    ]
+  in
+  let find_balloons_in_range_tests =
+    [
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 1000.0 1000.0)
+       in
+       "projectiles find_balloons_in_range empty list" >:: fun _ ->
+       assert_equal [] (MTD.Projectiles.find_balloons_in_range bear []));
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 1000.0 1000.0)
+       in
+       let balloon1 = MTD.Balloons.make_balloon Red in
+       let balloon_lst = [ balloon1 ] in
+       "projectiles find_balloons_in_range list none" >:: fun _ ->
+       assert_equal [] (MTD.Projectiles.find_balloons_in_range bear balloon_lst));
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 10.0 10.0)
+       in
+       let balloon1 = MTD.Balloons.make_balloon Red in
+       let balloon_lst = [ balloon1 ] in
+       "projectiles find_balloons_in_range list yes" >:: fun _ ->
+       assert_equal balloon_lst
+         (MTD.Projectiles.find_balloons_in_range bear balloon_lst));
+    ]
+  in
+  let check_screen_bounds_tests =
+    [ (* (
+         let bull
+           =
+         in
+         "projectiles check_screen_bounds empty list" >:: fun _ ->
+         assert_equal false MTD.Projectiles.check_screen_bounds); *) ]
+  in
   let check_tower_bounds_tests = [] in
   let check_bullet_bounds_tests = [] in
   let time_expired_tests = [] in
@@ -726,11 +845,10 @@ let run_tests () =
   let projectiles_tests =
     List.flatten
       [
-        determine_projectile_img_tests @ is_balloon_in_range_tests
-        @ compare_balloons_tests @ sort_balloons_tests @ find_target_tests
-        @ find_balloons_in_range_tests @ check_screen_bounds_tests
-        @ check_tower_bounds_tests @ check_bullet_bounds_tests
-        @ time_expired_tests @ remove_bullets_tests;
+        is_balloon_in_range_tests @ compare_balloons_tests @ sort_balloons_tests
+        @ find_target_tests @ find_balloons_in_range_tests
+        @ check_screen_bounds_tests @ check_tower_bounds_tests
+        @ check_bullet_bounds_tests @ time_expired_tests @ remove_bullets_tests;
       ]
   in
   let tests =

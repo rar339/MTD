@@ -8,7 +8,6 @@ type bullet = {
   origin : bear;
   mutable position : Vector2.t;
   velocity : Vector2.t;
-  color : Color.t;
   image : Texture2D.t option;
   radius : float;
   mutable pierce : int;

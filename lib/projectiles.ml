@@ -16,7 +16,6 @@ type bullet = {
   origin : bear;
   mutable position : Vector2.t;
   velocity : Vector2.t;
-  color : Color.t;
   image : Texture2D.t option;
   radius : float;
   mutable pierce : int;
@@ -117,15 +116,11 @@ let fire_dart (bear : Bears.bear) (balloon : Balloons.balloon) =
       projectile_moving_calc bear
         { balloon with velocity = Vector2.create 0.0 0.0 }
   in
-  let new_color =
-    match bear.bear_type with Dragon -> Color.red | _ -> Color.black
-  in
   bullet_collection :=
     {
       origin = bear;
       position = bear.position;
       velocity;
-      color = new_color;
       image = determine_projectile_img bear;
       radius = bullet_radius;
       pierce = 1;
@@ -142,7 +137,6 @@ let init_puck (bear : bear) (v1 : float) (v2 : float) =
     origin = bear;
     position = bear.position;
     velocity;
-    color = Color.black;
     image = determine_projectile_img bear;
     radius = bullet_radius;
     pierce = 1;
