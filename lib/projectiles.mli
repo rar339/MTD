@@ -23,6 +23,9 @@ type bullet = {
   -Origin is the position the bullet was fired from, so that we can delete bullets
   once they leave the bear's range.*)
 
+val freeze_fired : (int ref * bear) list ref
+(**The number of frames to display the freeze_fired animation.*)
+
 val bullet_collection : bullet list ref
 (**A collection of all the bullets currently on the screen.*)
 
@@ -68,6 +71,12 @@ val find_balloons_in_range : bear -> balloon list -> balloon list
 
 val freeze_balloons : bear -> balloon list -> unit
 (**Applies a bear's freeze to all the balloons in the given list.*)
+
+val draw_freeze_animations : (int ref * bear) list -> unit
+(**Draws the freeze animation for all polar bears that have fired.*)
+
+val update_animation_list : (int ref * bear) list -> (int ref * bear) list
+(**Updates the animation list, removing expired animations.*)
 
 val fire_polar : bear -> balloon list -> unit
 (**Fires the given polar bear.*)

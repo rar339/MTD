@@ -173,6 +173,8 @@ let update_game () =
   Menubar.check_hover ();
   Menubar.place_bear ();
   bear_collection := Bears.remove_bears !bear_collection;
+  Projectiles.freeze_fired :=
+    Projectiles.update_animation_list !Projectiles.freeze_fired;
 
   Bears.update_selected_bear !selected_bear (get_mouse_position ());
 
@@ -236,6 +238,7 @@ let draw_game () =
   Menubar.draw_hover_highlight ();
   (*Draw PLACED bears!*)
   Bears.draw_bears !Bears.bear_collection;
+  Projectiles.draw_freeze_animations !Projectiles.freeze_fired;
 
   (*Draw bullets*)
   draw_bullets !bullet_collection;
