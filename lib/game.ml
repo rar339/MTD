@@ -9,7 +9,7 @@ open Projectiles
 
 (******************************************************************************)
 let play_button screen_width screen_height =
-  Raygui.set_font(Option.get !game_font);
+  Raygui.set_font (Option.get !game_font);
   if
     Raygui.(
       button
@@ -259,19 +259,29 @@ let draw_game () =
           ""
       in
       Raygui.label
-        (Rectangle.create (!screen_width /. 3.) (1.8 *. !screen_height /. 9.) 100. 100.)
+        (Rectangle.create (!screen_width /. 3.)
+           (1.8 *. !screen_height /. 9.)
+           100. 100.)
         "Welcome to McGraw Tower Defense!";
       Raygui.label
-        (Rectangle.create (!screen_width /. 6.) (3.2 *. !screen_height /. 9.) 100. 100.)
+        (Rectangle.create (!screen_width /. 6.)
+           (3.2 *. !screen_height /. 9.)
+           100. 100.)
         "Defend Cornell and McGraw Tower from waves of oncoming balloons.";
       Raygui.label
-        (Rectangle.create (!screen_width /. 6.2) (3.8 *. !screen_height /. 9.) 100. 100.)
+        (Rectangle.create (!screen_width /. 6.2)
+           (3.8 *. !screen_height /. 9.)
+           100. 100.)
         "You earn cash for every layer of a balloon that you pop and at the";
       Raygui.label
-        (Rectangle.create (!screen_width /. 6.) (4.4 *. !screen_height /. 9.) 100. 100.)
+        (Rectangle.create (!screen_width /. 6.)
+           (4.4 *. !screen_height /. 9.)
+           100. 100.)
         "end of each round. Use it strategically to buy and upgrade bears.";
       Raygui.label
-        (Rectangle.create (!screen_width /. 2.2) (6.4 *. !screen_height /. 9.) 100. 100.)
+        (Rectangle.create (!screen_width /. 2.2)
+           (6.4 *. !screen_height /. 9.)
+           100. 100.)
         "Goodluck!";
       show_window
     then showInstructions := false)
