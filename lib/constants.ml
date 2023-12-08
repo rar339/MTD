@@ -31,8 +31,8 @@ let round = ref 0
 let speed_mult = ref 1
 
 (*Game restart attributes*)
-let start_cash = 40000
-let start_lives = 2
+let start_cash = 600
+let start_lives = 50
 
 (*Game global attributes*)
 let count = ref 0

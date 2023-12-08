@@ -348,7 +348,7 @@ let draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height =
   Raygui.(set_style (Button `Base_color_pressed) 0x80808080);
   Raygui.(set_style (Default `Text_color_normal) 0xFFFFFFFF);
 
-  let upgrade_price = Constants.round_float (float_of_int bear.cost *. 0.75) in
+  let upgrade_price = Constants.round_float (float_of_int bear.cost *. 1.2) in
   if
     Raygui.(
       button
@@ -374,7 +374,7 @@ let draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height =
   Raygui.(set_style (Button `Base_color_focused) 0xADD8E6);
   Raygui.(set_style (Button `Base_color_pressed) 0x80808080);
   Raygui.(set_style (Default `Text_color_normal) 0xFFFFFFFF);
-  let upgrade_price = Constants.round_float (float_of_int bear.cost *. 0.50) in
+  let upgrade_price = Constants.round_float (float_of_int bear.cost *. 1.0) in
   if
     Raygui.(
       button
@@ -420,8 +420,8 @@ let display_selection selection =
       draw_info_background ();
       draw_info_title Hockey false rect_x rect_y rect_width rect_height;
       draw_sell_button bear rect_x rect_y rect_width rect_height;
-      draw_range_upgrade_button bear rect_x
-        (rect_y -. (rect_height /. 4.))
+      draw_damage_upgrade_button bear rect_x
+        (rect_y)
         rect_width rect_height;
       draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
   | Some ({ bear_type = Polar; _ } as bear) ->
