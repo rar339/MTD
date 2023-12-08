@@ -33,7 +33,7 @@ let setup () =
   Raygui.(set_style (Button `Base_color_normal) 0xFF000010);
   Raygui.(set_style (Button `Base_color_focused) 0x7F000000);
   Raygui.(set_style (Button `Base_color_pressed) 0x7F000000);
-  Raygui.(set_style (Default `Text_color_normal) 0xFFFFFF);
+  Raygui.(set_style (Default `Text_color_normal) 0xFFFFFFFF);
   Raygui.set_style (Default `Text_size) 36;
   Raygui.(set_style (Button `Border_width) 0);
   Raygui.set_font (Option.get !custom_font);
@@ -61,7 +61,7 @@ let draw_home () =
     0.0 (* Rotation (in radians) *)
     (!screen_width /. 1831.0) (* Scale *)
     Color.white;
-
+  Raygui.set_font (Option.get !game_font);
   (* create -> x y width height*)
   if
     Raygui.(
