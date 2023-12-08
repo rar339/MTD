@@ -129,7 +129,8 @@ let cash screen_width screen_height =
     (screen_height /. 19.)
 
 let draw_heart screen_width screen_height =
-  draw_texture_ex (Option.get !heart_logo_img)
+  draw_texture_ex
+    (Option.get !heart_logo_img)
     (Vector2.create
        (149. *. screen_width /. 200.)
        (0.45 *. screen_height /. 9.))
@@ -214,7 +215,7 @@ let draw_hover_highlight () =
 
 (**Draws the rectangle for the selection GUI.*)
 let draw_info_background () =
-  draw_rectangle_rec (Option.get !Constants.selection_rect) Color.gold;
+  draw_rectangle_rec (Option.get !Constants.selection_rect) Color.white;
   draw_rectangle_lines_ex (Option.get !Constants.selection_rect) 3. Color.black
 
 (**Draws the title for the selection GUI based on the bear type.*)
@@ -230,21 +231,50 @@ let display_hover_info (hover : bear option) =
   if mem_option hover !menu_bears then
     match hover with
     | None -> ()
-    | Some ({ bear_type = Dart; _ } as bear) ->
-        bear.position <- bear.position;
-        draw_info_background ()
-    | Some ({ bear_type = Hockey; _ } as bear) ->
-        bear.position <- bear.position;
-        draw_info_background ()
-    | Some ({ bear_type = Polar; _ } as bear) ->
-        bear.position <- bear.position;
-        draw_info_background ()
-    | Some ({ bear_type = Sniper; _ } as bear) ->
-        bear.position <- bear.position;
-        draw_info_background ()
-    | Some ({ bear_type = Dragon; _ } as bear) ->
-        bear.position <- bear.position;
-        draw_info_background ()
+    | Some ({ bear_type = Dart; _ }) -> draw_info_background ();
+        draw_text_ex (Option.get !game_font) "Dart Bear"
+          (Vector2.create
+             (Rectangle.x (Option.get !Constants.selection_rect) +. 0.9
+                *. (Rectangle.width (Option.get !Constants.selection_rect) /. 3.)
+             )
+             (Rectangle.y (Option.get !Constants.selection_rect) *. 1.05))
+          45. 2. Color.black
+    | Some ({ bear_type = Hockey; _ }) ->
+        draw_info_background ();
+        draw_text_ex (Option.get !game_font) "Hockey Bear"
+        (Vector2.create
+           (Rectangle.x (Option.get !Constants.selection_rect) +. 0.8
+              *. (Rectangle.width (Option.get !Constants.selection_rect) /. 3.)
+           )
+           (Rectangle.y (Option.get !Constants.selection_rect) *. 1.05))
+        45. 2. Color.black
+    | Some ({ bear_type = Polar; _ }) ->
+        draw_info_background ();
+        draw_text_ex (Option.get !game_font) "Polar Bear"
+        (Vector2.create
+           (Rectangle.x (Option.get !Constants.selection_rect) +. 0.9
+              *. (Rectangle.width (Option.get !Constants.selection_rect) /. 3.)
+           )
+           (Rectangle.y (Option.get !Constants.selection_rect) *. 1.05))
+        45. 2. Color.black
+    | Some ({ bear_type = Sniper; _ }) ->
+        draw_info_background ();
+        draw_text_ex (Option.get !game_font) "Sniper Bear"
+        (Vector2.create
+           (Rectangle.x (Option.get !Constants.selection_rect) +. 0.8
+              *. (Rectangle.width (Option.get !Constants.selection_rect) /. 3.)
+           )
+           (Rectangle.y (Option.get !Constants.selection_rect) *. 1.05))
+        45. 2. Color.black
+    | Some ({ bear_type = Dragon; _ }) ->
+        draw_info_background ();
+        draw_text_ex (Option.get !game_font) "Dragon Bear"
+        (Vector2.create
+           (Rectangle.x (Option.get !Constants.selection_rect) +. 0.7
+              *. (Rectangle.width (Option.get !Constants.selection_rect) /. 3.)
+           )
+           (Rectangle.y (Option.get !Constants.selection_rect) *. 1.05))
+        45. 2. Color.black
 
 (**Draw the sell button in the selection GUI, the sell rate is 0.70 of the original
     cost.*)
