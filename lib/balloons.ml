@@ -37,7 +37,6 @@ type balloon = {
   mutable color : balloon_colors;
   mutable velocity : Raylib.Vector2.t;
   mutable position : Raylib.Vector2.t;
-  mutable is_lead : bool;
   mutable img : Raylib.Texture2D.t;
   mutable current_turn : int;
   mutable remove : bool;
@@ -124,7 +123,7 @@ let change_velocity balloon new_color =
   else Vector2.create (-1.0 *. determine_velocity new_color) 0.0
 
 (* Creates a balloon given the color. *)
-let make_balloon color is_lead =
+let make_balloon color =
   let position =
     Raylib.Vector2.create (-30.0) (3. *. floor (!screen_height /. 28.5))
   in
@@ -134,7 +133,6 @@ let make_balloon color is_lead =
     color;
     velocity = Raylib.Vector2.create (determine_velocity color) 0.0;
     position = Vector2.create x y;
-    is_lead;
     img = determine_image color;
     current_turn = 0;
     remove = false;
@@ -156,13 +154,12 @@ let check_balloon_exit (balloon : balloon) =
 let set_balloon_color balloon new_color =
   balloon.color <- new_color;
   balloon.img <- determine_image new_color;
-  balloon.velocity <- change_velocity balloon new_color;
-  if new_color <> Lead then balloon.is_lead <- false
+  balloon.velocity <- change_velocity balloon new_color
 
 (**Updates a balloons color, etc. after a collision with a projectile.
     If bear is a zombie, slows down the balloon*)
 let update_balloon_status bear balloon =
-  if (balloon.is_lead && bear.pops_lead) || not balloon.is_lead then
+  if (balloon.color = Lead && bear.pops_lead) || not (balloon.color = Lead) then
     let new_value = value_of_balloon balloon.color - bear.damage in
     match balloon_of_value new_value with
     (*If none, the balloon should be removed.*)

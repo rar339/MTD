@@ -25,7 +25,6 @@ type balloon = {
   mutable color : balloon_colors;
   mutable velocity : Raylib.Vector2.t;
   mutable position : Raylib.Vector2.t;
-  mutable is_lead : bool;
   mutable img : Raylib.Texture2D.t;
   mutable current_turn : int;
   mutable remove : bool;
@@ -63,7 +62,7 @@ val determine_velocity : balloon_colors -> float
 val change_velocity : balloon -> balloon_colors -> Raylib.Vector2.t
 (** Changes the velocity of a balloon while preserving its direction. *)
 
-val make_balloon : balloon_colors -> bool -> balloon
+val make_balloon : balloon_colors -> balloon
 (**Creates a balloon given the color. *)
 
 val lower_lives : balloon_colors -> unit
