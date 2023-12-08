@@ -55,6 +55,9 @@ val generate_menu_bears : float -> float -> bear list
 val determine_bear_clicked : Vector2.t -> bear list -> bear option
 (** Returns the bear clicked, if any.*)
 
+val determine_bear_hovered : Vector2.t -> bear list -> bear option
+(** Returns the bear being hovered over, if any.*)
+  
 val draw_menu_bear : bear -> unit
 (**Draws a bear on the menu.*)
 
