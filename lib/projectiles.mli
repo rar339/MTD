@@ -105,6 +105,9 @@ val check_bullet_bounds : bullet -> bool
 (**Delete bullets that have left the bounds of the screen or their tower's
    range. TRUE if it is out of bounds and should be deleted.*)
 
+val time_expired : bullet -> bool
+(** Ensures that the Sniper bear always hits the target. *)
+
 val remove_bullets : bullet list -> bullet list
 (**Remove bullets whether they are out of bounds or have collided.*)
 

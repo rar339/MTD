@@ -566,10 +566,13 @@ let run_tests () =
           (MTD.Bears.determine_bear_clicked
              (Raylib.Vector2.create 0.0 0.0)
              (MTD.Bears.generate_menu_bears 100.0 100.0)) );
-      (let bear =
+      (Constants.cash := 1000;
+       let bear =
          MTD.Bears.determine_bear_clicked
-           (Raylib.Vector2.create 0.0 0.0)
-           (MTD.Bears.generate_menu_bears 0.0 0.0)
+           (Raylib.Vector2.create 10.0 10.0)
+           (MTD.Bears.make_bear false MTD.Bears.Dart
+              (Raylib.Vector2.create 10.0 10.0)
+           :: [])
        in
        "bears determine_bear_clicked multi element list hit" >:: fun _ ->
        assert_equal MTD.Bears.Dart (Option.get bear).bear_type);
@@ -707,14 +710,38 @@ let run_tests () =
         @ mem_option_tests @ cost_of_beartype_tests;
       ]
   in
+
+  let determine_projectile_img_tests = [] in
+  let is_balloon_in_range_tests = [] in
+  let compare_balloons_tests = [] in
+  let sort_balloons_tests = [] in
+  let find_target_tests = [] in
+  let find_balloons_in_range_tests = [] in
+  let check_screen_bounds_tests = [] in
+  let check_tower_bounds_tests = [] in
+  let check_bullet_bounds_tests = [] in
+  let time_expired_tests = [] in
+  let remove_bullets_tests = [] in
+
+  let projectiles_tests =
+    List.flatten
+      [
+        determine_projectile_img_tests @ is_balloon_in_range_tests
+        @ compare_balloons_tests @ sort_balloons_tests @ find_target_tests
+        @ find_balloons_in_range_tests @ check_screen_bounds_tests
+        @ check_tower_bounds_tests @ check_bullet_bounds_tests
+        @ time_expired_tests @ remove_bullets_tests;
+      ]
+  in
   let tests =
     balloonpath_tests @ balloons_tests @ bears_tests @ menubar_tests
+    @ projectiles_tests
   in
   let suite = "test suite for MTD" >::: List.flatten [ tests ] in
 
   (* FINISH THESE LATER *)
   (*
-      let projectiles_tests = []
+      
       let waves_tests = [] *)
   run_test_tt_main suite;
 
