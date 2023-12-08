@@ -2,15 +2,18 @@ open OUnit2
 open MTD
 
 let vel0 = Raylib.Vector2.create 0.0 0.0
+let vel1x = Raylib.Vector2.create 1.0 0.0
+let vel1y = Raylib.Vector2.create 0.0 1.0
+let vel1negx = Raylib.Vector2.create (-1.0) 0.0
+let vel1negy = Raylib.Vector2.create 0.0 (-1.0)
 
 (* MAKE BALLOON TO TEST *)
-let make_test_balloon x_pos y_pos current_turn velocity color is_lead :
-    Balloons.balloon =
+let make_test_balloon x_pos y_pos current_turn velocity color : Balloons.balloon
+    =
   {
     color;
     velocity;
     position = Raylib.Vector2.create x_pos y_pos;
-    is_lead;
     img = Raylib.load_texture "./img/balloons/red.png";
     current_turn;
     remove = false;
@@ -27,7 +30,7 @@ let triple_option_printer elt_printer triple =
 let run_tests () =
   Raylib.init_window 0 0 "TESTS";
   (*Lead Balloon at (0,0) with 0 with no velocity, and is lead. *)
-  let balloon1 = make_test_balloon 0.0 0.0 0 vel0 Lead true in
+  let balloon1 = make_test_balloon 0.0 0.0 0 vel0 Lead in
   let check_turn_collide_tests =
     [
       ( "balloonpath check_turn_collide empty list" >:: fun _ ->
@@ -59,7 +62,7 @@ let run_tests () =
     ]
   in
   let turn_balloon_tests =
-    let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+    let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead in
     [
       (let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create 0.0 1.0 in
        let (v2 : Raylib.Vector2.t) =
@@ -69,7 +72,7 @@ let run_tests () =
        assert_equal
          (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
          (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
-      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead in
        let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create (-1.0) 0.0 in
        let (v2 : Raylib.Vector2.t) =
          MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 2)
@@ -78,7 +81,7 @@ let run_tests () =
        assert_equal
          (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
          (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
-      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead in
        let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create 0.0 (-1.0) in
        let (v2 : Raylib.Vector2.t) =
          MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 3)
@@ -87,7 +90,7 @@ let run_tests () =
        assert_equal
          (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
          (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
-      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead in
        let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create 1.0 0.0 in
        let (v2 : Raylib.Vector2.t) =
          MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 4)
@@ -96,7 +99,7 @@ let run_tests () =
        assert_equal
          (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
          (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
-      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead in
        let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create 0.0 (-1.0) in
        let (v2 : Raylib.Vector2.t) =
          MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 5)
@@ -105,7 +108,7 @@ let run_tests () =
        assert_equal
          (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
          (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
-      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead in
        let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create 1.0 0.0 in
        let (v2 : Raylib.Vector2.t) =
          MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 6)
@@ -114,7 +117,7 @@ let run_tests () =
        assert_equal
          (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
          (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
-      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead in
        let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create 0.0 1.0 in
        let (v2 : Raylib.Vector2.t) =
          MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 7)
@@ -123,7 +126,7 @@ let run_tests () =
        assert_equal
          (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
          (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
-      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead in
        let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create (-1.0) 0.0 in
        let (v2 : Raylib.Vector2.t) =
          MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 8)
@@ -132,7 +135,7 @@ let run_tests () =
        assert_equal
          (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
          (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
-      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead in
        let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create 0.0 1.0 in
        let (v2 : Raylib.Vector2.t) =
          MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 9)
@@ -141,7 +144,7 @@ let run_tests () =
        assert_equal
          (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
          (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
-      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead in
        let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create 1.0 0.0 in
        let (v2 : Raylib.Vector2.t) =
          MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 10)
@@ -150,7 +153,7 @@ let run_tests () =
        assert_equal
          (Raylib.Vector2.x v1, Raylib.Vector2.y v1)
          (Raylib.Vector2.x v2, Raylib.Vector2.y v2));
-      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead true in
+      (let balloon = make_test_balloon 8.0 8.0 1 vel0 Lead in
        let (v1 : Raylib.Vector2.t) = Raylib.Vector2.create 0.0 (-1.0) in
        let (v2 : Raylib.Vector2.t) =
          MTD.Balloonpath.turn_balloon balloon 1.0 (0, 0, 11)
@@ -167,8 +170,8 @@ let run_tests () =
         assert_equal () (MTD.Balloonpath.move_balloons [] []) );
       (let balloon_lst =
          [
-           make_test_balloon 1.0 1.0 1 vel0 Lead true;
-           make_test_balloon 1.0 1.0 1 vel0 Red false;
+           make_test_balloon 1.0 1.0 1 vel0 Lead;
+           make_test_balloon 1.0 1.0 1 vel0 Red;
          ]
        in
        "balloonpath move_balloons multi element balloons empty turn points"
@@ -179,8 +182,8 @@ let run_tests () =
        assert_equal () (MTD.Balloonpath.move_balloons [] turn_points));
       (let balloon_lst =
          [
-           make_test_balloon 1.0 1.0 1 vel0 Lead true;
-           make_test_balloon 1.0 1.0 1 vel0 Red false;
+           make_test_balloon 1.0 1.0 1 vel0 Lead;
+           make_test_balloon 1.0 1.0 1 vel0 Red;
          ]
        in
        let turn_points = [ (1, 1, 2); (2, 3, 4) ] in
@@ -263,7 +266,7 @@ let run_tests () =
   in
   let get_hitbox_tests =
     [
-      (let balloon = make_test_balloon 0.0 0.0 0 vel0 Lead true in
+      (let balloon = make_test_balloon 0.0 0.0 0 vel0 Lead in
        let rect = MTD.Balloons.get_hitbox balloon in
        "balloons get_hitbox starting balloon" >:: fun _ ->
        assert_equal (0.0, 0.0, 0.0, 0.0)
@@ -271,7 +274,7 @@ let run_tests () =
            Raylib.Rectangle.y rect,
            Raylib.Rectangle.height rect,
            Raylib.Rectangle.width rect ));
-      (let balloon = make_test_balloon 1.0 1.0 0 vel0 Lead true in
+      (let balloon = make_test_balloon 1.0 1.0 0 vel0 Lead in
        let rect = MTD.Balloons.get_hitbox balloon in
        "balloons get_hitbox moving balloon" >:: fun _ ->
        assert_equal (1.0, 1.0, 0.0, 0.0)
@@ -350,8 +353,37 @@ let run_tests () =
         assert_equal 3.0 (MTD.Balloons.determine_velocity MTD.Balloons.Lead) );
     ]
   in
-  let change_velocity_tests = [] in
-  let make_balloon_tests = [] in
+  let change_velocity_tests =
+    [
+      (let balloon = make_test_balloon 0.0 0.0 0 vel1x Blue in
+       "balloons change_velocity Blue to Red pos x" >:: fun _ ->
+       let new_vel = MTD.Balloons.change_velocity balloon MTD.Balloons.Red in
+       assert_equal (2.0, 0.0)
+         (Raylib.Vector2.x new_vel, Raylib.Vector2.y new_vel));
+      (let balloon = make_test_balloon 0.0 0.0 0 vel1y Blue in
+       "balloons change_velocity Blue to Red pos y" >:: fun _ ->
+       let new_vel = MTD.Balloons.change_velocity balloon MTD.Balloons.Red in
+       assert_equal (0.0, 2.0)
+         (Raylib.Vector2.x new_vel, Raylib.Vector2.y new_vel));
+      (let balloon = make_test_balloon 0.0 0.0 0 vel1negx Blue in
+       "balloons change_velocity Blue to Red neg x" >:: fun _ ->
+       let new_vel = MTD.Balloons.change_velocity balloon MTD.Balloons.Red in
+       assert_equal (-2.0, 0.0)
+         (Raylib.Vector2.x new_vel, Raylib.Vector2.y new_vel));
+      (let balloon = make_test_balloon 0.0 0.0 0 vel1negy Blue in
+       "balloons change_velocity Blue to Red neg y" >:: fun _ ->
+       let new_vel = MTD.Balloons.change_velocity balloon MTD.Balloons.Red in
+       assert_equal (0.0, -2.0)
+         (Raylib.Vector2.x new_vel, Raylib.Vector2.y new_vel));
+    ]
+  in
+  let make_balloon_tests =
+    [ (* (let balloon = MTD.Balloons.make_balloon Red in
+         "balloons make_balloon Red" >:: fun _ ->
+         assert_equal
+           (0.0, 0.0, -2.0, MTD.Balloons.Red)
+           (Raylib.Vector2.x balloon.position, Raylib.Vector2.y balloon.position, balloon.velocity, balloon.color)); *) ]
+  in
   let lower_lives_tests = [] in
   let remove_balloons_tests = [] in
 

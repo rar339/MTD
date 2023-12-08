@@ -215,76 +215,90 @@ let draw_hover_highlight () =
 
 (**Draws the rectangle for the selection GUI.*)
 let draw_info_background () =
-  draw_rectangle_rec (Option.get !Constants.selection_rect) Color.white;
+  draw_rectangle_rec (Option.get !Constants.selection_rect) Color.gray;
   draw_rectangle_lines_ex (Option.get !Constants.selection_rect) 3. Color.black
 
+let cost_of_beartype beartype =
+  let properties = extract_bear_properties beartype in
+  properties |> Yojson.Basic.Util.member "cost" |> Yojson.Basic.Util.to_int
+
+let bear_info_text (bear : Bears.bear_types) rect_x rect_y rect_width
+    rect_height =
+  Raygui.set_font (Option.get !menu_font);
+  Raygui.label
+    (Rectangle.create
+       (rect_x +. (rect_width /. 2.8))
+       rect_y rect_width
+       (1.5 *. rect_height /. 3.))
+    ("Cost : " ^ string_of_int (cost_of_beartype bear));
+  match bear with
+  | Dart ->
+      Raygui.label
+        (Rectangle.create rect_x rect_y rect_width (2.5 *. rect_height /. 3.))
+        "  Shoots darts at bears."
+  | Hockey ->
+      Raygui.label
+        (Rectangle.create rect_x rect_y rect_width (2.5 *. rect_height /. 3.))
+        "  Shoots hockey pucks at bears."
+  | Polar ->
+      Raygui.label
+        (Rectangle.create rect_x rect_y rect_width (2.5 *. rect_height /. 3.))
+        "  Slows down bears with ice."
+  | Sniper ->
+      Raygui.label
+        (Rectangle.create rect_x rect_y rect_width (2.5 *. rect_height /. 3.))
+        "  Snipes bears"
+  | Dragon ->
+      Raygui.label
+        (Rectangle.create rect_x rect_y rect_width (2.5 *. rect_height /. 3.))
+        "  Shoots fire at balloons."
+
 (**Draws the title for the selection GUI based on the bear type.*)
-let draw_info_title beartype rect_x rect_y rect_width =
-  draw_text_ex (Option.get !game_font)
-    (Bears.string_of_beartype beartype ^ " Bear")
-    (Vector2.create (rect_x +. (0.9 *. (rect_width /. 3.))) (rect_y *. 1.05))
-    45. 2. Color.black
+let draw_info_title beartype (is_menu_descr : bool) rect_x rect_y rect_width
+    rect_height =
+  if is_menu_descr then
+    bear_info_text beartype rect_x rect_y rect_width rect_height;
+  Raygui.set_style (Default `Background_color) 0x6699CC;
+  Raygui.set_font (Option.get !game_font);
+  Raygui.label
+    (Rectangle.create
+       (rect_x +. (rect_width /. 2.8))
+       rect_y rect_width
+       (1.1 *. rect_height /. 4.))
+    (string_of_beartype beartype)
 
 (**Draws the information about a menu bear that is hovered over, if any. This
     should simply drawn ontop of the current selection, if a bear is selected.*)
 let display_hover_info (hover : bear option) =
   if mem_option hover !menu_bears then
+    let rect_height = Rectangle.height (Option.get !Constants.selection_rect) in
+    let rect_width = Rectangle.width (Option.get !Constants.selection_rect) in
+    let rect_x = Rectangle.x (Option.get !Constants.selection_rect) in
+    let rect_y = Rectangle.y (Option.get !Constants.selection_rect) in
     match hover with
     | None -> ()
     | Some { bear_type = Dart; _ } ->
         draw_info_background ();
-        draw_text_ex (Option.get !game_font) "Dart Bear"
-          (Vector2.create
-             (Rectangle.x (Option.get !Constants.selection_rect)
-             +. 0.9
-                *. (Rectangle.width (Option.get !Constants.selection_rect) /. 3.)
-             )
-             (Rectangle.y (Option.get !Constants.selection_rect) *. 1.05))
-          45. 2. Color.black
+        draw_info_title Dart true rect_x rect_y rect_width rect_height
     | Some { bear_type = Hockey; _ } ->
         draw_info_background ();
-        draw_text_ex (Option.get !game_font) "Hockey Bear"
-          (Vector2.create
-             (Rectangle.x (Option.get !Constants.selection_rect)
-             +. 0.8
-                *. (Rectangle.width (Option.get !Constants.selection_rect) /. 3.)
-             )
-             (Rectangle.y (Option.get !Constants.selection_rect) *. 1.05))
-          45. 2. Color.black
+        draw_info_title Hockey true rect_x rect_y rect_width rect_height
     | Some { bear_type = Polar; _ } ->
         draw_info_background ();
-        draw_text_ex (Option.get !game_font) "Polar Bear"
-          (Vector2.create
-             (Rectangle.x (Option.get !Constants.selection_rect)
-             +. 0.9
-                *. (Rectangle.width (Option.get !Constants.selection_rect) /. 3.)
-             )
-             (Rectangle.y (Option.get !Constants.selection_rect) *. 1.05))
-          45. 2. Color.black
+        draw_info_title Polar true rect_x rect_y rect_width rect_height
     | Some { bear_type = Sniper; _ } ->
         draw_info_background ();
-        draw_text_ex (Option.get !game_font) "Sniper Bear"
-          (Vector2.create
-             (Rectangle.x (Option.get !Constants.selection_rect)
-             +. 0.8
-                *. (Rectangle.width (Option.get !Constants.selection_rect) /. 3.)
-             )
-             (Rectangle.y (Option.get !Constants.selection_rect) *. 1.05))
-          45. 2. Color.black
+        draw_info_title Sniper true rect_x rect_y rect_width rect_height
     | Some { bear_type = Dragon; _ } ->
         draw_info_background ();
-        draw_text_ex (Option.get !game_font) "Dragon Bear"
-          (Vector2.create
-             (Rectangle.x (Option.get !Constants.selection_rect)
-             +. 0.7
-                *. (Rectangle.width (Option.get !Constants.selection_rect) /. 3.)
-             )
-             (Rectangle.y (Option.get !Constants.selection_rect) *. 1.05))
-          45. 2. Color.black
+        draw_info_title Dragon true rect_x rect_y rect_width rect_height
 
 (**Draw the sell button in the selection GUI, the sell rate is 0.70 of the original
     cost.*)
 let draw_sell_button bear rect_x rect_y rect_width rect_height =
+  Raygui.(set_style (Button `Base_color_normal) 0xFF000010);
+  Raygui.(set_style (Button `Base_color_focused) 0x7F000000);
+  Raygui.(set_style (Button `Base_color_pressed) 0xADD8E6);
   Raygui.set_font (Option.get !menu_font);
   let sell_price = Constants.round_float (float_of_int bear.cost *. 0.70) in
   if
@@ -302,14 +316,18 @@ let draw_sell_button bear rect_x rect_y rect_width rect_height =
 
 (** Upgrade range button *)
 let draw_range_upgrade_button bear rect_x rect_y rect_width rect_height =
+  Raygui.set_font (Option.get !menu_font);
+  Raygui.(set_style (Button `Base_color_normal) 0xADD8E6);
+  Raygui.(set_style (Button `Base_color_focused) 0xADD8E6);
+  Raygui.(set_style (Button `Base_color_pressed) 0x7F000000);
   let upgrade_price = Constants.round_float (float_of_int bear.cost *. 0.50) in
   if
     Raygui.(
       button
         (Rectangle.create
-           (rect_x +. (rect_height /. 7.))
+           (rect_x +. (rect_height /. 9.))
            (rect_y +. (rect_height /. 2.0))
-           (rect_width /. 1.4) (rect_height /. 5.))
+           (rect_width /. 1.3) (rect_height /. 5.))
         (if bear.upgrades < 2 then
            "Larger Range \tCost: " ^ string_of_int upgrade_price
          else "Cannot Upgrade "))
@@ -323,14 +341,20 @@ let draw_range_upgrade_button bear rect_x rect_y rect_width rect_height =
 
 (** Upgrade damage button *)
 let draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height =
+  Raygui.set_font (Option.get !menu_font);
+  Raygui.(set_style (Button `Base_color_normal) 0xADD8E6);
+  Raygui.(set_style (Button `Base_color_focused) 0xADD8E6);
+  Raygui.(set_style (Button `Base_color_pressed) 0x7F000000);
+  Raygui.(set_style (Default `Text_color_normal) 0xFFFFFFFF);
+
   let upgrade_price = Constants.round_float (float_of_int bear.cost *. 0.75) in
   if
     Raygui.(
       button
         (Rectangle.create
-           (rect_x +. (rect_width /. 7.))
+           (rect_x +. (rect_width /. 9.))
            (rect_y +. (rect_height /. 4.0))
-           (rect_width /. 1.4) (rect_height /. 5.))
+           (rect_width /. 1.3) (rect_height /. 5.))
         (if bear.upgrades < 2 then
            "Piercing Balloons \tCost: " ^ string_of_int upgrade_price
          else "Cannot Upgrade "))
@@ -344,14 +368,19 @@ let draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height =
 
 (** Upgrade attack speed button *)
 let draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height =
+  Raygui.set_font (Option.get !menu_font);
+  Raygui.(set_style (Button `Base_color_normal) 0xADD8E6);
+  Raygui.(set_style (Button `Base_color_focused) 0xADD8E6);
+  Raygui.(set_style (Button `Base_color_pressed) 0x7F000000);
+  Raygui.(set_style (Default `Text_color_normal) 0xFFFFFFFF);
   let upgrade_price = Constants.round_float (float_of_int bear.cost *. 0.50) in
   if
     Raygui.(
       button
         (Rectangle.create
-           (rect_x +. (rect_width /. 7.))
+           (rect_x +. (rect_width /. 9.))
            (rect_y +. (rect_height /. 2.0))
-           (rect_width /. 1.4) (rect_height /. 5.))
+           (rect_width /. 1.3) (rect_height /. 5.))
         (if bear.upgrades < 2 then
            "Faster Speed \tCost: " ^ string_of_int upgrade_price
          else "Cannot Upgrade "))
@@ -382,33 +411,33 @@ let display_selection selection =
   | None -> ()
   | Some ({ bear_type = Dart; _ } as bear) ->
       draw_info_background ();
-      draw_info_title Dart rect_x rect_y rect_width;
+      draw_info_title Dart false rect_x rect_y rect_width rect_height;
       draw_sell_button bear rect_x rect_y rect_width rect_height;
       draw_range_upgrade_button bear rect_x rect_y rect_width rect_height;
       draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height
   | Some ({ bear_type = Hockey; _ } as bear) ->
       draw_info_background ();
-      draw_info_title Hockey rect_x rect_y rect_width;
+      draw_info_title Hockey false rect_x rect_y rect_width rect_height;
       draw_sell_button bear rect_x rect_y rect_width rect_height;
       draw_range_upgrade_button bear rect_x (rect_y -. 120.) rect_width
         rect_height;
       draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
   | Some ({ bear_type = Polar; _ } as bear) ->
       draw_info_background ();
-      draw_info_title Polar rect_x rect_y rect_width;
+      draw_info_title Polar false rect_x rect_y rect_width rect_height;
       draw_sell_button bear rect_x rect_y rect_width rect_height;
       draw_range_upgrade_button bear rect_x (rect_y -. 120.) rect_width
         rect_height;
       draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
   | Some ({ bear_type = Sniper; _ } as bear) ->
       draw_info_background ();
-      draw_info_title Sniper rect_x rect_y rect_width;
+      draw_info_title Sniper false rect_x rect_y rect_width rect_height;
       draw_sell_button bear rect_x rect_y rect_width rect_height;
       draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height;
       draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height
   | Some ({ bear_type = Dragon; _ } as bear) ->
       draw_info_background ();
-      draw_info_title Dragon rect_x rect_y rect_width;
+      draw_info_title Dragon false rect_x rect_y rect_width rect_height;
       draw_sell_button bear rect_x rect_y rect_width rect_height;
       draw_range_upgrade_button bear rect_x (rect_y -. 120.) rect_width
         rect_height;
