@@ -20,18 +20,18 @@ let make_test_balloon x_pos y_pos current_turn velocity color :
     freeze_duration = 0;
   }
 
-(* let make_test_bullet bear velocity : MTD.Projectiles.bullet = {
-     origin = bear;
-     position = bear.position;
-     velocity;
-     color = new_color;
-     image = determine_projectile_img bear;
-     radius = bullet_radius;
-     pierce = 1;
-     hits = [];
-     timer = round_float time;
-     target = Some balloon;
-   } *)
+let make_test_bullet bear velocity : MTD.Projectiles.bullet =
+  {
+    origin = bear;
+    position = bear.position;
+    velocity;
+    image = None;
+    radius = 1.0;
+    pierce = 1;
+    hits = [];
+    timer = 10;
+    target = None;
+  }
 
 let triple_option_printer elt_printer triple =
   match triple with
@@ -830,17 +830,127 @@ let run_tests () =
     ]
   in
   let check_screen_bounds_tests =
-    [ (* (
-         let bull
-           =
-         in
-         "projectiles check_screen_bounds empty list" >:: fun _ ->
-         assert_equal false MTD.Projectiles.check_screen_bounds); *) ]
+    [
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 10.0 10.0)
+       in
+       let vec = Raylib.Vector2.create 1.0 1.0 in
+       let bull = make_test_bullet bear vec in
+       "projectiles check_screen_bounds in bounds" >:: fun _ ->
+       assert_equal false (MTD.Projectiles.check_screen_bounds bull));
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create (-100.0) 100.0)
+       in
+       let vec = Raylib.Vector2.create (-100.0) 10.0 in
+       let bull = make_test_bullet bear vec in
+       "projectiles check_screen_bounds out of bounds x" >:: fun _ ->
+       assert_equal true (MTD.Projectiles.check_screen_bounds bull));
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 100.0 (-100.0))
+       in
+       let vec = Raylib.Vector2.create 100.0 (-100.0) in
+       let bull = make_test_bullet bear vec in
+       "projectiles check_screen_bounds out of bounds y" >:: fun _ ->
+       assert_equal true (MTD.Projectiles.check_screen_bounds bull));
+    ]
   in
-  let check_tower_bounds_tests = [] in
-  let check_bullet_bounds_tests = [] in
-  let time_expired_tests = [] in
-  let remove_bullets_tests = [] in
+  let check_tower_bounds_tests =
+    [
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 10.0 10.0)
+       in
+       let vec = Raylib.Vector2.create 10000.0 10000.0 in
+       let bull = make_test_bullet bear vec in
+       bull.position <- Raylib.Vector2.create 1000.0 1000.0;
+       "projectiles check_tower_bounds out of bounds" >:: fun _ ->
+       assert_equal true (MTD.Projectiles.check_tower_bounds bull));
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Sniper
+           (Raylib.Vector2.create 1.0 1.0)
+       in
+       let vec = Raylib.Vector2.create 0.01 0.01 in
+       let bull = make_test_bullet bear vec in
+       "projectiles check_tower_bounds in bounds" >:: fun _ ->
+       assert_equal false (MTD.Projectiles.check_tower_bounds bull));
+    ]
+  in
+  let check_bullet_bounds_tests =
+    [
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 10.0 10.0)
+       in
+       let vec = Raylib.Vector2.create 10000.0 10000.0 in
+       let bull = make_test_bullet bear vec in
+       bull.position <- Raylib.Vector2.create 1000.0 1000.0;
+       "projectiles check_bullet_bounds out of bounds" >:: fun _ ->
+       assert_equal true (MTD.Projectiles.check_bullet_bounds bull));
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 10.0 10.0)
+       in
+       let vec = Raylib.Vector2.create 10.0 10.0 in
+       let bull = make_test_bullet bear vec in
+       "projectiles check_bullet_bounds in bounds" >:: fun _ ->
+       assert_equal false (MTD.Projectiles.check_bullet_bounds bull));
+    ]
+  in
+  let time_expired_tests =
+    [
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 10.0 10.0)
+       in
+       let vec = Raylib.Vector2.create 10.0 10.0 in
+       let bull = make_test_bullet bear vec in
+       "projectiles time_expired Not Sniper no" >:: fun _ ->
+       assert_equal false (MTD.Projectiles.time_expired bull));
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Sniper
+           (Raylib.Vector2.create 10.0 10.0)
+       in
+       let vec = Raylib.Vector2.create 10.0 10.0 in
+       let bull = make_test_bullet bear vec in
+       "projectiles time_expired Sniper no" >:: fun _ ->
+       assert_equal false (MTD.Projectiles.time_expired bull));
+      (* Test this case using optional arguments *)
+      (* (let bear =
+           MTD.Bears.make_bear false MTD.Bears.Sniper
+             (Raylib.Vector2.create 10.0 10.0)
+         in
+         let vec = Raylib.Vector2.create 10.0 10.0 in
+         let bull = make_test_bullet bear vec in
+         bull.timer <- 0;
+         "projectiles time_expired Sniper yes" >:: fun _ ->
+         assert_equal true (MTD.Projectiles.time_expired bull)); *)
+    ]
+  in
+  let remove_bullets_tests =
+    [
+      ( "projectiles remove_bullets empty list Not Sniper no" >:: fun _ ->
+        assert_equal [] (MTD.Projectiles.remove_bullets []) );
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 10.0 10.0)
+       in
+       let vec = Raylib.Vector2.create 10.0 10.0 in
+       let bull = make_test_bullet bear vec in
+       "projectiles remove_bullets list no removal" >:: fun _ ->
+       assert_equal (bull :: []) (MTD.Projectiles.remove_bullets (bull :: [])));
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 10000.0 10000.0)
+       in
+       let vec = Raylib.Vector2.create 10.0 10.0 in
+       let bull = make_test_bullet bear vec in
+       "projectiles remove_bullets list with removal" >:: fun _ ->
+       assert_equal [] (MTD.Projectiles.remove_bullets (bull :: [])));
+    ]
+  in
 
   let projectiles_tests =
     List.flatten
@@ -857,10 +967,6 @@ let run_tests () =
   in
   let suite = "test suite for MTD" >::: List.flatten [ tests ] in
 
-  (* FINISH THESE LATER *)
-  (*
-      
-      let waves_tests = [] *)
   run_test_tt_main suite;
 
   Raylib.close_window ()
