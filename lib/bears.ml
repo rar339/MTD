@@ -117,9 +117,20 @@ let rec determine_bear_clicked click_pos bear_list =
   match bear_list with
   | [] -> None
   | bear :: rest ->
-      if check_collision_point_circle click_pos bear.position bear_radius then
-        Some bear
+      if
+        check_collision_point_circle click_pos bear.position bear_radius
+        && !cash >= bear.cost
+      then Some bear
       else determine_bear_clicked click_pos rest
+
+let rec determine_bear_hovered click_pos bear_list =
+  match bear_list with
+  | [] -> None
+  | bear :: rest ->
+      if
+        check_collision_point_circle click_pos bear.position bear_radius
+      then Some bear
+      else determine_bear_hovered click_pos rest
 
 let draw_menu_bear (bear : bear) =
   let x = Vector2.x bear.position in
