@@ -23,7 +23,7 @@ let screen_height = ref 834.
 
 (* Current gamestate *)
 let state = ref Home
-let round = ref 1
+let round = ref 0
 
 (* Game speed multiplier *)
 let speed_mult = ref 1

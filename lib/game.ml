@@ -175,6 +175,7 @@ let update_state () =
 let update_game () =
   update_state ();
   Menubar.check_click ();
+
   Menubar.check_hover ();
   Menubar.place_bear ();
   bear_collection := Bears.remove_bears !bear_collection;
