@@ -110,7 +110,12 @@ let rec find_target (bear : Bears.bear) (balloons : Balloons.balloon list) :
 
 (*Fires a dart.*)
 let fire_dart (bear : Bears.bear) (balloon : Balloons.balloon) =
-  let _, velocity = projectile_moving_calc bear balloon in
+  let time, velocity =
+    if balloon.freeze_duration <= 0 then projectile_moving_calc bear balloon
+    else
+      projectile_moving_calc bear
+        { balloon with velocity = Vector2.create 0.0 0.0 }
+  in
   let new_color =
     match bear.bear_type with Dragon -> Color.red | _ -> Color.black
   in
@@ -124,8 +129,8 @@ let fire_dart (bear : Bears.bear) (balloon : Balloons.balloon) =
       radius = bullet_radius;
       pierce = 1;
       hits = [];
-      timer = 1;
-      target = None;
+      timer = round_float time;
+      target = Some balloon;
     }
     :: !bullet_collection
 
@@ -153,23 +158,6 @@ let fire_pucks (bear : Bears.bear) =
     :: init_puck bear 7.5 7.5 :: init_puck bear 7.5 0.0
     :: init_puck bear 7.5 (-7.5) :: init_puck bear 0.0 7.5
     :: init_puck bear 0.0 (-7.5) :: !bullet_collection
-
-let fire_sniper (bear : Bears.bear) (balloon : Balloons.balloon) =
-  let time, velocity = projectile_moving_calc bear balloon in
-  bullet_collection :=
-    {
-      origin = bear;
-      position = bear.position;
-      velocity;
-      color = Color.black;
-      image = determine_projectile_img bear;
-      radius = bullet_radius;
-      pierce = 1;
-      hits = [];
-      timer = round_float time;
-      target = Some balloon;
-    }
-    :: !bullet_collection
 
 (**Returns the list of balloons in range of the bear.*)
 let rec find_balloons_in_range bear balloon_list =
@@ -207,7 +195,7 @@ let init_projectile (bear : Bears.bear) (balloon : Balloons.balloon)
   | { bear_type = Hockey; _ } -> fire_pucks bear
   | { bear_type = Polar; _ } -> fire_polar bear balloon_list
   | { bear_type = Dragon; _ } -> fire_dart bear balloon
-  | { bear_type = Sniper; _ } -> fire_sniper bear balloon
+  | { bear_type = Sniper; _ } -> fire_dart bear balloon
 
 (**Precondition: balloons must be in the order they appear on the screen.*)
 let rec fire_all_shots (bears : Bears.bear list)

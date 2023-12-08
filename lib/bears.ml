@@ -95,7 +95,7 @@ let make_bear (menu_bear : bool) (bear_type : bear_types) pos =
     damage = properties |> member "damage" |> to_int;
     pops_lead = bear_type = Dragon || bear_type = Sniper;
     facing = 0.;
-    freeze_duration = 20;
+    freeze_duration = 30;
   }
 
 let generate_menu_bears screen_width screen_height =

@@ -28,6 +28,12 @@ val create_turn_point :
   float -> float -> float -> float -> float -> int * int * int
 (**Creates a turn point given the parameters x1 x2 y1 y2 n.*)
 
+val list_from_yojson : Yojson.Basic.t -> float list
+(** Gets a list from a json file *)
+
+val produce_point : float list -> int * int * int
+(** Creates a turning point from the list of the json file *)
+
 val extract_points : Yojson.Basic.t list -> (int * int * int) list
 (**Extracts the turnpoints from a turnpoints json.*)
 

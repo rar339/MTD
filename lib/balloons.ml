@@ -75,10 +75,10 @@ let rec draw_pop balloon n =
     draw_texture_pro (Option.get !pop_img)
       (Rectangle.create 0. 0. 146. 120.)
       (Rectangle.create
-         (Vector2.x balloon.position -. 32.5)
-         (Vector2.y balloon.position -. 50.0)
+         (Vector2.x balloon.position)
+         (Vector2.y balloon.position)
          80. 80.)
-      (Vector2.create 0. 0.) 0.
+      (Vector2.create 40. 40.) 0.
       (Color.create 255 255 255 255);
     draw_pop balloon (n - 1))
 
@@ -103,13 +103,13 @@ let determine_image balloon_type =
 
 (** Determines the velocity associated with a color of a balloon. *)
 let determine_velocity = function
-  | Red -> 2.5 *. float_of_int !Constants.speed_mult
-  | Blue -> 4.0 *. float_of_int !Constants.speed_mult
-  | Green -> 5.5 *. float_of_int !Constants.speed_mult
-  | Yellow -> 7.0 *. float_of_int !Constants.speed_mult
-  | Orange -> 9.0 *. float_of_int !Constants.speed_mult
-  | Purple -> 9.0 *. float_of_int !Constants.speed_mult
-  | Lead -> 5.0 *. float_of_int !Constants.speed_mult
+  | Red -> 2.0 *. float_of_int !Constants.speed_mult
+  | Blue -> 3.0 *. float_of_int !Constants.speed_mult
+  | Green -> 4. *. float_of_int !Constants.speed_mult
+  | Yellow -> 4.5 *. float_of_int !Constants.speed_mult
+  | Orange -> 4.5 *. float_of_int !Constants.speed_mult
+  | Purple -> 5.5 *. float_of_int !Constants.speed_mult
+  | Lead -> 3.0 *. float_of_int !Constants.speed_mult
   | _ -> 0.0
 
 (* Changes the velocity of a balloon while preserving its direction. *)
