@@ -2,7 +2,7 @@ open Raylib
 
 (* This is a file containing the relevant constants for our game. Those
    that are mutable are declared as pointers. *)
-type gamestate = Home | Inactive | Active | Lose
+type gamestate = Home | Inactive | Active | Lose | Win
 
 (* The number of lives a player has in the game. When a balloon leaves through
    the finish life, the player loses lives associated with the balloon's
