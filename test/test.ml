@@ -378,22 +378,96 @@ let run_tests () =
     ]
   in
   let make_balloon_tests =
-    [ (* (let balloon = MTD.Balloons.make_balloon Red in
-         "balloons make_balloon Red" >:: fun _ ->
-         assert_equal
-           (0.0, 0.0, -2.0, MTD.Balloons.Red)
-           (Raylib.Vector2.x balloon.position, Raylib.Vector2.y balloon.position, balloon.velocity, balloon.color)); *) ]
+    [
+      (let balloon = MTD.Balloons.make_balloon Red in
+       "balloons make_balloon Red" >:: fun _ ->
+       assert_equal
+         (-30.0, 87.0, 2.0, 0.0, MTD.Balloons.Red)
+         ( Raylib.Vector2.x balloon.position,
+           Raylib.Vector2.y balloon.position,
+           Raylib.Vector2.x balloon.velocity,
+           Raylib.Vector2.y balloon.velocity,
+           balloon.color ));
+      (let balloon = MTD.Balloons.make_balloon Blue in
+       "balloons make_balloon Blue" >:: fun _ ->
+       assert_equal
+         (-30.0, 87.0, 3.0, 0.0, MTD.Balloons.Blue)
+         ( Raylib.Vector2.x balloon.position,
+           Raylib.Vector2.y balloon.position,
+           Raylib.Vector2.x balloon.velocity,
+           Raylib.Vector2.y balloon.velocity,
+           balloon.color ));
+      (let balloon = MTD.Balloons.make_balloon Green in
+       "balloons make_balloon Green" >:: fun _ ->
+       assert_equal
+         (-30.0, 87.0, 4.0, 0.0, MTD.Balloons.Green)
+         ( Raylib.Vector2.x balloon.position,
+           Raylib.Vector2.y balloon.position,
+           Raylib.Vector2.x balloon.velocity,
+           Raylib.Vector2.y balloon.velocity,
+           balloon.color ));
+      (let balloon = MTD.Balloons.make_balloon Yellow in
+       "balloons make_balloon Yellow" >:: fun _ ->
+       assert_equal
+         (-30.0, 87.0, 4.5, 0.0, MTD.Balloons.Yellow)
+         ( Raylib.Vector2.x balloon.position,
+           Raylib.Vector2.y balloon.position,
+           Raylib.Vector2.x balloon.velocity,
+           Raylib.Vector2.y balloon.velocity,
+           balloon.color ));
+      (let balloon = MTD.Balloons.make_balloon Orange in
+       "balloons make_balloon Orange" >:: fun _ ->
+       assert_equal
+         (-30.0, 87.0, 4.5, 0.0, MTD.Balloons.Orange)
+         ( Raylib.Vector2.x balloon.position,
+           Raylib.Vector2.y balloon.position,
+           Raylib.Vector2.x balloon.velocity,
+           Raylib.Vector2.y balloon.velocity,
+           balloon.color ));
+      (let balloon = MTD.Balloons.make_balloon Purple in
+       "balloons make_balloon Purple" >:: fun _ ->
+       assert_equal
+         (-30.0, 87.0, 5.5, 0.0, MTD.Balloons.Purple)
+         ( Raylib.Vector2.x balloon.position,
+           Raylib.Vector2.y balloon.position,
+           Raylib.Vector2.x balloon.velocity,
+           Raylib.Vector2.y balloon.velocity,
+           balloon.color ));
+      (let balloon = MTD.Balloons.make_balloon Lead in
+       "balloons make_balloon Lead" >:: fun _ ->
+       assert_equal
+         (-30.0, 87.0, 3.0, 0.0, MTD.Balloons.Lead)
+         ( Raylib.Vector2.x balloon.position,
+           Raylib.Vector2.y balloon.position,
+           Raylib.Vector2.x balloon.velocity,
+           Raylib.Vector2.y balloon.velocity,
+           balloon.color ));
+    ]
   in
-  let lower_lives_tests = [] in
-  let remove_balloons_tests = [] in
+  let remove_balloons_tests =
+    [
+      ( "balloons remove_balloons empty list" >:: fun _ ->
+        assert_equal [] (MTD.Balloons.remove_balloons []) );
+      (let balloon = make_test_balloon 0.0 0.0 0 vel0 MTD.Balloons.Red in
+       "balloons remove_balloons don't remove balloon" >:: fun _ ->
+       assert_equal (balloon :: [])
+         (MTD.Balloons.remove_balloons (balloon :: [])));
+      (let balloon = make_test_balloon 0.0 0.0 0 vel0 MTD.Balloons.Red in
+       balloon.remove <- true;
+       "balloons remove_balloons remove balloon" >:: fun _ ->
+       assert_equal [] (MTD.Balloons.remove_balloons (balloon :: [])));
+      (let balloon = make_test_balloon 0.0 (-1.0) 0 vel0 MTD.Balloons.Red in
+       "balloons remove_balloons remove balloon" >:: fun _ ->
+       assert_equal [] (MTD.Balloons.remove_balloons (balloon :: [])));
+    ]
+  in
 
   let balloons_tests =
     List.flatten
       [
         value_of_balloon_tests @ balloon_of_value_tests @ get_hitbox_tests
         @ determine_image_tests @ determine_velocity_tests
-        @ change_velocity_tests @ make_balloon_tests @ lower_lives_tests
-        @ remove_balloons_tests;
+        @ change_velocity_tests @ make_balloon_tests @ remove_balloons_tests;
       ]
   in
 
