@@ -79,7 +79,7 @@ val display_hover_info : bear option -> unit
 val draw_info_background : unit -> unit
 (**Draws the rectangle for the selection GUI.*)
 
-val draw_info_title : bear_types -> float -> float -> float -> unit
+val draw_info_title : bear_types -> bool -> float -> float -> float -> float -> unit
 (**Draws the title for the selection GUI based on the bear type.*)
 
 val draw_sell_button : bear -> float -> float -> float -> float -> unit
