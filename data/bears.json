@@ -2,15 +2,15 @@
   "Dart": {
     "range": 150.0,
     "cost": 200,
-    "attack_speed": 60,
-    "projectile_speed": 80.0,
+    "attack_speed": 30,
+    "projectile_speed": 20.0,
     "damage": 1
   },
   "Hockey": {
     "range": 90.0,
     "cost": 200,
-    "attack_speed": 100,
-    "projectile_speed": 100.0,
+    "attack_speed": 80,
+    "projectile_speed": 60.0,
     "damage": 1
   },
   "Polar": {
@@ -31,7 +31,7 @@
     "range": 120.0,
     "cost": 1000,
     "attack_speed": 10,
-    "projectile_speed": 60.0,
+    "projectile_speed": 40.0,
     "damage": 1
   }
 }

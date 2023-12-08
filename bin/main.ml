@@ -37,6 +37,11 @@ let setup () =
   Raygui.set_style (Default `Text_size) 36;
   Raygui.(set_style (Button `Border_width) 0);
   Raygui.set_font (Option.get !custom_font);
+  Raygui.(set_style (Label `Border_color_normal) 0xFFF);
+  Raygui.(set_style (Label `Base_color_normal) 0xFF000010 );
+  Raygui.(set_style (Label `Base_color_focused) 0x000000 );
+
+
 
   balloons := generate_all_balloons 0 12 (Option.get !red_balloon_img);
 

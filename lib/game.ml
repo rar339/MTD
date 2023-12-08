@@ -10,6 +10,10 @@ open Projectiles
 (******************************************************************************)
 let play_button screen_width screen_height =
   Raygui.set_font (Option.get !game_font);
+  Raygui.(set_style (Button `Base_color_normal) 0xFF000010);
+  Raygui.(set_style (Button `Base_color_focused) 0x7F000000);
+  Raygui.(set_style (Button `Base_color_pressed) 0x7F000000);
+  Raygui.(set_style (Default `Text_color_normal) 0xFFFFFFFF);
   if
     Raygui.(
       button
@@ -25,6 +29,11 @@ let play_button screen_width screen_height =
 
 (******************************************************************************)
 let mult_button screen_width screen_height =
+  Raygui.set_font (Option.get !game_font);
+  Raygui.(set_style (Button `Base_color_normal) 0xFF000010);
+  Raygui.(set_style (Button `Base_color_focused) 0x7F000000);
+  Raygui.(set_style (Button `Base_color_pressed) 0x7F000000);
+  Raygui.(set_style (Default `Text_color_normal) 0xFFFFFFFF);
   if
     Raygui.(
       button
