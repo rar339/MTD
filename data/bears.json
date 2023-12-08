@@ -9,7 +9,7 @@
   "Hockey": {
     "range": 90.0,
     "cost": 500,
-    "attack_speed": 80,
+    "attack_speed": 140,
     "projectile_speed": 60.0,
     "damage": 1
   },
