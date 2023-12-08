@@ -4,6 +4,7 @@ open Bears
 open Balloons
 
 let bullet_radius = 7.5
+let freeze_fired : (int ref * bear) list ref = ref []
 
 (*-Pierce is how many balloons a bullet can pierce through.
   -Damage is how many layers of a bullet will go through.
@@ -176,15 +177,28 @@ let rec freeze_balloons (bear : Bears.bear) balloon_list =
       balloon.freeze_duration <- bear.freeze_duration;
       freeze_balloons bear t
 
+let rec draw_freeze_animations animation_list =
+  match animation_list with
+  | [] -> ()
+  | (num, (bear : bear)) :: t ->
+      draw_circle
+        (Constants.round_float (Vector2.x bear.position))
+        (Constants.round_float (Vector2.y bear.position))
+        bear.range
+        (Color.create 138 222 235 100);
+      num := !num - 1;
+      draw_freeze_animations t
+
+let rec update_animation_list animation_list =
+  match animation_list with
+  | [] -> []
+  | ((num, _) as ani) :: t ->
+      if !num <= 0 then update_animation_list t
+      else ani :: update_animation_list t
+
 (**Fires the given polar bear.*)
 let fire_polar (bear : Bears.bear) balloon_list =
-  begin_drawing ();
-  draw_circle
-    (Constants.round_float (Vector2.x bear.position))
-    (Constants.round_float (Vector2.y bear.position))
-    bear.range
-    (Color.create 138 222 235 100);
-  end_drawing ();
+  freeze_fired := (ref 3, bear) :: !freeze_fired;
   let balloons_in_range = find_balloons_in_range bear balloon_list in
   freeze_balloons bear balloons_in_range
 

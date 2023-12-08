@@ -566,10 +566,13 @@ let run_tests () =
           (MTD.Bears.determine_bear_clicked
              (Raylib.Vector2.create 0.0 0.0)
              (MTD.Bears.generate_menu_bears 100.0 100.0)) );
-      (let bear =
+      (Constants.cash := 1000;
+       let bear =
          MTD.Bears.determine_bear_clicked
-           (Raylib.Vector2.create 0.0 0.0)
-           (MTD.Bears.generate_menu_bears 0.0 0.0)
+           (Raylib.Vector2.create 10.0 10.0)
+           (MTD.Bears.make_bear false MTD.Bears.Dart
+              (Raylib.Vector2.create 10.0 10.0)
+           :: [])
        in
        "bears determine_bear_clicked multi element list hit" >:: fun _ ->
        assert_equal MTD.Bears.Dart (Option.get bear).bear_type);
@@ -622,19 +625,123 @@ let run_tests () =
       ]
   in
 
-  (* let check_valid_placement_tests = [] in
-     let check_button_press_tests = [] in
-     let nevermind_tests = [] in
-     let mem_option_tests = [] in
-     let cost_of_beartype_tests = [] in
+  let check_valid_placement_tests =
+    [
+      (let mouse = Raylib.Vector2.create 0.0 0.0 in
+       "menubar check_valid_placement empty list yes " >:: fun _ ->
+       assert_equal true (MTD.Menubar.check_valid_placement mouse []));
+      (let mouse = Raylib.Vector2.create 0.0 0.0 in
+       let rect = Raylib.Rectangle.create 0.0 0.0 0.0 0.0 in
+       "menubar check_valid_placement list no " >:: fun _ ->
+       assert_equal false (MTD.Menubar.check_valid_placement mouse (rect :: [])));
+      (let mouse = Raylib.Vector2.create 50.0 50.0 in
+       let rect = Raylib.Rectangle.create 0.0 0.0 0.0 0.0 in
+       "menubar check_valid_placement list yes " >:: fun _ ->
+       assert_equal true (MTD.Menubar.check_valid_placement mouse (rect :: [])));
+    ]
+  in
+  let check_button_press_tests =
+    [
+      (let mouse = Raylib.Vector2.create 0.0 0.0 in
+       "menubar check_button_press empty list yes " >:: fun _ ->
+       assert_equal false (MTD.Menubar.check_button_press mouse []));
+      (let click = Raylib.Vector2.create 0.0 0.0 in
+       let rect = Raylib.Rectangle.create 0.0 0.0 0.0 0.0 in
+       "menubar check_button_press list yes " >:: fun _ ->
+       assert_equal true (MTD.Menubar.check_button_press click (rect :: [])));
+      (let click = Raylib.Vector2.create 50.0 50.0 in
+       let rect = Raylib.Rectangle.create 0.0 0.0 0.0 0.0 in
+       "menubar check_button_press list no " >:: fun _ ->
+       assert_equal false (MTD.Menubar.check_button_press click (rect :: [])));
+    ]
+  in
+  let mem_option_tests =
+    [
+      ( "menubar mem_option None empty list false " >:: fun _ ->
+        assert_equal false (MTD.Menubar.mem_option None []) );
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 0.0 0.0)
+       in
+       "menubar mem_option None non-empty list false " >:: fun _ ->
+       assert_equal false (MTD.Menubar.mem_option None (bear :: [])));
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 0.0 0.0)
+       in
+       "menubar mem_option Some empty list false " >:: fun _ ->
+       assert_equal false (MTD.Menubar.mem_option (Some bear) []));
+      (let bear1 =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 0.0 0.0)
+       in
+       let bear2 =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 0.0 0.0)
+       in
+       "menubar mem_option Some non-empty list false " >:: fun _ ->
+       assert_equal false (MTD.Menubar.mem_option (Some bear1) (bear2 :: [])));
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 0.0 0.0)
+       in
+       "menubar mem_option Some non-empty list true " >:: fun _ ->
+       assert_equal true (MTD.Menubar.mem_option (Some bear) (bear :: [])));
+    ]
+  in
+  let cost_of_beartype_tests =
+    [ (* TEST THESE ON FINAL VALUES *)
+      (* ( "menubar cost_of_beartype Dart " >:: fun _ ->
+           assert_equal 200 (MTD.Menubar.cost_of_beartype MTD.Bears.Dart) );
+         ( "menubar cost_of_beartype Hockey " >:: fun _ ->
+           assert_equal 500 (MTD.Menubar.cost_of_beartype MTD.Bears.Hockey) );
+         ( "menubar cost_of_beartype Polar " >:: fun _ ->
+           assert_equal 800 (MTD.Menubar.cost_of_beartype MTD.Bears.Polar) );
+         ( "menubar cost_of_beartype Sniper " >:: fun _ ->
+           assert_equal 1000 (MTD.Menubar.cost_of_beartype MTD.Bears.Sniper) );
+         ( "menubar cost_of_beartype Dragon " >:: fun _ ->
+           assert_equal 3000 (MTD.Menubar.cost_of_beartype MTD.Bears.Dragon) ); *) ]
+  in
 
-     let menubar_tests = List.flatten [] in *)
-  let tests = balloonpath_tests @ balloons_tests @ bears_tests in
+  let menubar_tests =
+    List.flatten
+      [
+        check_valid_placement_tests @ check_button_press_tests
+        @ mem_option_tests @ cost_of_beartype_tests;
+      ]
+  in
+
+  let determine_projectile_img_tests = [] in
+  let is_balloon_in_range_tests = [] in
+  let compare_balloons_tests = [] in
+  let sort_balloons_tests = [] in
+  let find_target_tests = [] in
+  let find_balloons_in_range_tests = [] in
+  let check_screen_bounds_tests = [] in
+  let check_tower_bounds_tests = [] in
+  let check_bullet_bounds_tests = [] in
+  let time_expired_tests = [] in
+  let remove_bullets_tests = [] in
+
+  let projectiles_tests =
+    List.flatten
+      [
+        determine_projectile_img_tests @ is_balloon_in_range_tests
+        @ compare_balloons_tests @ sort_balloons_tests @ find_target_tests
+        @ find_balloons_in_range_tests @ check_screen_bounds_tests
+        @ check_tower_bounds_tests @ check_bullet_bounds_tests
+        @ time_expired_tests @ remove_bullets_tests;
+      ]
+  in
+  let tests =
+    balloonpath_tests @ balloons_tests @ bears_tests @ menubar_tests
+    @ projectiles_tests
+  in
   let suite = "test suite for MTD" >::: List.flatten [ tests ] in
 
   (* FINISH THESE LATER *)
   (*
-      let projectiles_tests = []
+      
       let waves_tests = [] *)
   run_test_tt_main suite;
 
