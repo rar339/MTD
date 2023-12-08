@@ -210,9 +210,9 @@ let draw_game () =
   (*Draw the background & reference grid*)
   Gamebackground.draw_background (Option.get !game_background_img);
 
-  Gamebackground.draw_ref_grid
+  (* Gamebackground.draw_ref_grid
     (int_of_float !screen_width)
-    (int_of_float !screen_height);
+    (int_of_float !screen_height); *)
 
   (*This line shows ref rectangles! Comment out if you want them invisible*)
   (* Gamebounds.draw_rectangles !path_rectangles; *)

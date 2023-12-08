@@ -153,7 +153,7 @@ let dest_rect_custom (bear : bear) (x : float) (y : float) =
   | Hockey -> Rectangle.create x y (bear_radius *. 3.2) (bear_radius *. 3.2)
   | Sniper -> Rectangle.create x y (bear_radius *. 3.5) (bear_radius *. 3.5)
   | Polar -> Rectangle.create x y (bear_radius *. 3.2) (bear_radius *. 3.2)
-  | Dragon -> Rectangle.create x y (bear_radius *. 3.4) (bear_radius *. 3.4)
+  | Dragon -> Rectangle.create x y (bear_radius *. 4.) (bear_radius *. 4.)
 
 (* Helps with placement of images to ensure its centered, the factor must be
    1/2 of factor for dest_rect*)
@@ -163,7 +163,7 @@ let origin_vect_custom (bear : bear) =
   | Hockey -> Vector2.create (bear_radius *. 1.6) (bear_radius *. 1.6)
   | Sniper -> Vector2.create (bear_radius *. 1.6) (bear_radius *. 1.6)
   | Polar -> Vector2.create (bear_radius *. 1.6) (bear_radius *. 1.6)
-  | Dragon -> Vector2.create (bear_radius *. 1.7) (bear_radius *. 1.7)
+  | Dragon -> Vector2.create (bear_radius *. 2.) (bear_radius *. 2.)
 
 (* draw_bear function *)
 let draw_bear (bear : bear) =
