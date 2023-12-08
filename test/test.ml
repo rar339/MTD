@@ -378,32 +378,255 @@ let run_tests () =
     ]
   in
   let make_balloon_tests =
-    [ (* (let balloon = MTD.Balloons.make_balloon Red in
-         "balloons make_balloon Red" >:: fun _ ->
-         assert_equal
-           (0.0, 0.0, -2.0, MTD.Balloons.Red)
-           (Raylib.Vector2.x balloon.position, Raylib.Vector2.y balloon.position, balloon.velocity, balloon.color)); *) ]
+    [
+      (let balloon = MTD.Balloons.make_balloon Red in
+       "balloons make_balloon Red" >:: fun _ ->
+       assert_equal
+         (-30.0, 87.0, 2.0, 0.0, MTD.Balloons.Red)
+         ( Raylib.Vector2.x balloon.position,
+           Raylib.Vector2.y balloon.position,
+           Raylib.Vector2.x balloon.velocity,
+           Raylib.Vector2.y balloon.velocity,
+           balloon.color ));
+      (let balloon = MTD.Balloons.make_balloon Blue in
+       "balloons make_balloon Blue" >:: fun _ ->
+       assert_equal
+         (-30.0, 87.0, 3.0, 0.0, MTD.Balloons.Blue)
+         ( Raylib.Vector2.x balloon.position,
+           Raylib.Vector2.y balloon.position,
+           Raylib.Vector2.x balloon.velocity,
+           Raylib.Vector2.y balloon.velocity,
+           balloon.color ));
+      (let balloon = MTD.Balloons.make_balloon Green in
+       "balloons make_balloon Green" >:: fun _ ->
+       assert_equal
+         (-30.0, 87.0, 4.0, 0.0, MTD.Balloons.Green)
+         ( Raylib.Vector2.x balloon.position,
+           Raylib.Vector2.y balloon.position,
+           Raylib.Vector2.x balloon.velocity,
+           Raylib.Vector2.y balloon.velocity,
+           balloon.color ));
+      (let balloon = MTD.Balloons.make_balloon Yellow in
+       "balloons make_balloon Yellow" >:: fun _ ->
+       assert_equal
+         (-30.0, 87.0, 4.5, 0.0, MTD.Balloons.Yellow)
+         ( Raylib.Vector2.x balloon.position,
+           Raylib.Vector2.y balloon.position,
+           Raylib.Vector2.x balloon.velocity,
+           Raylib.Vector2.y balloon.velocity,
+           balloon.color ));
+      (let balloon = MTD.Balloons.make_balloon Orange in
+       "balloons make_balloon Orange" >:: fun _ ->
+       assert_equal
+         (-30.0, 87.0, 4.5, 0.0, MTD.Balloons.Orange)
+         ( Raylib.Vector2.x balloon.position,
+           Raylib.Vector2.y balloon.position,
+           Raylib.Vector2.x balloon.velocity,
+           Raylib.Vector2.y balloon.velocity,
+           balloon.color ));
+      (let balloon = MTD.Balloons.make_balloon Purple in
+       "balloons make_balloon Purple" >:: fun _ ->
+       assert_equal
+         (-30.0, 87.0, 5.5, 0.0, MTD.Balloons.Purple)
+         ( Raylib.Vector2.x balloon.position,
+           Raylib.Vector2.y balloon.position,
+           Raylib.Vector2.x balloon.velocity,
+           Raylib.Vector2.y balloon.velocity,
+           balloon.color ));
+      (let balloon = MTD.Balloons.make_balloon Lead in
+       "balloons make_balloon Lead" >:: fun _ ->
+       assert_equal
+         (-30.0, 87.0, 3.0, 0.0, MTD.Balloons.Lead)
+         ( Raylib.Vector2.x balloon.position,
+           Raylib.Vector2.y balloon.position,
+           Raylib.Vector2.x balloon.velocity,
+           Raylib.Vector2.y balloon.velocity,
+           balloon.color ));
+    ]
   in
-  let lower_lives_tests = [] in
-  let remove_balloons_tests = [] in
+  let remove_balloons_tests =
+    [
+      ( "balloons remove_balloons empty list" >:: fun _ ->
+        assert_equal [] (MTD.Balloons.remove_balloons []) );
+      (let balloon = make_test_balloon 0.0 0.0 0 vel0 MTD.Balloons.Red in
+       "balloons remove_balloons don't remove balloon" >:: fun _ ->
+       assert_equal (balloon :: [])
+         (MTD.Balloons.remove_balloons (balloon :: [])));
+      (let balloon = make_test_balloon 0.0 0.0 0 vel0 MTD.Balloons.Red in
+       balloon.remove <- true;
+       "balloons remove_balloons remove balloon" >:: fun _ ->
+       assert_equal [] (MTD.Balloons.remove_balloons (balloon :: [])));
+      (let balloon = make_test_balloon 0.0 (-1.0) 0 vel0 MTD.Balloons.Red in
+       "balloons remove_balloons remove balloon" >:: fun _ ->
+       assert_equal [] (MTD.Balloons.remove_balloons (balloon :: [])));
+    ]
+  in
 
   let balloons_tests =
     List.flatten
       [
         value_of_balloon_tests @ balloon_of_value_tests @ get_hitbox_tests
         @ determine_image_tests @ determine_velocity_tests
-        @ change_velocity_tests @ make_balloon_tests @ lower_lives_tests
-        @ remove_balloons_tests;
+        @ change_velocity_tests @ make_balloon_tests @ remove_balloons_tests;
       ]
   in
 
-  let tests = balloonpath_tests @ balloons_tests in
+  let determine_image_tests =
+    [
+      (Constants.menu_dartbear_img :=
+         Some (Raylib.load_texture "./img/bears/menu_dartbear.png");
+       "bears determine_image Menu Dart Bear" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.menu_dartbear_img)
+         (MTD.Bears.determine_image true MTD.Bears.Dart));
+      (Constants.dartbear_img :=
+         Some (Raylib.load_texture "./img/bears/dartbear.png");
+       "bears determine_image Dart Bear" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.dartbear_img)
+         (MTD.Bears.determine_image false MTD.Bears.Dart));
+      (Constants.menu_hockeybear_img :=
+         Some (Raylib.load_texture "./img/bears/menu_hockeybear.png");
+       "bears determine_image Menu Hockey Bear" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.menu_hockeybear_img)
+         (MTD.Bears.determine_image true MTD.Bears.Hockey));
+      (Constants.hockeybear_img :=
+         Some (Raylib.load_texture "./img/bears/hockeybear.png");
+       "bears determine_image Hockey Bear" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.hockeybear_img)
+         (MTD.Bears.determine_image false MTD.Bears.Hockey));
+      (Constants.menu_polarbear_img :=
+         Some (Raylib.load_texture "./img/bears/menu_zombiebear.png");
+       "bears determine_image Menu Polar Bear" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.menu_polarbear_img)
+         (MTD.Bears.determine_image true MTD.Bears.Polar));
+      (Constants.polarbear_img :=
+         Some (Raylib.load_texture "./img/bears/zombiebear.png");
+       "bears determine_image Polar Bear" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.polarbear_img)
+         (MTD.Bears.determine_image false MTD.Bears.Polar));
+      (Constants.menu_sniperbear_img :=
+         Some (Raylib.load_texture "./img/bears/menu_sniperbear.png");
+       "bears determine_image Menu Sniper Bear" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.menu_sniperbear_img)
+         (MTD.Bears.determine_image true MTD.Bears.Sniper));
+      (Constants.sniperbear_img :=
+         Some (Raylib.load_texture "./img/bears/sniperbear.png");
+       "bears determine_image Sniper Bear" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.sniperbear_img)
+         (MTD.Bears.determine_image false MTD.Bears.Sniper));
+      (Constants.menu_dragonbear_img :=
+         Some (Raylib.load_texture "./img/bears/redbear.png");
+       "bears determine_image Menu Dragon Bear" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.menu_dragonbear_img)
+         (MTD.Bears.determine_image true MTD.Bears.Dragon));
+      (Constants.dragonbear_img :=
+         Some (Raylib.load_texture "./img/bears/redbear.png");
+       "bears determine_image Dart Bear" >:: fun _ ->
+       assert_equal
+         (Option.get !Constants.dragonbear_img)
+         (MTD.Bears.determine_image false MTD.Bears.Dragon));
+    ]
+  in
+  let string_of_beartype_tests =
+    [
+      ( "bears string_of_beartype Dart Bear" >:: fun _ ->
+        assert_equal "Dart" (MTD.Bears.string_of_beartype MTD.Bears.Dart) );
+      ( "bears string_of_beartype Hockey Bear" >:: fun _ ->
+        assert_equal "Hockey" (MTD.Bears.string_of_beartype MTD.Bears.Hockey) );
+      ( "bears string_of_beartype Dart Polar" >:: fun _ ->
+        assert_equal "Polar" (MTD.Bears.string_of_beartype MTD.Bears.Polar) );
+      ( "bears string_of_beartype Sniper Bear" >:: fun _ ->
+        assert_equal "Sniper" (MTD.Bears.string_of_beartype MTD.Bears.Sniper) );
+      ( "bears string_of_beartype Dragon Bear" >:: fun _ ->
+        assert_equal "Dragon" (MTD.Bears.string_of_beartype MTD.Bears.Dragon) );
+    ]
+  in
+  let generate_menu_bears_tests =
+    [
+      ( "bears generate_menu_bears" >:: fun _ ->
+        assert_equal 5 (List.length (MTD.Bears.generate_menu_bears 0.0 0.0)) );
+    ]
+  in
+  let determine_bear_clicked_tests =
+    [
+      ( "bears determine_bear_clicked empty list" >:: fun _ ->
+        assert_equal None
+          (MTD.Bears.determine_bear_clicked (Raylib.Vector2.create 0.0 0.0) [])
+      );
+      ( "bears determine_bear_clicked multi element list no hit" >:: fun _ ->
+        assert_equal None
+          (MTD.Bears.determine_bear_clicked
+             (Raylib.Vector2.create 0.0 0.0)
+             (MTD.Bears.generate_menu_bears 100.0 100.0)) );
+      (let bear =
+         MTD.Bears.determine_bear_clicked
+           (Raylib.Vector2.create 0.0 0.0)
+           (MTD.Bears.generate_menu_bears 0.0 0.0)
+       in
+       "bears determine_bear_clicked multi element list hit" >:: fun _ ->
+       assert_equal MTD.Bears.Dart (Option.get bear).bear_type);
+    ]
+  in
+  let check_collision_bears_tests =
+    [
+      ( "bears check_collision_bears yes " >:: fun _ ->
+        assert_equal true
+          (MTD.Bears.check_collision_bears
+             (Some
+                (MTD.Bears.make_bear false MTD.Bears.Dart
+                   (Raylib.Vector2.create 0.0 0.0)))
+             (MTD.Bears.generate_menu_bears 0.0 0.0)) );
+      ( "bears check_collision_bears no " >:: fun _ ->
+        assert_equal false
+          (MTD.Bears.check_collision_bears
+             (Some
+                (MTD.Bears.make_bear false MTD.Bears.Dart
+                   (Raylib.Vector2.create 0.0 0.0)))
+             (MTD.Bears.generate_menu_bears 100.0 100.0)) );
+    ]
+  in
+  let remove_bears_tests =
+    [
+      ( "bears remove_bears empty list " >:: fun _ ->
+        assert_equal [] (MTD.Bears.remove_bears []) );
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 0.0 0.0)
+       in
+       bear.sold <- true;
+       "bears remove_bears sold bear " >:: fun _ ->
+       assert_equal [] (MTD.Bears.remove_bears (bear :: [])));
+      (let bear =
+         MTD.Bears.make_bear false MTD.Bears.Dart
+           (Raylib.Vector2.create 0.0 0.0)
+       in
+       "bears remove_bears remove none " >:: fun _ ->
+       assert_equal (bear :: []) (MTD.Bears.remove_bears (bear :: [])));
+    ]
+  in
+
+  let bears_tests =
+    List.flatten
+      [
+        determine_image_tests @ string_of_beartype_tests
+        @ generate_menu_bears_tests @ determine_bear_clicked_tests
+        @ check_collision_bears_tests @ remove_bears_tests;
+      ]
+  in
+
+  let tests = balloonpath_tests @ balloons_tests @ bears_tests in
   let suite = "test suite for MTD" >::: List.flatten [ tests ] in
 
   (* FINISH THESE LATER *)
   (*
-    let bears_tests = []
-      let constants_tests = []
       let game_tests = []
       let gamebackground_tests = []
       let gamebounds_tests = []
