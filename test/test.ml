@@ -221,22 +221,58 @@ let run_tests () =
       ]
   in
 
-  (* FINISH THESE LATER *)
-  (* let bears_tests = []
-     let constants_tests = []
-     let game_tests = []
-     let gamebackground_tests = []
-     let gamebounds_tests = []
-     let menubar_tests = []
-     let projectiles_tests = []
-     let waves_tests = [] *)
+  let value_of_balloon_tests =
+    [
+      ( "balloons value_of_balloons None" >:: fun _ ->
+        assert_equal 0 (MTD.Balloons.value_of_balloon None) );
+      ( "balloons value_of_balloons Red" >:: fun _ ->
+        assert_equal 1 (MTD.Balloons.value_of_balloon Red) );
+      ( "balloons value_of_balloons Blue" >:: fun _ ->
+        assert_equal 2 (MTD.Balloons.value_of_balloon Blue) );
+      ( "balloons value_of_balloons Green" >:: fun _ ->
+        assert_equal 3 (MTD.Balloons.value_of_balloon Green) );
+      ( "balloons value_of_balloons Orange" >:: fun _ ->
+        assert_equal 4 (MTD.Balloons.value_of_balloon Yellow) );
+      ( "balloons value_of_balloons Purple" >:: fun _ ->
+        assert_equal 5 (MTD.Balloons.value_of_balloon Orange) );
+      ( "balloons value_of_balloons Yellow" >:: fun _ ->
+        assert_equal 6 (MTD.Balloons.value_of_balloon Purple) );
+      ( "balloons value_of_balloons Lead" >:: fun _ ->
+        assert_equal 7 (MTD.Balloons.value_of_balloon Lead) );
+    ]
+  in
+  let balloon_of_value_tests = [] in
+  let get_hitbox_tests = [] in
+  let determine_image_tests = [] in
+  let determine_velocity_tests = [] in
+  let change_velocity_tests = [] in
+  let make_balloon_tests = [] in
+  let lower_lives_tests = [] in
+  let remove_balloons_tests = [] in
+
   let balloons_tests =
-    [ ("balloon is_lead test" >:: fun _ -> assert_equal true balloon1.is_lead) ]
+    List.flatten
+      [
+        value_of_balloon_tests @ balloon_of_value_tests @ get_hitbox_tests
+        @ determine_image_tests @ determine_velocity_tests
+        @ change_velocity_tests @ make_balloon_tests @ lower_lives_tests
+        @ remove_balloons_tests;
+      ]
   in
 
   let tests = balloonpath_tests @ balloons_tests in
   let suite = "test suite for MTD" >::: List.flatten [ tests ] in
 
+  (* FINISH THESE LATER *)
+  (*
+    let bears_tests = []
+      let constants_tests = []
+      let game_tests = []
+      let gamebackground_tests = []
+      let gamebounds_tests = []
+      let menubar_tests = []
+      let projectiles_tests = []
+      let waves_tests = [] *)
   run_test_tt_main suite;
 
   Raylib.close_window ()
