@@ -43,7 +43,7 @@ type balloon = {
   mutable freeze_duration : int;
 }
 
-let pops : (Vector2.t * int) list ref = ref []
+let pops : Vector2.t list ref = ref []
 let hitbox_width = ref 0.0
 let hitbox_height = ref 0.0
 
@@ -68,16 +68,13 @@ let draw_balloon path_width (balloon : balloon) =
     0.
     (Color.create 255 255 255 255)
 
-(* Draws pop image n times when called *)
-let rec draw_pop position n =
-  if n = 0 then ()
-  else (
-    draw_texture_pro (Option.get !pop_img)
-      (Rectangle.create 0. 0. 146. 120.)
-      (Rectangle.create (Vector2.x position) (Vector2.y position) 80. 80.)
-      (Vector2.create 40. 40.) 0.
-      (Color.create 255 255 255 255);
-    draw_pop position (n - 1))
+(* Draws pop image at the given position when called *)
+let draw_pop position =
+  draw_texture_pro (Option.get !pop_img)
+    (Rectangle.create 0. 0. 146. 120.)
+    (Rectangle.create (Vector2.x position) (Vector2.y position) 80. 80.)
+    (Vector2.create 40. 40.) 0.
+    (Color.create 255 255 255 255)
 
 (* Draws balloons in a balloon list. *)
 let rec draw_balloons path_width (balloon_list : balloon list) =
@@ -91,8 +88,8 @@ let rec draw_balloons path_width (balloon_list : balloon list) =
 let rec draw_pops pop_list =
   match pop_list with
   | [] -> ()
-  | (position, number) :: t ->
-      draw_pop position number;
+  | position :: t ->
+      draw_pop position;
       draw_pops t
 
 let determine_image balloon_type =
@@ -172,17 +169,11 @@ let update_balloon_status bear balloon =
     | None ->
         balloon.remove <- true;
         Constants.cash := !Constants.cash + value_of_balloon balloon.color;
-        pops := (balloon.position, 1) :: !pops
-        (* begin_drawing ();
-           draw_pop balloon 1;
-           end_drawing () *)
+        pops := balloon.position :: !pops
     | color ->
         set_balloon_color balloon color;
         Constants.cash := !Constants.cash + new_value;
-        pops := (balloon.position, bear.damage) :: !pops
-(* begin_drawing ();
-   draw_pop balloon bear.damage;
-   end_drawing () *)
+        pops := balloon.position :: !pops
 
 (** Modifies the given balloon to be the correct layer color based on the damage
    of the bear. If lead ballon hit and not able to pop lead, do not modify balloon.*)

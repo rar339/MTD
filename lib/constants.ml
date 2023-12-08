@@ -2,7 +2,7 @@ open Raylib
 
 (* This is a file containing the relevant constants for our game. Those
    that are mutable are declared as pointers. *)
-type gamestate = Home | Inactive | Active | Lose
+type gamestate = Home | Inactive | Active | Lose | Win
 
 (* The number of lives a player has in the game. When a balloon leaves through
    the finish life, the player loses lives associated with the balloon's
@@ -23,13 +23,13 @@ let screen_height = ref 834.
 
 (* Current gamestate *)
 let state = ref Home
-let round = ref 1
+let round = ref 0
 
 (* Game speed multiplier *)
 let speed_mult = ref 1
 
 (*Game restart attributes*)
-let start_cash = 400
+let start_cash = 40000
 let start_lives = 50
 
 (*Game global attributes*)
