@@ -93,3 +93,18 @@ val wave24 : unit -> (balloon * int) list
 
 val wave25 : unit -> (Balloons.balloon * int) list
 (**Generates the 25th wave.*)
+
+val wave26 : unit -> (Balloons.balloon * int) list
+(**Generates the 26th waves. *)
+
+val wave27 : unit -> (balloon * int) list
+(**Generates the 27th wave.*)
+
+val wave28 : unit -> (balloon * int) list
+(**Generates the 28th wave.*)
+
+val wave29 : unit -> (Balloons.balloon * int) list
+(**Generates the 29th wave.*)
+
+val wave30 : unit -> (balloon * int) list
+(**Generates the 30th wave.*)

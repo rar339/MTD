@@ -142,6 +142,11 @@ let setup () =
       Waves.wave23;
       Waves.wave24;
       Waves.wave25;
+      Waves.wave26;
+      Waves.wave27;
+      Waves.wave28;
+      Waves.wave29;
+      Waves.wave30;
     ]
 
 (******************************************************************************)
