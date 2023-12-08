@@ -1,4 +1,6 @@
 (library
  (name MTD)
  (public_name MTD)
- (libraries raylib raygui yojson))
+ (libraries raylib raygui yojson)
+ (instrumentation
+  (backend bisect_ppx)))
