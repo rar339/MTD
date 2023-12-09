@@ -45,8 +45,7 @@ let mult_button screen_width screen_height =
         (string_of_int !Constants.speed_mult ^ "X Speed"))
   then (
     if !Constants.speed_mult = 1 then Constants.speed_mult := 2
-    else if !Constants.speed_mult = 2 then Constants.speed_mult := 3
-    else if !Constants.speed_mult = 3 then Constants.speed_mult := 1;
+    else Constants.speed_mult := 1;
     Waves.update_wave_speeds !current_wave;
     Waves.update_balloon_speeds !current_balloons;
     Bears.update_bear_firing_rate !bear_collection)

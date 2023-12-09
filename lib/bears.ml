@@ -229,11 +229,11 @@ let rec remove_bears bear_lst =
 
 let rec update_bear_firing_rate = function
   | bear :: t ->
-      let properties = extract_bear_properties bear.bear_type in
       bear.attack_speed <-
-        (properties |> member "attack_speed" |> to_int) / !Constants.speed_mult;
+        (if !Constants.speed_mult = 2 then bear.attack_speed / 2
+         else bear.attack_speed * 2);
       bear.projectile_speed <-
-        (properties |> member "projectile_speed" |> to_float)
-        *. float_of_int !Constants.speed_mult;
+        (if !Constants.speed_mult = 2 then bear.projectile_speed *. 2.
+         else bear.projectile_speed /. 2.);
       update_bear_firing_rate t
   | [] -> ()
