@@ -1,7 +1,6 @@
 # McGraw Tower Defense
 
-## MTD is a Cornell-themed spinoff of the famous __Bloons Tower Defense__ game written in OCaml by
-## Chris Fernandes, Gerardo Montemayor, Rolando Rodríguez, and Alex Spero.
+## MTD is a Cornell-themed spinoff of the famous __Bloons Tower Defense__ game written in OCaml by Chris Fernandes, Gerardo Montemayor, Rolando Rodríguez, and Alex Spero.
 
 ### For installation help, see INSTALL.md
 
