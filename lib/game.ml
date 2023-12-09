@@ -91,7 +91,7 @@ let setup () =
   current_wave := [];
   lives := start_lives;
   cash := start_cash;
-  round := 1;
+  round := 19;
 
   (*Make the menu rectangle*)
   Constants.menu_rect :=
