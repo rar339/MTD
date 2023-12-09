@@ -135,7 +135,7 @@ let draw_heart screen_width screen_height =
     (Option.get !heart_logo_img)
     (Vector2.create
        (153. *. screen_width /. 200.)
-       (0.40 *. screen_height /. 9.))
+       (0.44 *. screen_height /. 9.))
     0. 0.12 Color.white
 
 let lives_and_cash_count screen_width screen_height =
@@ -429,7 +429,7 @@ let display_selection selection =
       draw_info_background Dart;
       draw_info_title Dart false rect_x rect_y rect_width rect_height;
       draw_sell_button bear rect_x rect_y rect_width rect_height;
-      draw_range_upgrade_button bear rect_x rect_y rect_width rect_height;
+      draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height;
       draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height
   | Some ({ bear_type = Hockey; _ } as bear) ->
       draw_info_background Hockey;
