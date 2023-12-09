@@ -1,3 +1,18 @@
+(**TESTING PLAN
+    Modules tested by OUnit:  Balloonpath, Balloons, Bears, Menubar,
+    Projectiles.
+    Modules tested manually: Game, Gamebackground, Gamebounds, Waves, Constants, 
+    and also the modules tested by OUnit listed above.
+    Testing methodology: To create our OUnit tests we used a glass-box testing 
+    approach. This meant that we went through each module we wanted to test and 
+    tried to test the different possible otcomes of each function. We tried to 
+    test as many functions as we could, but many were functions that were meant 
+    to modify the GUI, which had to be tested manually.
+    Correctness: Due to the fact our project is a game, it makes sense that our 
+    tests are mostly manual. After multiple full play throughs and manual testing
+    of individual components, we are confident the system is correct. OUnit tests
+    serve as a method to double-check our manual tests.*)
+
 open OUnit2
 open MTD
 
