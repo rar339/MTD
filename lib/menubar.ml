@@ -406,7 +406,7 @@ let draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height =
     bear.upgrades <- 1 + bear.upgrades;
     bear.cost <- bear.cost + Constants.round_float (float_of_int upgrade_price);
     bear.attack_speed <-
-      bear.attack_speed - int_of_float (0.35 *. float_of_int bear.attack_speed);
+      bear.attack_speed - int_of_float (0.25 *. float_of_int bear.attack_speed);
     Constants.cash := !Constants.cash - upgrade_price)
 
 (**Displays the selection GUI for placed bears, if a bear is selected.*)
