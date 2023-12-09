@@ -16,7 +16,7 @@
 
 3. Unzip the file and navigate into the 'MTD' directory. Make sure you write
     ```
-    unzip (filename)
+    unzip ms3_code
     ```
 
 4. Paste this line to run MTD:
