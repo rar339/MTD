@@ -1,8 +1,8 @@
 {
   "Dart": {
     "range": 150.0,
-    "cost": 275,
-    "attack_speed": 70,
+    "cost": 340,
+    "attack_speed": 85,
     "projectile_speed": 20.0,
     "damage": 1
   },
