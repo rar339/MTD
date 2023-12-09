@@ -169,8 +169,8 @@ let origin_vect_custom (bear : bear) =
 (* draw_bear function *)
 let draw_bear (bear : bear) =
   if bear.bear_type == Dragon then
-    if bear.isFiring then bear.texture <- Option.get !fireball_img else
-      bear.texture <- Option.get !dragonbear_img;
+    if bear.isFiring then bear.texture <- Option.get !fireball_img
+    else bear.texture <- Option.get !dragonbear_img;
   let x = Vector2.x bear.position in
   let y = Vector2.y bear.position in
   draw_texture_pro bear.texture
@@ -229,11 +229,11 @@ let rec remove_bears bear_lst =
 
 let rec update_bear_firing_rate = function
   | bear :: t ->
+      let properties = extract_bear_properties bear.bear_type in
       bear.attack_speed <-
-        (if !Constants.speed_mult = 2 then bear.attack_speed / 2
-         else bear.attack_speed * 2);
+        (properties |> member "attack_speed" |> to_int) / !Constants.speed_mult;
       bear.projectile_speed <-
-        (if !Constants.speed_mult = 2 then bear.projectile_speed *. 2.
-         else bear.projectile_speed /. 2.);
+        (properties |> member "projectile_speed" |> to_float)
+        *. float_of_int !Constants.speed_mult;
       update_bear_firing_rate t
   | [] -> ()
