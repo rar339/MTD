@@ -53,7 +53,6 @@ val cash : float -> float -> Rectangle.t
 val draw_heart : float -> float -> unit
 (**Draws the heart lives.*)
 
-
 val lives_and_cash_count : float -> float -> unit
 (**Draws the num of lives and cash.*)
 
@@ -66,6 +65,8 @@ val draw_range : bear option -> unit
   Precondition: bear is not a None option.*)
 
 val mem_option : 'a option -> 'a list -> bool
+(**Takes in an option and a list and tests of the contents of that option are in
+    the list*)
 
 val draw_hover_highlight : unit -> unit
 (**Draws the range of the bear if it is hovered over or currently selected.*)
@@ -77,7 +78,7 @@ val cost_of_beartype : bear_types -> int
 (* Get the cost of each bear type *)
 
 val bear_info_text : bear_types -> float -> float -> float -> float -> unit
-(* Gets the description of each bear *)
+(** Gets the description of each bear *)
 
 val draw_info_title :
   bear_types -> bool -> float -> float -> float -> float -> unit
