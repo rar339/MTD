@@ -29,8 +29,13 @@ type bear = {
 val bear_collection : bear list ref
 val bear_radius : float
 val menu_bear_radius : float
+
 val get_x : bear -> float
+(**Gets the x position of the given bear.*)
+
 val get_y : bear -> float
+(**Gets the y position of the given bear.*)
+
 val fire_rect_length : float
 val fire_rect_width : float
 val selected_bear : bear option ref
@@ -58,7 +63,7 @@ val determine_bear_clicked : Vector2.t -> bear list -> bear option
 
 val determine_bear_hovered : Vector2.t -> bear list -> bear option
 (** Returns the bear being hovered over, if any.*)
-  
+
 val draw_menu_bear : bear -> unit
 (**Draws a bear on the menu.*)
 
