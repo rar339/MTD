@@ -29,20 +29,24 @@ let setup () =
   Constants.setup_projectile_imgs ();
   Constants.setup_misc_imgs ();
 
-  (*Set up *)
-  Raygui.(set_style (TextBox `Text_alignment) TextAlignment.(to_int Center));
+  (*Set up Raygui *)
+  Raygui.(set_style (Label `Text_alignment) TextAlignment.(to_int Center));
   Raygui.(set_style (Button `Base_color_normal) 0xFF000010);
   Raygui.(set_style (Button `Base_color_focused) 0x7F000000);
   Raygui.(set_style (Button `Base_color_pressed) 0x7F000000);
   Raygui.(set_style (Default `Text_color_normal) 0xFFFFFFFF);
   Raygui.set_style (Default `Text_size) 36;
-  Raygui.(set_style (Button `Border_width) 0);
+  Raygui.(set_style (Button `Border_width) 5);
   Raygui.set_font (Option.get !custom_font);
   Raygui.(set_style (Label `Border_color_normal) 0xFFF);
-  Raygui.(set_style (Label `Base_color_normal) 0xFF000010 );
-  Raygui.(set_style (Label `Base_color_focused) 0x000000 );
-
-
+  Raygui.(set_style (Label `Base_color_normal) 0xFF000010);
+  Raygui.(set_style (Label `Base_color_focused) 0x000000);
+  Raygui.(set_style (Button `Border_color_normal) 0x000000);
+  Raygui.(set_style (Label `Border_color_normal) 0xFF0000);
+  Raygui.(set_style (Label `Border_width) 6);
+  Raygui.(set_style (Label `Text_padding) 0);
+  Raygui.(set_style (Button `Text_alignment) TextAlignment.(to_int Center));
+  Raygui.(set_style (Button `Base_color_focused) 0x80808080);
 
   balloons := generate_all_balloons 0 12 (Option.get !red_balloon_img);
 

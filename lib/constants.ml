@@ -65,7 +65,7 @@ let setup_fonts () =
   menu_font :=
     Some
       (Raylib.load_font_ex "./img/fonts/gamefont.otf"
-         (Raylib.get_screen_width () / 50)
+         (Raylib.get_screen_width () / 40)
          None);
 
   custom_font :=
@@ -145,10 +145,11 @@ let setup_balloon_imgs () =
   purple_balloon_img := Some (Raylib.load_texture "./img/balloons/purple.png");
   lead_balloon_img := Some (Raylib.load_texture "./img/balloons/lead.png")
 
+  (*Set up projectile*)
 let setup_projectile_imgs () =
   hockeypuck_img :=
     Some (Raylib.load_texture "./img/projectiles/hockeypuck.png");
-  fireball_img := Some (Raylib.load_texture "./img/projectiles/fireball.png");
+  fireball_img := Some (Raylib.load_texture "./img/projectiles/firingdragon.png");
   dartshot_img := Some (Raylib.load_texture "./img/projectiles/dartshot.png")
 
 (******************************************************************************)

@@ -213,6 +213,7 @@ let rec fire_all_shots (bears : Bears.bear list)
   | first :: rest -> (
       match find_target first balloons with
       | None ->
+          if first.bear_type = Dragon then first.isFiring <- false;
           first.counter <- first.counter - 1;
           fire_all_shots rest balloons
       | Some balloon ->
@@ -300,12 +301,34 @@ let rec remove_bullets bullet_list =
       else bullet :: remove_bullets t
 
 let draw_bullet bullet =
+  (* let image_width = float_of_int (Texture2D.width (Option.get bullet.image)) in
+     let image_height =
+       float_of_int (Texture2D.height (Option.get bullet.image))
+     in
+     let temp_x = Vector2.x bullet.origin.position in
+     let temp_y = Vector2.y bullet.origin.position in
+     let angle = bullet.origin.facing in
+     let x =
+       if cos angle < 0. && sin angle < 0. then temp_x +. cos angle -. (1.2 *. bear_radius)
+       else temp_x +. cos angle +. (1.2 *. bear_radius)
+     in
+     let y =
+       if sin angle < 0. then temp_y -. sin angle -. (1.2 *. bear_radius)
+       else temp_y +. sin angle -. (1.2 *. bear_radius)
+     in
+  *)
+  (* let angle = bullet.origin.facing in
+     let x,y =
+     if cos angle < 0. && sin angle < 0. then
+       (Vector2.x bullet.origin.position +. bear_radius,Vector2.y bullet.origin.position -. bear_radius) else
+     if cos angle < 0. && sin angle > 0. then
+       (Vector2.x bullet.origin.position -. bear_radius, Vector2.y bullet.origin.position -. bear_radius) else
+     if cos angle > 0. && sin angle > 0. then
+       (Vector2.x bullet.origin.position +. bear_radius, Vector2.y bullet.origin.position -. bear_radius) else
+     (Vector2.x bullet.origin.position +. bear_radius, Vector2.y bullet.position +. bear_radius)
+       in *)
   match bullet.origin.bear_type with
-  | Dragon ->
-      draw_texture_ex (Option.get bullet.image) bullet.position
-        (180. /. Float.pi *. vector_angle bullet.velocity)
-        1.
-        (Color.create 255 255 255 255)
+  | Dragon -> bullet.origin.isFiring <- true
   | _ ->
       draw_texture_ex (Option.get bullet.image) bullet.position
         (180. /. Float.pi *. vector_angle bullet.velocity)
