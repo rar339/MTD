@@ -135,7 +135,7 @@ let draw_heart screen_width screen_height =
     (Option.get !heart_logo_img)
     (Vector2.create
        (153. *. screen_width /. 200.)
-       (0.46 *. screen_height /. 9.))
+       (0.40 *. screen_height /. 9.))
     0. 0.12 Color.white
 
 let lives_and_cash_count screen_width screen_height =
@@ -243,23 +243,28 @@ let bear_info_text (bear : Bears.bear_types) rect_x rect_y rect_width
         (Rectangle.create rect_x
            (rect_y +. (rect_height /. 3.))
            rect_width (rect_height /. 6.))
-        "Shoots a lil' dart. Cheap \n  and reliable."
+        "Shoots darts at balloons. \nCheap and reliable."
   | Hockey ->
       Raygui.label
         (Rectangle.create rect_x rect_y rect_width (2.5 *. rect_height /. 3.))
-        "  Shoots a barrage of hockey pucks \n  in all directions."
+        " Shoots a barrage of hockey \n pucks in all directions."
   | Polar ->
       Raygui.label
         (Rectangle.create rect_x rect_y rect_width (2.5 *. rect_height /. 3.))
-        "  Slows down bears with ice."
+        "Slows down and damages \nballoons. Pairs nicely \nwith hockey bear."
   | Sniper ->
       Raygui.label
         (Rectangle.create rect_x rect_y rect_width (2.5 *. rect_height /. 3.))
-        "  Snipes bears"
+        "  Shoots powerful bullets \n\
+        \  across map and can pop lead. \n\
+        \  Make sure to have one \n\
+        \  before Round 19!"
   | Dragon ->
       Raygui.label
         (Rectangle.create rect_x rect_y rect_width (2.5 *. rect_height /. 3.))
-        "  Shoots fire at balloons."
+        "  Breathes a powerful, lead-\n\
+        \  popping, relentless flame \n\
+        \  of destruction at balloons. "
 
 (**Draws the title for the selection GUI based on the bear type.*)
 let draw_info_title beartype (is_menu_descr : bool) rect_x rect_y rect_width
