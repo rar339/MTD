@@ -168,6 +168,7 @@ let rec freeze_balloons (bear : Bears.bear) balloon_list =
   match balloon_list with
   | [] -> ()
   | (balloon : Balloons.balloon) :: t ->
+      update_balloon_status bear balloon;
       balloon.freeze_duration <- bear.freeze_duration;
       freeze_balloons bear t
 
