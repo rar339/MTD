@@ -271,7 +271,7 @@ let draw_game () =
         (Rectangle.create x_pos
            (y_pos +. (6.1 *. (window_box_height /. 10.)))
            window_box_width label_height)
-        "Goodluck!";
+        "Good luck!";
       show_window
     then showInstructions := false)
   else if (*RESTART GAME********************************)
