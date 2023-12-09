@@ -73,6 +73,7 @@ let place_bear () =
   placed_bear represents whether or not he passed in list is a lsit of placed 
   bears or menu bears.
   Parameters: [placed_bears] [position] [bear_list]*)
+
 let update_bear_selections placed_bears pos bears =
   let bear_opt = determine_bear_clicked pos bears in
   let bear_opt2 = Bears.determine_bear_hovered pos bears in
@@ -236,23 +237,30 @@ let bear_info_text (bear : Bears.bear_types) rect_x rect_y rect_width
   | Dart ->
       Raygui.label
         (Rectangle.create rect_x rect_y rect_width (2.5 *. rect_height /. 3.))
-        "  Shoots darts at bears."
+        "  Shoots darts at bears. Cheap \n  and reliable."
   | Hockey ->
       Raygui.label
         (Rectangle.create rect_x rect_y rect_width (2.5 *. rect_height /. 3.))
-        "  Shoots hockey pucks at bears."
+        "  Shoots a barrage of hockey pucks \n  in all directions."
   | Polar ->
       Raygui.label
         (Rectangle.create rect_x rect_y rect_width (2.5 *. rect_height /. 3.))
-        "  Slows down bears with ice."
+        "  Slows down and deals damage to \n\
+        \  balloons. Pairs nicely with hockey\n\
+        \  bear"
   | Sniper ->
       Raygui.label
         (Rectangle.create rect_x rect_y rect_width (2.5 *. rect_height /. 3.))
-        "  Snipes bears"
+        "  Shoots powerful bullets over \n\
+        \  the entire map and can pop lead. \n\
+        \  Make sure to have one before \n\
+        \  Round 19!"
   | Dragon ->
       Raygui.label
         (Rectangle.create rect_x rect_y rect_width (2.5 *. rect_height /. 3.))
-        "  Shoots fire at balloons."
+        "  Breathes a powerful, lead-popping,\n\
+        \  relentless flame of poppage at\n\
+        \  balloons "
 
 (**Draws the title for the selection GUI based on the bear type.*)
 let draw_info_title beartype (is_menu_descr : bool) rect_x rect_y rect_width
@@ -321,7 +329,7 @@ let draw_range_upgrade_button bear rect_x rect_y rect_width rect_height =
   Raygui.(set_style (Button `Base_color_normal) 0xADD8E6);
   Raygui.(set_style (Button `Base_color_focused) 0xADD8E6);
   Raygui.(set_style (Button `Base_color_pressed) 0x80808080);
-  let upgrade_price = Constants.round_float (float_of_int bear.cost *. 0.50) in
+  let upgrade_price = Constants.round_float (float_of_int bear.cost *. 0.75) in
   if
     Raygui.(
       button
@@ -348,7 +356,7 @@ let draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height =
   Raygui.(set_style (Button `Base_color_pressed) 0x80808080);
   Raygui.(set_style (Default `Text_color_normal) 0xFFFFFFFF);
 
-  let upgrade_price = Constants.round_float (float_of_int bear.cost *. 1.2) in
+  let upgrade_price = Constants.round_float (float_of_int bear.cost *. 1.) in
   if
     Raygui.(
       button
@@ -374,7 +382,7 @@ let draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height =
   Raygui.(set_style (Button `Base_color_focused) 0xADD8E6);
   Raygui.(set_style (Button `Base_color_pressed) 0x80808080);
   Raygui.(set_style (Default `Text_color_normal) 0xFFFFFFFF);
-  let upgrade_price = Constants.round_float (float_of_int bear.cost *. 1.0) in
+  let upgrade_price = Constants.round_float (float_of_int bear.cost *. 1.2) in
   if
     Raygui.(
       button
@@ -420,9 +428,7 @@ let display_selection selection =
       draw_info_background ();
       draw_info_title Hockey false rect_x rect_y rect_width rect_height;
       draw_sell_button bear rect_x rect_y rect_width rect_height;
-      draw_damage_upgrade_button bear rect_x
-        (rect_y)
-        rect_width rect_height;
+      draw_damage_upgrade_button bear rect_x rect_y rect_width rect_height;
       draw_speed_upgrade_button bear rect_x rect_y rect_width rect_height
   | Some ({ bear_type = Polar; _ } as bear) ->
       draw_info_background ();

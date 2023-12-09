@@ -32,8 +32,8 @@
       "Colors": [
         "Blue"
       ],
-      "Count": 25,
-      "Spacing": 15
+      "Count": 20,
+      "Spacing": 20
     }
   ],
   "5": [
@@ -42,7 +42,7 @@
         "Red",
         "Blue"
       ],
-      "Count": 30,
+      "Count": 20,
       "Spacing": 15
     }
   ],
@@ -51,7 +51,7 @@
       "Colors": [
         "Green"
       ],
-      "Count": 15,
+      "Count": 10,
       "Spacing": 15
     }
   ],
@@ -61,7 +61,7 @@
         "Green",
         "Blue"
       ],
-      "Count": 20,
+      "Count": 12,
       "Spacing": 15
     }
   ],
@@ -70,7 +70,7 @@
       "Colors": [
         "Green"
       ],
-      "Count": 30,
+      "Count": 20,
       "Spacing": 15
     },
     {
@@ -86,7 +86,7 @@
       "Colors": [
         "Green"
       ],
-      "Count": 40,
+      "Count": 30,
       "Spacing": 40
     }
   ],
@@ -104,7 +104,7 @@
       "Colors": [
         "Blue"
       ],
-      "Count": 100,
+      "Count": 50,
       "Spacing": 5
     }
   ],
@@ -216,7 +216,7 @@
       "Colors": [
         "Orange"
       ],
-      "Count": 30,
+      "Count": 50,
       "Spacing": 15
     }
   ],
@@ -226,7 +226,7 @@
         "Yellow"
       ],
       "Count": 50,
-      "Spacing": 15
+      "Spacing": 8
     }
   ],
   "22": [
@@ -236,7 +236,7 @@
         "Yellow",
         "Orange"
       ],
-      "Count": 5,
+      "Count": 20,
       "Spacing": 8
     }
   ],
@@ -245,8 +245,8 @@
       "Colors": [
         "Purple"
       ],
-      "Count": 20,
-      "Spacing": 20
+      "Count": 30,
+      "Spacing": 10
     }
   ],
   "24": [
@@ -272,7 +272,7 @@
         "Purple"
       ],
       "Count": 15,
-      "Spacing": 40
+      "Spacing": 10
     }
   ],
   "26": [
@@ -281,7 +281,7 @@
         "Purple"
       ],
       "Count": 40,
-      "Spacing": 10
+      "Spacing": 5
     }
   ],
   "27": [
@@ -298,8 +298,8 @@
       "Colors": [
         "Lead"
       ],
-      "Count": 40,
-      "Spacing": 5
+      "Count": 20,
+      "Spacing": 2
     }
   ],
   "29": [
@@ -318,7 +318,7 @@
         "Lead",
         "Purple"
       ],
-      "Count": 50,
+      "Count": 40,
       "Spacing": 4
     }
   ]

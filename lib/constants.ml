@@ -9,7 +9,7 @@ type gamestate = Home | Inactive | Active | Lose | Win
 (* The number of lives a player has in the game. When a balloon leaves through
    the finish life, the player loses lives associated with the balloon's
    value. *)
-let lives = ref 100
+let lives = ref 75
 
 (* The player's spending money for bears and their upgrades. Cash is
    spent with every purchase and accrued with every layer of balloon popped
@@ -31,8 +31,8 @@ let round = ref 0
 let speed_mult = ref 1
 
 (*Game restart attributes*)
-let start_cash = 600
-let start_lives = 50
+let start_cash = 700
+let start_lives = 75
 
 (*Game global attributes*)
 let count = ref 0
